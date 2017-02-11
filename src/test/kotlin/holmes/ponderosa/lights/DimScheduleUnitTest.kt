@@ -38,7 +38,7 @@ class DimScheduleUnitTest {
     val currentFrame = dimSchedule.timeFrames[1]
 
     now = currentFrame.endTime.minusHours(1)
-    assertThat(dimSchedule.autoDim(1).dimLevel).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(1).dimLevel).isEqualTo(1)
     assertThat(dimSchedule.autoDim(1).needsReschedule).isFalse()
   }
 
@@ -63,16 +63,16 @@ class DimScheduleUnitTest {
     assertThat(dimSchedule.autoDim(25).needsReschedule).isFalse()
   }
 
-  @Test fun testAutoDimLighNottNearCurrentDoNothing() {
+  @Test fun testAutoDimLightNotNearCurrentDoNothing() {
     val testFrame = dimSchedule.timeFrames[2]
-    val currentValue = testFrame.lowLevel + 1
+    val currentValue = testFrame.lowLevel + 10
 
     now = testFrame.endTime.minusMinutes(10)
     assertThat(dimSchedule.autoDim(currentValue).dimLevel).isEqualTo(-1)
     assertThat(dimSchedule.autoDim(currentValue).needsReschedule).isFalse()
   }
 
-  @Test fun testAutoDimForReals() {
+  @Test fun testAutoDimForReal() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(10)

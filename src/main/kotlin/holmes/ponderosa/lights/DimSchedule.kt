@@ -24,12 +24,6 @@ data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val n
       return AutoDimResult.NO_CHANGE
     }
 
-    // If the lights aren't within this level, don't bother doing anything.
-    val currentFrame = currentFrame
-    if (currentValue >= currentFrame.lowLevel) {
-      return AutoDimResult.NO_CHANGE
-    }
-
     val calculatedLevel = calculateLightLevel()
     val delta = Math.abs(calculatedLevel - currentValue)
     val allowed = delta <= 3
