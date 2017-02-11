@@ -8,26 +8,33 @@ import java.time.LocalTime
  * their endTime(s) and are stored consecutively in the List.
  */
 data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val now: () -> LocalTime) {
+  data class AutoDimResult(val dimLevel: Int, val needsReschedule: Boolean) {
+    companion object Factory {
+      val NO_CHANGE: AutoDimResult = AutoDimResult(-1, false)
+    }
+  }
+
   /**
    * Dim (or brighten) the lights if the calculated level is near the currentValue. We check that it's near
    * because a person in the room might have turned the lights up intentionally. We don't want to turn them
    * down if that's the case.
    */
-  fun autoDim(currentValue: Int): Int {
+  fun autoDim(currentValue: Int): AutoDimResult {
     if (currentValue == 0) {
-      return -1
+      return AutoDimResult.NO_CHANGE
     }
 
     // If the lights aren't within this level, don't bother doing anything.
     val currentFrame = currentFrame
     if (currentValue >= currentFrame.lowLevel) {
-      return -1
+      return AutoDimResult.NO_CHANGE
     }
 
     val calculatedLevel = calculateLightLevel()
-    val allowed = Math.abs(calculatedLevel - currentValue) <= 3
+    val delta = Math.abs(calculatedLevel - currentValue)
+    val allowed = delta <= 3
 
-    return if (allowed) calculatedLevel else -1
+    return if (allowed) AutoDimResult(calculatedLevel, delta > 1) else AutoDimResult.NO_CHANGE
   }
 
   /**

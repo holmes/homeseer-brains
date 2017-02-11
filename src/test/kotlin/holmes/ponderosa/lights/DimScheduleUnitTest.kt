@@ -22,36 +22,45 @@ class DimScheduleUnitTest {
   }
 
   @Test fun testAutoDimLightIsOff() {
-    assertThat(dimSchedule.autoDim(0)).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(0).dimLevel).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(0).needsReschedule).isFalse()
   }
 
   @Test fun testDoNotAutoDimLightInFirstFrame() {
     val firstFrame = dimSchedule.timeFrames[0]
 
     now = firstFrame.endTime.minusHours(1)
-    assertThat(dimSchedule.autoDim(10)).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(10).dimLevel).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(10).needsReschedule).isFalse()
   }
 
   @Test fun testAutoDimLightAtVeryLowLevelDoNothing() {
     val currentFrame = dimSchedule.timeFrames[1]
 
     now = currentFrame.endTime.minusHours(1)
-    assertThat(dimSchedule.autoDim(1)).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(1).dimLevel).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(1).needsReschedule).isFalse()
   }
 
   @Test fun testAutoDimOverHighLevelDoNothing() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusHours(1)
-    assertThat(dimSchedule.autoDim(88)).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(88).dimLevel).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(88).needsReschedule).isFalse()
   }
 
   @Test fun testAutoDimLightNearCurrentLevelDims() {
     val testFrame = dimSchedule.timeFrames[2]
-    val currentValue = 27
 
     now = testFrame.endTime.minusMinutes(10)
-    assertThat(dimSchedule.autoDim(currentValue)).isEqualTo(29)
+    assertThat(dimSchedule.autoDim(28).dimLevel).isEqualTo(29)
+    assertThat(dimSchedule.autoDim(28).needsReschedule).isFalse()
+
+    // Close ones need rescheduling.
+    assertThat(dimSchedule.autoDim(27).needsReschedule).isTrue()
+    assertThat(dimSchedule.autoDim(26).needsReschedule).isTrue()
+    assertThat(dimSchedule.autoDim(25).needsReschedule).isFalse()
   }
 
   @Test fun testAutoDimLighNottNearCurrentDoNothing() {
@@ -59,21 +68,24 @@ class DimScheduleUnitTest {
     val currentValue = testFrame.lowLevel + 1
 
     now = testFrame.endTime.minusMinutes(10)
-    assertThat(dimSchedule.autoDim(currentValue)).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(currentValue).dimLevel).isEqualTo(-1)
+    assertThat(dimSchedule.autoDim(currentValue).needsReschedule).isFalse()
   }
 
   @Test fun testAutoDimForReals() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(10)
-    assertThat(dimSchedule.autoDim(28)).isEqualTo(29)
+    assertThat(dimSchedule.autoDim(28).dimLevel).isEqualTo(29)
+    assertThat(dimSchedule.autoDim(28).needsReschedule).isFalse()
   }
 
   @Test fun testAutoDimForSameValue() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(10)
-    assertThat(dimSchedule.autoDim(29)).isEqualTo(29)
+    assertThat(dimSchedule.autoDim(29).dimLevel).isEqualTo(29)
+    assertThat(dimSchedule.autoDim(29).needsReschedule).isFalse()
   }
 
   @Test fun testToggleLightsWhenOff() {
