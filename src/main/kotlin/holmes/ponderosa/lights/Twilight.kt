@@ -32,3 +32,4 @@ class Twilight(val resultsProvider: (() -> TwilightResult)) {
 }
 
 data class TwilightResult(val twilightBegin: LocalTime, val sunrise: LocalTime, val solarNoon: LocalTime, val sunset: LocalTime, val twilightEnd: LocalTime)
+
