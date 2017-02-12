@@ -19,7 +19,10 @@ class TwilightProviderUnitTest {
     val twilight = twilightProvider.twilight()
     assertThat(twilight).isNotNull()
 
+    assertThat(twilight.twilightBegin).isEquivalentAccordingToCompareTo(LocalTime.of(6, 33, 27))
     assertThat(twilight.sunrise).isEquivalentAccordingToCompareTo(LocalTime.of(7, 0, 21))
+    assertThat(twilight.solarNoon).isEquivalentAccordingToCompareTo(LocalTime.of(12, 22, 39))
     assertThat(twilight.sunset).isEquivalentAccordingToCompareTo(LocalTime.of(17, 44, 56))
+    assertThat(twilight.twilightEnd).isEquivalentAccordingToCompareTo(LocalTime.of(18, 11, 51))
   }
 }
