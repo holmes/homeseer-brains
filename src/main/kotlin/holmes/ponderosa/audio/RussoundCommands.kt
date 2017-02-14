@@ -1,6 +1,6 @@
 package holmes.ponderosa.audio
 
-class Russound {
+class RussoundCommands {
   data class Source(val sourceId: Int, val name: String) {
     /** The Display number, 1-based. */
     val sourceNumber: String
