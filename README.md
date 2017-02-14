@@ -1,4 +1,4 @@
-# homeseer-brains
+# Ponderosa
 The Brains behind my install of Homeseer
 
 HomeSeer scripts are written in VB.Net. While I won't debate the merits of that language, 

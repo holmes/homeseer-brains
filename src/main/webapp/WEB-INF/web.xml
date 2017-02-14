@@ -9,7 +9,7 @@
         <filter-class>spark.servlet.SparkFilter</filter-class>
         <init-param>
             <param-name>applicationClass</param-name>
-            <param-value>holmes.ponderosa.HomeSeerBrainsApplication</param-value>
+            <param-value>holmes.ponderosa.PonderosaSparkApplication</param-value>
         </init-param>
     </filter>
 

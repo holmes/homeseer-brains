@@ -19,7 +19,7 @@ class LightsRoutes {
   fun initialize() {
     path("/api/lights/:deviceId") {
 
-      get("/autoDim/:currentValue") { request, response ->
+      get("/autoDim/:currentValue") { request, _ ->
         val deviceId = request.params("deviceId")?.toInt()
         if (deviceId == null) {
           halt(400, "Bad deviceId")
@@ -46,7 +46,7 @@ class LightsRoutes {
         val currentValue = request.params("currentValue")?.toInt()
 
         val dimResult = when (currentValue) {
-          null -> DimSchedule.AutoDimResult.NO_CHANGE
+          null -> -1
           else -> lightsRequest.toggleLights(deviceId, currentValue)
         }
 
