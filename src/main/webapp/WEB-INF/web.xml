@@ -4,21 +4,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
          version="3.0">
-    <servlet>
-        <display-name>HomeSeer Brains</display-name>
-        <servlet-name>HomeSeerBrains</servlet-name>
-        <servlet-class>org.jetbrains.ktor.servlet.ServletApplicationHost</servlet-class>
-        <multipart-config>
-            <!-- 100mb max file upload -->
-            <max-file-size>304857600</max-file-size>
-            <max-request-size>304857600</max-request-size>
-            <file-size-threshold>0</file-size-threshold>
-        </multipart-config>
-    </servlet>
+    <filter>
+        <filter-name>SparkFilter</filter-name>
+        <filter-class>spark.servlet.SparkFilter</filter-class>
+        <init-param>
+            <param-name>applicationClass</param-name>
+            <param-value>holmes.ponderosa.HomeSeerBrainsApplication</param-value>
+        </init-param>
+    </filter>
 
-    <servlet-mapping>
-        <servlet-name>HomeSeerBrains</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
-
+    <filter-mapping>
+        <filter-name>SparkFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
 </web-app>

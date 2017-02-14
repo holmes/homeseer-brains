@@ -3,7 +3,6 @@ package holmes.ponderosa.lights
 import java.time.LocalTime
 
 class LightsRequest(val twilight: Twilight, val now: (() -> LocalTime)) {
-
   fun autoDim(deviceId: Int, currentValue: Int): DimSchedule.AutoDimResult {
     return getDimSchedule(deviceId).autoDim(currentValue)
   }
@@ -21,7 +20,7 @@ class LightsRequest(val twilight: Twilight, val now: (() -> LocalTime)) {
             TimeFrame(twilight.twilightBegin(), 1, 35),
             TimeFrame(twilight.sunrise(), 1, 35),
             TimeFrame(twilight.solarNoon(), 30, 85),
-            TimeFrame(twilight.twilightEnd(), 10, 35),
+            TimeFrame(twilight.twilightEnd(), 10, 60),
             TimeFrame(LocalTime.MAX, 1, 35)
         )
       }
@@ -37,7 +36,7 @@ class LightsRequest(val twilight: Twilight, val now: (() -> LocalTime)) {
         timeFrames = listOf(
             TimeFrame(twilight.twilightBegin(), 5, 35),
             TimeFrame(twilight.solarNoon(), 35, 85),
-            TimeFrame(twilight.twilightEnd(), 20, 35),
+            TimeFrame(twilight.twilightEnd(), 20, 60),
             TimeFrame(LocalTime.of(23, 59), 5, 35)
         )
       }
@@ -45,7 +44,7 @@ class LightsRequest(val twilight: Twilight, val now: (() -> LocalTime)) {
         timeFrames = listOf(
             TimeFrame(twilight.twilightBegin(), 10, 35),
             TimeFrame(twilight.solarNoon(), 35, 85),
-            TimeFrame(twilight.twilightEnd(), 25, 35),
+            TimeFrame(twilight.twilightEnd(), 25, 60),
             TimeFrame(LocalTime.of(23, 59), 18, 35)
         )
       }

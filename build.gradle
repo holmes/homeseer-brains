@@ -20,7 +20,6 @@ apply plugin: 'war'
 repositories {
   maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
   maven { url 'http://dl.bintray.com/kotlin/kotlinx.support' }
-  maven { url "http://dl.bintray.com/kotlin/ktor" }
   mavenCentral()
 }
 
@@ -28,23 +27,9 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
   compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
+  compile "com.sparkjava:spark-core:2.5.5"
+  compile "org.slf4j:slf4j-simple:1.7.22"
   compile 'com.squareup.moshi:moshi:1.4.0'
-
-  compile("org.jetbrains.ktor:ktor-core:$ktor_version") {
-    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-reflect'
-    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-runtime'
-    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
-  }
-  compile("org.jetbrains.ktor:ktor-servlet:$ktor_version") {
-    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-reflect'
-    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-runtime'
-    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
-  }
-//  compile("org.jetbrains.ktor:ktor-jetty:$ktor_version") {
-//    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-reflect'
-//    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-runtime'
-//    exclude group: 'org.jetbrains.kotlin', module: 'kotlin-stdlib'
-//  }
 
   testCompile "com.google.truth:truth:0.31"
 }
