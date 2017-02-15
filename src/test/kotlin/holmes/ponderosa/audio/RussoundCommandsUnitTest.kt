@@ -67,8 +67,7 @@ class RussoundCommandsUnitTest {
 
 
 private val HEX_CHARS = "0123456789ABCDEF"
-
-fun String.toByteArray() : ByteArray {
+private fun String.toByteArray() : ByteArray {
   val result = ByteArray(length / 2)
 
   for (i in 0 until length step 2) {
