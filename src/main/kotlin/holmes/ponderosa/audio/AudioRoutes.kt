@@ -1,56 +1,53 @@
 package holmes.ponderosa.lights
 
-import com.squareup.moshi.Moshi
+import holmes.ponderosa.audio.AudioRequest
+import spark.Spark.get
 import spark.Spark.halt
 import spark.Spark.path
 import spark.Spark.post
-import java.time.LocalDate
-import java.time.LocalTime
 
 class AudioRoutes {
   // Getting dagger to work is just too hard. Doing it by hand for now.
-  val moshi = Moshi.Builder().build()
-  val today = { LocalDate.now() }
-  val now = { LocalTime.now() }
-  val twilightProvider = TwilightProvider(moshi, today)::twilight
-  val twilight = Twilight(twilightProvider)
-  val lightsRequest = LightsRequest(twilight, now)
+  val audioRequest = AudioRequest()
 
   fun initialize() {
     path("/api/audio/:zoneId") {
 
+      get("status") { request, _ ->
+        val zoneId = request.params("zoneId")?.toInt()
+        if (zoneId == null || zoneId !in 0..6) {
+          halt(400, "Bad zoneId")
+          return@get -1
+        }
+
+        audioRequest.status(zoneId)
+      }
+
       post("/power/:newValue") { request, _ ->
-        val deviceId = request.params("deviceId")?.toInt()
-        if (deviceId == null) {
-          halt(400, "Bad deviceId")
-          return@post ""
+        val zoneId = request.params("zoneId")?.toInt()
+        if (zoneId == null || zoneId !in 0..6) {
+          halt(400, "Bad zoneId")
+          return@post -1
         }
 
-        val currentValue = request.params("currentValue")?.toInt()
-
-        val autoDimResult = when (currentValue) {
-          null -> DimSchedule.AutoDimResult.NO_CHANGE
-          else -> lightsRequest.autoDim(deviceId, currentValue)
-        }
-
-        return@post "${autoDimResult.dimLevel},${autoDimResult.needsReschedule}"
+        val turnOn = request.params("newValue").toBoolean()
+        audioRequest.power(zoneId, turnOn)
       }
 
       post("/source/:sourceId") { request, _ ->
-        val deviceId = request.params("deviceId")?.toInt()
-        if (deviceId == null) {
-          halt(400, "Bad deviceId")
-          return@post ""
+        val zoneId = request.params("zoneId")?.toInt()
+        if (zoneId == null || zoneId !in 0..6) {
+          halt(400, "Bad zoneId")
+          return@post -1
         }
 
-        val currentValue = request.params("currentValue")?.toInt()
-
-        val dimResult = when (currentValue) {
-          null -> -1
-          else -> lightsRequest.toggleLights(deviceId, currentValue)
+        val sourceId = request.params("sourceId")?.toInt()
+        if (sourceId == null || sourceId !in 0..6) {
+          halt(400, "Bad sourceId")
+          return@post -1
         }
 
-        return@post "$dimResult"
+        audioRequest.change(sourceId, zoneId)
       }
     }
   }

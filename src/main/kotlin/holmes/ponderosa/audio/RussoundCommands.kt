@@ -13,6 +13,15 @@ class RussoundCommands {
       get() = (zoneId + 1).toString()
   }
 
+  fun requestSource(zone: Zone): ByteArray {
+    val bytes = statusBytes
+
+    bytes[11] = zone.zoneId.toByte()
+    bytes[15] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
   fun turnOn(zone: Zone): ByteArray {
     val bytes = powerBytes
 
@@ -58,6 +67,27 @@ class RussoundCommands {
     return step3.toByte()
   }
 
+  private val statusBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x01.toByte(),
+        0x04.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
   private val powerBytes: ByteArray
     get() = byteArrayOf(
         0xf0.toByte(),
@@ -83,6 +113,7 @@ class RussoundCommands {
         0x00.toByte(),
         0xf7.toByte()
     )
+
   private val sourceSelectBytes: ByteArray
     get() = byteArrayOf(
         0xf0.toByte(),

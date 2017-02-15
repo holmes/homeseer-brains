@@ -1,12 +1,14 @@
 package holmes.ponderosa
 
+import holmes.ponderosa.lights.AudioRoutes
 import holmes.ponderosa.lights.LightsRoutes
 import spark.servlet.SparkApplication
 
 /** The main innitializer. */
 class Ponderosa {
-    fun start() {
+  fun start() {
     LightsRoutes().initialize()
+    AudioRoutes().initialize()
   }
 }
 

@@ -33,7 +33,7 @@ class LightsRoutes {
           else -> lightsRequest.autoDim(deviceId, currentValue)
         }
 
-        return@get "${autoDimResult.dimLevel},${autoDimResult.needsReschedule}"
+        "${autoDimResult.dimLevel},${autoDimResult.needsReschedule}"
       }
 
       get("/toggle/:currentValue") { request, _ ->
@@ -50,7 +50,7 @@ class LightsRoutes {
           else -> lightsRequest.toggleLights(deviceId, currentValue)
         }
 
-        return@get "$dimResult"
+        dimResult.toString()
       }
     }
   }

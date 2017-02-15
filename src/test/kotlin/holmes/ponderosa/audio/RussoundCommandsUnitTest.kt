@@ -19,6 +19,14 @@ class RussoundCommandsUnitTest {
     russoundCommands = RussoundCommands()
   }
 
+  @Test fun testGetSource() {
+    val zone0Bytes = "F000007F000070010402000002000077F7".toByteArray()
+    assertThat(russoundCommands.requestSource(zone0)).isEqualTo(zone0Bytes)
+
+    val zone1Bytes = "F000007F000070010402000102000078F7".toByteArray()
+    assertThat(russoundCommands.requestSource(zone1)).isEqualTo(zone1Bytes)
+  }
+
   @Test fun testCheckSum() {
     val bytes = "F000677CF10F00F7".toByteArray()
     assertThat(russoundCommands.calculateChecksum(bytes)).isEqualTo(0x59.toByte())
