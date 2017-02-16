@@ -6,11 +6,10 @@ import java.io.FileOutputStream
 import java.io.OutputStream
 
 class AudioRequest {
+  val bytesWritten: ByteArrayOutputStream = ByteArrayOutputStream()
   val audioManager: AudioManager
 
   init {
-    val russoundCommands = RussoundCommands()
-
     // Not sure what we want to do w/ this for now.
     val outputStream: OutputStream
     if (File("/dev/ttyUSB0").exists()) {
@@ -20,16 +19,19 @@ class AudioRequest {
     } else {
       outputStream = ByteArrayOutputStream()
     }
+    val actualOutputStream = TeeOutputStream(bytesWritten, outputStream)
 
-    audioManager = AudioManager(outputStream, russoundCommands)
+    val russoundCommands = RussoundCommands()
+    audioManager = AudioManager(russoundCommands, actualOutputStream)
   }
 
   fun status(zoneId: Int) {
     audioManager.getStatus(zone(zoneId))
   }
 
-  fun power(zoneId: Int, turnOn: Boolean) {
+  fun power(zoneId: Int, turnOn: Boolean): ByteArray {
     audioManager.power(zone(zoneId), turnOn)
+    return bytesWritten.toByteArray()
   }
 
   fun change(sourceId: Int, zoneId: Int) {
@@ -53,5 +55,27 @@ class AudioRequest {
       1 -> RussoundCommands.Source(1, "Chromecast")
       else -> error("Unknown zone")
     }
+  }
+}
+
+private class TeeOutputStream(vararg val outputStreams:OutputStream): OutputStream() {
+  override fun write(b: Int) {
+    outputStreams.forEach { it.write(b) }
+  }
+
+  override fun write(b: ByteArray?) {
+    outputStreams.forEach { it.write(b) }
+  }
+
+  override fun write(b: ByteArray?, off: Int, len: Int) {
+    outputStreams.forEach { it.write(b, off, len) }
+  }
+
+  override fun flush() {
+    outputStreams.forEach { it.flush() }
+  }
+
+  override fun close() {
+    outputStreams.forEach { it.close() }
   }
 }

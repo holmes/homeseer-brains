@@ -34,7 +34,7 @@ class AudioManagerTest {
 //    }
 
     russoundCommands = RussoundCommands()
-    audioManager = AudioManager(outputStream, russoundCommands)
+    audioManager = AudioManager(russoundCommands, outputStream)
   }
 
   @Test fun powerOnTurnsOn() {

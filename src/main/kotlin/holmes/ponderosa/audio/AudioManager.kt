@@ -2,7 +2,7 @@ package holmes.ponderosa.audio
 
 import java.io.OutputStream
 
-class AudioManager(val outputStream: OutputStream, val russoundCommands: RussoundCommands) {
+class AudioManager(val russoundCommands: RussoundCommands, val outputStream: OutputStream) {
   fun getStatus(zone: RussoundCommands.Zone) {
     val command = russoundCommands.requestSource(zone)
     sendCommand(command)
