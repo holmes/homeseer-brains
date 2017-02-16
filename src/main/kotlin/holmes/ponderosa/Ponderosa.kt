@@ -1,6 +1,6 @@
 package holmes.ponderosa
 
-import holmes.ponderosa.lights.AudioRoutes
+import holmes.ponderosa.audio.AudioRoutes
 import holmes.ponderosa.lights.LightsRoutes
 import spark.servlet.SparkApplication
 

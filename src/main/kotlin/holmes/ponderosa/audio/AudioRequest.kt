@@ -25,36 +25,17 @@ class AudioRequest {
     audioManager = AudioManager(russoundCommands, actualOutputStream)
   }
 
-  fun status(zoneId: Int) {
-    audioManager.getStatus(zone(zoneId))
+  fun status(zone: RussoundCommands.Zone) {
+    audioManager.getStatus(zone)
   }
 
-  fun power(zoneId: Int, turnOn: Boolean): ByteArray {
-    audioManager.power(zone(zoneId), turnOn)
+  fun power(zone: RussoundCommands.Zone, turnOn: Boolean): ByteArray {
+    audioManager.power(zone, turnOn)
     return bytesWritten.toByteArray()
   }
 
-  fun change(sourceId: Int, zoneId: Int) {
-    audioManager.changeSource(source(sourceId), zone(zoneId))
-  }
-
-  private fun zone(zoneId: Int): RussoundCommands.Zone {
-    return when (zoneId) {
-      0 -> RussoundCommands.Zone(0, "Family Room")
-      1 -> RussoundCommands.Zone(1, "Kitchen")
-      2 -> RussoundCommands.Zone(2, "Outside")
-      3 -> RussoundCommands.Zone(3, "Master")
-      4 -> RussoundCommands.Zone(4, "Nursery")
-      else -> error("Unknown zone")
-    }
-  }
-
-  private fun source(sourceId: Int): RussoundCommands.Source {
-    return when (sourceId) {
-      0 -> RussoundCommands.Source(0, "Family Room TV")
-      1 -> RussoundCommands.Source(1, "Chromecast")
-      else -> error("Unknown zone")
-    }
+  fun change(source: RussoundCommands.Source, zone: RussoundCommands.Zone) {
+    audioManager.changeSource(source, zone)
   }
 }
 
