@@ -2,11 +2,14 @@ package holmes.ponderosa
 
 import holmes.ponderosa.audio.AudioRoutes
 import holmes.ponderosa.lights.LightsRoutes
+import spark.Spark.externalStaticFileLocation
 import spark.servlet.SparkApplication
 
 /** The main innitializer. */
 class Ponderosa {
   fun start() {
+    externalStaticFileLocation("src/main/webapp/public")
+
     LightsRoutes().initialize()
     AudioRoutes().initialize()
   }
