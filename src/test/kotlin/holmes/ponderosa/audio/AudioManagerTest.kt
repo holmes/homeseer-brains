@@ -29,7 +29,7 @@ class AudioManagerTest {
 
       on { listen(any(), any()) }
           .doAnswer {
-            val source = it.arguments[0] as RussoundCommands.Source
+            val source = it.arguments[0] as Source
             val zone = it.arguments[1] as RussoundCommands.Zone
             "Zone${zone.zoneId}Source${source.sourceId}".toByteArray()
           }
@@ -53,7 +53,7 @@ class AudioManagerTest {
 
   @Test fun changeSourceTurnsZoneOnAndChangesSource() {
     val zone = RussoundCommands.Zone(0, "Place")
-    val source = RussoundCommands.Source(0, "Source")
+    val source = Source(0, "Source")
     val expected = "Zone${zone.zoneId}OnZone${zone.zoneId}Source${source.sourceId}".toByteArray()
 
     audioManager.changeSource(source, zone)

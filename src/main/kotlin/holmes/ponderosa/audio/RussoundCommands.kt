@@ -1,17 +1,6 @@
 package holmes.ponderosa.audio
 
 class RussoundCommands {
-  data class Source(val sourceId: Int, val name: String) {
-    /** The Display number, 1-based. */
-    val sourceNumber: String
-      get() = (sourceId + 1).toString()
-  }
-
-  data class Zone(val zoneId: Int, val name: String) {
-    /** The Display number, 1-based. */
-    val zoneNumber: String
-      get() = (zoneId + 1).toString()
-  }
 
   fun requestSource(zone: Zone): ByteArray {
     val bytes = statusBytes

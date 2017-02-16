@@ -8,14 +8,14 @@ class RussoundCommandsUnitTest {
   lateinit var russoundCommands: RussoundCommands
   lateinit var zone0: RussoundCommands.Zone
   lateinit var zone1: RussoundCommands.Zone
-  lateinit var source0: RussoundCommands.Source
-  lateinit var source1: RussoundCommands.Source
+  lateinit var source0: Source
+  lateinit var source1: Source
 
   @Before fun setUp() {
     zone0 = RussoundCommands.Zone(0, "Kitchen")
     zone1 = RussoundCommands.Zone(1, "Outside")
-    source0 = RussoundCommands.Source(0, "TV Family Room")
-    source1 = RussoundCommands.Source(1, "Chromecast")
+    source0 = Source(0, "TV Family Room")
+    source1 = Source(1, "Chromecast")
     russoundCommands = RussoundCommands()
   }
 

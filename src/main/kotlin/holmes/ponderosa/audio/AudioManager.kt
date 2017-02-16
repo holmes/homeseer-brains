@@ -3,12 +3,12 @@ package holmes.ponderosa.audio
 import java.io.OutputStream
 
 class AudioManager(val russoundCommands: RussoundCommands, val outputStream: OutputStream) {
-  fun getStatus(zone: RussoundCommands.Zone) {
+  fun getStatus(zone: Zone) {
     val command = russoundCommands.requestSource(zone)
     sendCommand(command)
   }
 
-  fun power(zone: RussoundCommands.Zone, turnOn: Boolean) {
+  fun power(zone: Zone, turnOn: Boolean) {
     val command: ByteArray
     if (turnOn) {
       command = russoundCommands.turnOn(zone)
@@ -19,7 +19,7 @@ class AudioManager(val russoundCommands: RussoundCommands, val outputStream: Out
     sendCommand(command)
   }
 
-  fun changeSource(source: RussoundCommands.Source, zone: RussoundCommands.Zone) {
+  fun changeSource(source: Source, zone: Zone) {
     sendCommand(russoundCommands.turnOn(zone))
     Thread.sleep(500)
     sendCommand(russoundCommands.listen(source, zone))

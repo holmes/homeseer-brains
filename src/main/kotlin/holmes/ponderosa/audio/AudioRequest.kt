@@ -25,16 +25,16 @@ class AudioRequest {
     audioManager = AudioManager(russoundCommands, actualOutputStream)
   }
 
-  fun status(zone: RussoundCommands.Zone) {
+  fun status(zone: Zone) {
     audioManager.getStatus(zone)
   }
 
-  fun power(zone: RussoundCommands.Zone, turnOn: Boolean): ByteArray {
+  fun power(zone: Zone, turnOn: Boolean): ByteArray {
     audioManager.power(zone, turnOn)
     return bytesWritten.toByteArray()
   }
 
-  fun change(source: RussoundCommands.Source, zone: RussoundCommands.Zone) {
+  fun change(source: Source, zone: Zone) {
     audioManager.changeSource(source, zone)
   }
 }

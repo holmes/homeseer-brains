@@ -43,28 +43,23 @@ class AudioRoutes {
     }
   }
 
-  private fun getZone(request: Request): RussoundCommands.Zone? {
-    return when (request.params("zoneId")?.toInt()) {
-      0 -> RussoundCommands.Zone(0, "Family Room")
-      1 -> RussoundCommands.Zone(1, "Kitchen")
-      2 -> RussoundCommands.Zone(2, "Outside")
-      3 -> RussoundCommands.Zone(3, "Master")
-      4 -> RussoundCommands.Zone(4, "Nursery")
-      else -> {
-        halt(400, "Bad zoneId")
-        return null
-      }
+  private fun getZone(request: Request): Zone? {
+    val zoneId = request.params("zoneId")?.toInt()
+    val zone = zoneId?.let { zones.zone(zoneId) }
+
+    return if (zone != null) zone else {
+      halt(400, "Bad zoneId")
+      null
     }
   }
 
-  private fun getSource(request: Request): RussoundCommands.Source? {
-    return when (request.params("sourceId")?.toInt()) {
-      0 -> RussoundCommands.Source(0, "Family Room TV")
-      1 -> RussoundCommands.Source(1, "Chromecast")
-      else -> {
-        halt(400, "Bad sourceId")
-        return null
-      }
+  private fun getSource(request: Request): Source? {
+    val sourceId = request.params("sourceId")?.toInt()
+    val source = sourceId?.let { sources.source(it) }
+
+    return if (source != null) source else {
+      halt(400, "Bad sourceId")
+      null
     }
   }
 }
