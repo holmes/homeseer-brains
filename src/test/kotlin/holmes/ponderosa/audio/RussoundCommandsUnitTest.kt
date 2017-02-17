@@ -6,14 +6,14 @@ import org.junit.Test
 
 class RussoundCommandsUnitTest {
   lateinit var russoundCommands: RussoundCommands
-  lateinit var zone0: RussoundCommands.Zone
-  lateinit var zone1: RussoundCommands.Zone
+  lateinit var zone0: Zone
+  lateinit var zone1: Zone
   lateinit var source0: Source
   lateinit var source1: Source
 
   @Before fun setUp() {
-    zone0 = RussoundCommands.Zone(0, "Kitchen")
-    zone1 = RussoundCommands.Zone(1, "Outside")
+    zone0 = Zone(0, "Kitchen")
+    zone1 = Zone(1, "Outside")
     source0 = Source(0, "TV Family Room")
     source1 = Source(1, "Chromecast")
     russoundCommands = RussoundCommands()

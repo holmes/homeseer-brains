@@ -17,20 +17,20 @@ class AudioManagerTest {
     russoundCommands = mock<RussoundCommands> {
       on { turnOn(any()) }
           .doAnswer {
-            val zone = it.arguments[0] as RussoundCommands.Zone
+            val zone = it.arguments[0] as Zone
             "Zone${zone.zoneId}On".toByteArray()
           }
 
       on { turnOff(any()) }
           .doAnswer {
-            val zone = it.arguments[0] as RussoundCommands.Zone
+            val zone = it.arguments[0] as Zone
             "Zone${zone.zoneId}Off".toByteArray()
           }
 
       on { listen(any(), any()) }
           .doAnswer {
             val source = it.arguments[0] as Source
-            val zone = it.arguments[1] as RussoundCommands.Zone
+            val zone = it.arguments[1] as Zone
             "Zone${zone.zoneId}Source${source.sourceId}".toByteArray()
           }
     }
@@ -41,18 +41,18 @@ class AudioManagerTest {
 
   @Test fun powerOnTurnsOn() {
     val expected = "Zone0On".toByteArray()
-    audioManager.power(RussoundCommands.Zone(0, "Place"), true)
+    audioManager.power(Zone(0, "Place"), true)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
   @Test fun powerOffTurnsOff() {
     val expected = "Zone1Off".toByteArray()
-    audioManager.power(RussoundCommands.Zone(1, "Place"), false)
+    audioManager.power(Zone(1, "Place"), false)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
   @Test fun changeSourceTurnsZoneOnAndChangesSource() {
-    val zone = RussoundCommands.Zone(0, "Place")
+    val zone = Zone(0, "Place")
     val source = Source(0, "Source")
     val expected = "Zone${zone.zoneId}OnZone${zone.zoneId}Source${source.sourceId}".toByteArray()
 

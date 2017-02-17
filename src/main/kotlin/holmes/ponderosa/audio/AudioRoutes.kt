@@ -1,12 +1,12 @@
 package holmes.ponderosa.audio
 
+import holmes.ponderosa.util.MyHandlebarsTemplateEngine
 import spark.ModelAndView
 import spark.Request
 import spark.Spark.get
 import spark.Spark.halt
 import spark.Spark.path
 import spark.Spark.post
-import spark.template.handlebars.HandlebarsTemplateEngine
 
 class AudioRoutes {
   // Getting dagger to work is just too hard. Doing it by hand for now.
@@ -17,10 +17,10 @@ class AudioRoutes {
   fun initialize() {
     get("/", { _, _ ->
       val params = HashMap<String, Any>()
-      params.put("all", zones.all)
-      params.put("all", sources.all)
+      params.put("zones", zones.all)
+      params.put("sources", sources.all)
       ModelAndView(params, "index.hbs")
-    }, HandlebarsTemplateEngine())
+    }, MyHandlebarsTemplateEngine())
 
     path("/api/audio/:zoneId") {
       get("status") { request, _ ->
