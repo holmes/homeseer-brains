@@ -7,12 +7,30 @@ import spark.Spark.get
 import spark.Spark.halt
 import spark.Spark.path
 import spark.Spark.post
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
+import java.io.OutputStream
 
 class AudioRoutes {
   // Getting dagger to work is just too hard. Doing it by hand for now.
   val zones = Zones()
   val sources = Sources()
-  val audioRequest = AudioRequest()
+
+  // Not sure what we want to do w/ this for now.
+  val outputStream: OutputStream
+    get() {
+      if (File("/dev/ttyUSB0").exists()) {
+        return FileOutputStream("/dev/ttyUSB0")
+      } else if (File("/dev/ttyUSB0").exists()) {
+        return FileOutputStream("/dev/tty.usbserial0")
+      } else {
+        return ByteArrayOutputStream()
+      }
+    }
+
+  val audioCommander = AudioCommander(RussoundCommands(), outputStream)
+  val audioRequest = AudioRequest(audioCommander)
 
   fun initialize() {
     get("/", { _, _ ->
@@ -31,9 +49,7 @@ class AudioRoutes {
       post("/power/:newValue") { request, _ ->
         val zone = getZone(request) ?: return@post -1
         val turnOn = getPowerOn(request)
-
-        val command = audioRequest.power(zone, turnOn)
-        return@post command.map { it.toHexString() }.joinToString("\\x", prefix = "\\x")
+        audioRequest.power(zone, turnOn)
       }
 
       post("/volume/:newValue") { request, _ ->
@@ -60,7 +76,6 @@ class AudioRoutes {
       post("/source/:sourceId") { request, _ ->
         val zone = getZone(request) ?: return@post -1
         val source = getSource(request) ?: return@post -1
-
         audioRequest.change(source, zone)
       }
     }
@@ -93,19 +108,4 @@ class AudioRoutes {
       null
     }
   }
-}
-
-/**
- *  Set of chars for a half-byte.
- */
-private val CHARS = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f')
-
-/**
- *  Returns the string of two characters representing the HEX value of the byte.
- */
-private fun Byte.toHexString(): String {
-  val i = this.toInt()
-  val char2 = CHARS[i and 0x0f]
-  val char1 = CHARS[i shr 4 and 0x0f]
-  return "$char1$char2".toUpperCase()
 }
