@@ -37,9 +37,21 @@ class AudioRequest {
   fun change(source: Source, zone: Zone) {
     audioCommander.changeSource(source, zone)
   }
+
+  fun volume(zone: Zone, level: Int) {
+    audioCommander.volume(zone, level)
+  }
+
+  fun volumeUp(zone: Zone) {
+    audioCommander.volumeUp(zone)
+  }
+
+  fun volumeDown(zone: Zone) {
+    audioCommander.volumeDown(zone)
+  }
 }
 
-private class TeeOutputStream(vararg val outputStreams:OutputStream): OutputStream() {
+private class TeeOutputStream(vararg val outputStreams: OutputStream) : OutputStream() {
   override fun write(b: Int) {
     outputStreams.forEach { it.write(b) }
   }

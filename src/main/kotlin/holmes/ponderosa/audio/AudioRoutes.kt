@@ -33,7 +33,28 @@ class AudioRoutes {
         val turnOn = getPowerOn(request)
 
         val command = audioRequest.power(zone, turnOn)
-        return@post command.map { "0x" + it.toHexString() }
+        return@post command.map { it.toHexString() }.joinToString("\\x", prefix = "\\x")
+      }
+
+      post("/volume/:newValue") { request, _ ->
+        val zone = getZone(request) ?: return@post -1
+
+        val volumeParam = request.params("newValue")
+        when (volumeParam.toLowerCase()) {
+          "up" -> {
+            audioRequest.volumeUp(zone)
+            return@post "Volume turned up in ${zone.name}"
+          }
+          "down" -> {
+            audioRequest.volumeDown(zone)
+            return@post "Volume turned down in ${zone.name}"
+          }
+          else -> {
+            val volume = Math.min(100, volumeParam.toInt())
+            audioRequest.volume(zone, volume)
+            return@post "Set ${zone.name} to $volume%"
+          }
+        }
       }
 
       post("/source/:sourceId") { request, _ ->
@@ -54,7 +75,7 @@ class AudioRoutes {
   }
 
   private fun getZone(request: Request): Zone? {
-    val zoneId = request.params("zoneId")?.toInt()
+    val zoneId = request.params("zoneId")?.toInt()?.minus(1)
     val zone = zoneId?.let { zones.zone(zoneId) }
 
     return if (zone != null) zone else {
@@ -64,7 +85,7 @@ class AudioRoutes {
   }
 
   private fun getSource(request: Request): Source? {
-    val sourceId = request.params("sourceId")?.toInt()
+    val sourceId = request.params("sourceId")?.toInt()?.minus(1)
     val source = sourceId?.let { sources.source(it) }
 
     return if (source != null) source else {

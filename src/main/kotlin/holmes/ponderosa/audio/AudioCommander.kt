@@ -24,6 +24,18 @@ class AudioCommander(val russoundCommands: RussoundCommands, val outputStream: O
     sendCommand(command)
   }
 
+  fun volume(zone: Zone, level: Int) {
+    sendCommand(russoundCommands.volume(zone, level))
+  }
+
+  fun volumeUp(zone: Zone) {
+    sendCommand(russoundCommands.volumeUp(zone))
+  }
+
+  fun volumeDown(zone: Zone) {
+    sendCommand(russoundCommands.volumeDown(zone))
+  }
+
   fun changeSource(source: Source, zone: Zone) {
     sendCommand(russoundCommands.turnOn(zone))
     Thread.sleep(500)

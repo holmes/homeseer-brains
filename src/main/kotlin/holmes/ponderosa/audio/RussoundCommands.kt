@@ -41,12 +41,32 @@ class RussoundCommands {
     return bytes
   }
 
-  fun volumeUp(inZone: Zone): ByteArray {
-    return byteArrayOf(10, 20, 30)
+  fun volume(zone: Zone, level: Int): ByteArray {
+    val bytes = setVolumeBytes
+
+    bytes[15] = (level / 2).toByte()
+    bytes[17] = zone.zoneId.toByte()
+    bytes[20] = calculateChecksum(bytes)
+
+    return bytes
   }
 
-  fun volumeDown(inZone: Zone): ByteArray {
-    return byteArrayOf(10, 20, 30)
+  fun volumeUp(zone: Zone): ByteArray {
+    val bytes = volumeUpBytes
+
+    bytes[5] = zone.zoneId.toByte()
+    bytes[19] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun volumeDown(zone: Zone): ByteArray {
+    val bytes = volumeDownBytes
+
+    bytes[5] = zone.zoneId.toByte()
+    bytes[20] = calculateChecksum(bytes)
+
+    return bytes
   }
 
   internal fun calculateChecksum(bytes: ByteArray): Byte {
@@ -73,6 +93,83 @@ class RussoundCommands {
         0x02.toByte(),
         0x00.toByte(),
         0x00.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val setVolumeBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0xf1.toByte(),
+        0x21.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val volumeUpBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val volumeDownBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0xf1.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
         0x00.toByte(),
         0xf7.toByte()
     )
