@@ -41,22 +41,22 @@ class AudioCommanderUnitTest {
 
   @Test fun powerOnTurnsOn() {
     val expected = "Zone0On".toByteArray()
-    audioCommander.power(Zone(0, "Place"), true)
+    audioCommander.power(Zone(0, "Place"), PowerChange.ON)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
   @Test fun powerOffTurnsOff() {
     val expected = "Zone1Off".toByteArray()
-    audioCommander.power(Zone(1, "Place"), false)
+    audioCommander.power(Zone(1, "Place"), PowerChange.OFF)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
   @Test fun changeSourceTurnsZoneOnAndChangesSource() {
     val zone = Zone(0, "Place")
     val source = Source(0, "Source")
-    val expected = "Zone${zone.zoneId}OnZone${zone.zoneId}Source${source.sourceId}".toByteArray()
+    val expected = "Zone${zone.zoneId}Source${source.sourceId}".toByteArray()
 
-    audioCommander.changeSource(source, zone)
+    audioCommander.changeSource(zone, source)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 }

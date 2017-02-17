@@ -100,21 +100,21 @@ class RussoundCommandsUnitTest {
 
   @Test fun testSource0Zone1() {
     val expected = "F000007F0000700502000000F13E0000000000012AF7".toHexByteArray()
-    assertThat(russoundCommands.listen(toSource = source0, inZone = zone1)).isEqualTo(expected)
+    assertThat(russoundCommands.listen(zone = zone1, source = source0)).isEqualTo(expected)
   }
 
   @Test fun testSource1Zone1() {
     val expected = "F000007F0000700502000000F13E0000000100012BF7".toHexByteArray()
-    assertThat(russoundCommands.listen(toSource = source1, inZone = zone1)).isEqualTo(expected)
+    assertThat(russoundCommands.listen(zone = zone1, source = source1)).isEqualTo(expected)
   }
 
   @Test fun testSource0Zone2() {
     val expected = "F000007F0001700502000000F13E0000000000012BF7".toHexByteArray()
-    assertThat(russoundCommands.listen(toSource = source0, inZone = zone2)).isEqualTo(expected)
+    assertThat(russoundCommands.listen(zone = zone2, source = source0)).isEqualTo(expected)
   }
 
   @Test fun testSource1Zone2() {
     val expected = "F000007F0001700502000000F13E0000000100012CF7".toHexByteArray()
-    assertThat(russoundCommands.listen(toSource = source1, inZone = zone2)).isEqualTo(expected)
+    assertThat(russoundCommands.listen(zone = zone2, source = source1)).isEqualTo(expected)
   }
 }

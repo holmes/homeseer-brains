@@ -30,7 +30,7 @@ class AudioRoutes {
     }
 
   val audioCommander = AudioCommander(RussoundCommands(), outputStream)
-  val audioRequest = AudioRequest(audioCommander)
+  val audioManager = AudioManager(zones, sources, audioCommander)
   val templateEngine = MyHandlebarsTemplateEngine()
 
   fun initialize() {
@@ -45,7 +45,7 @@ class AudioRoutes {
       post("/status") { request, _ ->
         val zone = request.zone() ?: return@post -1
 
-        audioRequest.status(zone)
+        audioManager.status(zone)
         return@post "Requesting status for ${zone.name}"
       }
 
@@ -53,8 +53,8 @@ class AudioRoutes {
         val zone = request.zone() ?: return@post -1
         val turnOn = request.powerOn()
 
-        audioRequest.power(zone, turnOn)
-        val verb = if (turnOn) "on" else "off"
+        audioManager.power(zone, turnOn)
+        val verb = if (turnOn == PowerChange.ON) "on" else "off"
         return@post "Turned $verb ${zone.name}"
       }
 
@@ -64,16 +64,16 @@ class AudioRoutes {
         val volumeParam = request.params("newValue")
         when (volumeParam.toLowerCase()) {
           "up" -> {
-            audioRequest.volumeUp(zone)
+            audioManager.volume(zone, VolumeChange.Up())
             return@post "Volume turned up in ${zone.name}"
           }
           "down" -> {
-            audioRequest.volumeDown(zone)
+            audioManager.volume(zone, VolumeChange.Down())
             return@post "Volume turned down in ${zone.name}"
           }
           else -> {
             val volume = Math.min(100, volumeParam.toInt())
-            audioRequest.volume(zone, volume)
+            audioManager.volume(zone, VolumeChange.Set(volume))
             return@post "Set ${zone.name} to $volume%"
           }
         }
@@ -83,7 +83,7 @@ class AudioRoutes {
         val zone = request.zone() ?: return@post -1
         val source = request.source() ?: return@post -1
 
-        audioRequest.change(source, zone)
+        audioManager.change(zone, source)
         return@post "${zone.name} is now listening to ${source.name}"
       }
     }
@@ -109,11 +109,11 @@ class AudioRoutes {
     }
   }
 
-  private fun Request.powerOn(): Boolean {
+  private fun Request.powerOn(): PowerChange {
     val value = params("newValue")
     when (value.toLowerCase()) {
-      "on", "true", "1" -> return true
-      else -> return false
+      "on", "true", "1" -> return PowerChange.ON
+      else -> return PowerChange.OFF
     }
   }
 }

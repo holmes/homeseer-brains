@@ -31,11 +31,11 @@ class RussoundCommands {
     return bytes
   }
 
-  fun listen(toSource: Source, inZone: Zone): ByteArray {
+  fun listen(zone: Zone, source: Source): ByteArray {
     val bytes = sourceSelectBytes
 
-    bytes[5] = inZone.zoneId.toByte()
-    bytes[17] = toSource.sourceId.toByte()
+    bytes[5] = zone.zoneId.toByte()
+    bytes[17] = source.sourceId.toByte()
     bytes[20] = calculateChecksum(bytes)
 
     return bytes
