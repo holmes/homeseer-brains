@@ -41,8 +41,8 @@ class AudioRoutes {
     }, MyHandlebarsTemplateEngine())
 
     path("/api/audio/:zoneId") {
-      get("status") { request, _ ->
-        val zone = getZone(request) ?: return@get -1
+      post("/status") { request, _ ->
+        val zone = getZone(request) ?: return@post -1
         audioRequest.status(zone)
       }
 

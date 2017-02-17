@@ -9,7 +9,7 @@ class AudioCommander(val russoundCommands: RussoundCommands, val outputStream: O
   val updatedZone: Observable<ZoneInfo> = updatedZoneSubject
 
   fun requestStatus(zone: Zone) {
-    val command = russoundCommands.requestSource(zone)
+    val command = russoundCommands.requestStatus(zone)
     sendCommand(command)
   }
 
