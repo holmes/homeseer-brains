@@ -8,10 +8,10 @@ import org.junit.Before
 import org.junit.Test
 import java.io.ByteArrayOutputStream
 
-class AudioManagerTest {
+class AudioCommanderUnitTest {
   lateinit var outputStream: ByteArrayOutputStream
   lateinit var russoundCommands: RussoundCommands
-  lateinit var audioManager: AudioManager
+  lateinit var audioCommander: AudioCommander
 
   @Before fun setUp() {
     russoundCommands = mock<RussoundCommands> {
@@ -36,18 +36,18 @@ class AudioManagerTest {
     }
 
     outputStream = ByteArrayOutputStream()
-    audioManager = AudioManager(russoundCommands, outputStream)
+    audioCommander = AudioCommander(russoundCommands, outputStream)
   }
 
   @Test fun powerOnTurnsOn() {
     val expected = "Zone0On".toByteArray()
-    audioManager.power(Zone(0, "Place"), true)
+    audioCommander.power(Zone(0, "Place"), true)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
   @Test fun powerOffTurnsOff() {
     val expected = "Zone1Off".toByteArray()
-    audioManager.power(Zone(1, "Place"), false)
+    audioCommander.power(Zone(1, "Place"), false)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
@@ -56,7 +56,7 @@ class AudioManagerTest {
     val source = Source(0, "Source")
     val expected = "Zone${zone.zoneId}OnZone${zone.zoneId}Source${source.sourceId}".toByteArray()
 
-    audioManager.changeSource(source, zone)
+    audioCommander.changeSource(source, zone)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 }

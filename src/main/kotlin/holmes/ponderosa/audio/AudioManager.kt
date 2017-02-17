@@ -1,32 +1,14 @@
 package holmes.ponderosa.audio
 
-import java.io.OutputStream
+import io.reactivex.subjects.BehaviorSubject
 
-class AudioManager(val russoundCommands: RussoundCommands, val outputStream: OutputStream) {
-  fun getStatus(zone: Zone) {
-    val command = russoundCommands.requestSource(zone)
-    sendCommand(command)
-  }
+data class ZoneInfo(val zone: Zone, val source: Source, val power: Boolean, val volume: Int)
 
-  fun power(zone: Zone, turnOn: Boolean) {
-    val command: ByteArray
-    if (turnOn) {
-      command = russoundCommands.turnOn(zone)
-    } else {
-      command = russoundCommands.turnOff(zone)
-    }
+class AudioManager(val zones: Zones, val sources: Sources, private val zoneInfo: BehaviorSubject<Map<Zone, ZoneInfo>>) {
+  private val allZoneInfo: MutableMap<Zone, ZoneInfo> = HashMap()
 
-    sendCommand(command)
-  }
-
-  fun changeSource(source: Source, zone: Zone) {
-    sendCommand(russoundCommands.turnOn(zone))
-    Thread.sleep(500)
-    sendCommand(russoundCommands.listen(source, zone))
-  }
-
-  private fun sendCommand(command: ByteArray) {
-    outputStream.write(command)
-    outputStream.flush()
+  internal fun updateZone(updatedInfo: ZoneInfo) {
+    this.allZoneInfo.put(updatedInfo.zone, updatedInfo)
+    this.zoneInfo.onNext(allZoneInfo)
   }
 }

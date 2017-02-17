@@ -7,7 +7,7 @@ import java.io.OutputStream
 
 class AudioRequest {
   val bytesWritten: ByteArrayOutputStream = ByteArrayOutputStream()
-  val audioManager: AudioManager
+  val audioCommander: AudioCommander
 
   init {
     // Not sure what we want to do w/ this for now.
@@ -22,20 +22,20 @@ class AudioRequest {
     val actualOutputStream = TeeOutputStream(bytesWritten, outputStream)
 
     val russoundCommands = RussoundCommands()
-    audioManager = AudioManager(russoundCommands, actualOutputStream)
+    audioCommander = AudioCommander(russoundCommands, actualOutputStream)
   }
 
   fun status(zone: Zone) {
-    audioManager.getStatus(zone)
+    audioCommander.requestStatus(zone)
   }
 
   fun power(zone: Zone, turnOn: Boolean): ByteArray {
-    audioManager.power(zone, turnOn)
+    audioCommander.power(zone, turnOn)
     return bytesWritten.toByteArray()
   }
 
   fun change(source: Source, zone: Zone) {
-    audioManager.changeSource(source, zone)
+    audioCommander.changeSource(source, zone)
   }
 }
 
