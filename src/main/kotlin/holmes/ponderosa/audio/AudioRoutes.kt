@@ -43,23 +43,23 @@ class AudioRoutes {
 
     path("/api/audio/:zoneId") {
       post("/status") { request, _ ->
-        val zone = getZone(request) ?: return@post -1
+        val zone = request.zone() ?: return@post -1
 
         audioRequest.status(zone)
         return@post "Requesting status for ${zone.name}"
       }
 
       post("/power/:newValue") { request, _ ->
-        val zone = getZone(request) ?: return@post -1
-        val turnOn = getPowerOn(request)
-        audioRequest.power(zone, turnOn)
+        val zone = request.zone() ?: return@post -1
+        val turnOn = request.powerOn()
 
+        audioRequest.power(zone, turnOn)
         val verb = if (turnOn) "on" else "off"
         return@post "Turned $verb ${zone.name}"
       }
 
       post("/volume/:newValue") { request, _ ->
-        val zone = getZone(request) ?: return@post -1
+        val zone = request.zone() ?: return@post -1
 
         val volumeParam = request.params("newValue")
         when (volumeParam.toLowerCase()) {
@@ -80,8 +80,8 @@ class AudioRoutes {
       }
 
       post("/source/:sourceId") { request, _ ->
-        val zone = getZone(request) ?: return@post -1
-        val source = getSource(request) ?: return@post -1
+        val zone = request.zone() ?: return@post -1
+        val source = request.source() ?: return@post -1
 
         audioRequest.change(source, zone)
         return@post "${zone.name} is now listening to ${source.name}"
@@ -89,16 +89,8 @@ class AudioRoutes {
     }
   }
 
-  private fun getPowerOn(request: Request): Boolean {
-    val value = request.params("newValue")
-    when (value.toLowerCase()) {
-      "on", "true", "1" -> return true
-      else -> return false
-    }
-  }
-
-  private fun getZone(request: Request): Zone? {
-    val zoneId = request.params("zoneId")?.toInt()?.minus(1)
+  private fun Request.zone(): Zone? {
+    val zoneId = params("zoneId")?.toInt()?.minus(1)
     val zone = zoneId?.let { zones.zone(zoneId) }
 
     return if (zone != null) zone else {
@@ -107,8 +99,8 @@ class AudioRoutes {
     }
   }
 
-  private fun getSource(request: Request): Source? {
-    val sourceId = request.params("sourceId")?.toInt()?.minus(1)
+  private fun Request.source(): Source? {
+    val sourceId = params("sourceId")?.toInt()?.minus(1)
     val source = sourceId?.let { sources.source(it) }
 
     return if (source != null) source else {
@@ -116,4 +108,14 @@ class AudioRoutes {
       null
     }
   }
+
+  private fun Request.powerOn(): Boolean {
+    val value = params("newValue")
+    when (value.toLowerCase()) {
+      "on", "true", "1" -> return true
+      else -> return false
+    }
+  }
 }
+
+

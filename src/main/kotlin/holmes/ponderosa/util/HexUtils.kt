@@ -15,9 +15,8 @@ fun Byte.toHexString(): String {
   return "$char1$char2".toUpperCase()
 }
 
-
 private val HEX_CHARS = "0123456789ABCDEF"
-fun String.toHexByteArray() : ByteArray {
+fun String.toHexByteArray(): ByteArray {
   val result = ByteArray(length / 2)
 
   for (i in 0 until length step 2) {
