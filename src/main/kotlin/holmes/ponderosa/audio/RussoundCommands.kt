@@ -2,7 +2,7 @@ package holmes.ponderosa.audio
 
 class RussoundCommands {
 
-  fun requestSource(zone: Zone): ByteArray {
+  fun requestStatus(zone: Zone): ByteArray {
     val bytes = statusBytes
 
     bytes[11] = zone.zoneId.toByte()
@@ -69,7 +69,7 @@ class RussoundCommands {
     return bytes
   }
 
-  internal fun calculateChecksum(bytes: ByteArray): Byte {
+  private fun calculateChecksum(bytes: ByteArray): Byte {
     val step1 = bytes.dropLast(2).sum()
     val step2 = step1 + bytes.size - 2
     val step3 = 0x007f.and(step2)
@@ -90,7 +90,7 @@ class RussoundCommands {
         0x02.toByte(),
         0x00.toByte(),
         0x00.toByte(),
-        0x02.toByte(),
+        0x07.toByte(),
         0x00.toByte(),
         0x00.toByte(),
         0x00.toByte(),

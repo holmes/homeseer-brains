@@ -14,3 +14,19 @@ fun Byte.toHexString(): String {
   val char1 = CHARS[i shr 4 and 0x0f]
   return "$char1$char2".toUpperCase()
 }
+
+
+private val HEX_CHARS = "0123456789ABCDEF"
+fun String.toHexByteArray() : ByteArray {
+  val result = ByteArray(length / 2)
+
+  for (i in 0 until length step 2) {
+    val firstIndex = HEX_CHARS.indexOf(this[i]);
+    val secondIndex = HEX_CHARS.indexOf(this[i + 1]);
+
+    val octet = firstIndex.shl(4).or(secondIndex)
+    result[i.shr(1)] = octet.toByte()
+  }
+
+  return result
+}

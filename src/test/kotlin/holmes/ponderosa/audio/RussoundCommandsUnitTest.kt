@@ -1,90 +1,120 @@
 package holmes.ponderosa.audio
 
 import com.google.common.truth.Truth.assertThat
+import holmes.ponderosa.util.toHexByteArray
 import org.junit.Before
 import org.junit.Test
 
 class RussoundCommandsUnitTest {
   lateinit var russoundCommands: RussoundCommands
-  lateinit var zone0: Zone
   lateinit var zone1: Zone
+  lateinit var zone2: Zone
   lateinit var source0: Source
   lateinit var source1: Source
 
   @Before fun setUp() {
-    zone0 = Zone(0, "Kitchen")
-    zone1 = Zone(1, "Outside")
+    zone1 = Zone(0, "Kitchen")
+    zone2 = Zone(1, "Outside")
     source0 = Source(0, "TV Family Room")
     source1 = Source(1, "Chromecast")
     russoundCommands = RussoundCommands()
   }
 
-  @Test fun testGetSource() {
-    val zone0Bytes = "F000007F000070010402000002000077F7".toByteArray()
-    assertThat(russoundCommands.requestSource(zone0)).isEqualTo(zone0Bytes)
-
-    val zone1Bytes = "F000007F000070010402000102000078F7".toByteArray()
-    assertThat(russoundCommands.requestSource(zone1)).isEqualTo(zone1Bytes)
+  @Test fun testZone1GetStatus() {
+    val expected = "F000007F00007001040200000700007CF7".toHexByteArray()
+    assertThat(russoundCommands.requestStatus(zone1)).isEqualTo(expected)
   }
 
-  @Test fun testCheckSum() {
-    val bytes = "F000677CF10F00F7".toByteArray()
-    assertThat(russoundCommands.calculateChecksum(bytes)).isEqualTo(0x59.toByte())
-  }
-
-  @Test fun testZone0PowerOn() {
-    val powerOn = "F000007F0000700502020000F12300010000000112F7".toByteArray()
-    assertThat(russoundCommands.turnOn(zone0)).isEqualTo(powerOn)
-  }
-
-  @Test fun testZone0PowerOff() {
-    val powerOff = "F000007F0000700502020000F12300000000000111F7".toByteArray()
-    assertThat(russoundCommands.turnOff(zone0)).isEqualTo(powerOff)
+  @Test fun testZone2GetStatus() {
+    val expected = "F000007F00007001040200010700007DF7".toHexByteArray()
+    assertThat(russoundCommands.requestStatus(zone2)).isEqualTo(expected)
   }
 
   @Test fun testZone1PowerOn() {
-    val powerOn = "F000007F0000700502020000F12300010001000113F7".toByteArray()
-    assertThat(russoundCommands.turnOn(zone1)).isEqualTo(powerOn)
+    val expected = "F000007F0000700502020000F12300010000000112F7".toHexByteArray()
+    assertThat(russoundCommands.turnOn(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testZone2PowerOn() {
+    val expected = "F000007F0000700502020000F12300010001000113F7".toHexByteArray()
+    assertThat(russoundCommands.turnOn(zone2)).isEqualTo(expected)
   }
 
   @Test fun testZone1PowerOff() {
-    val powerOff = "F000007F0000700502020000F12300000001000112F7".toByteArray()
-    assertThat(russoundCommands.turnOff(zone1)).isEqualTo(powerOff)
+    val expected = "F000007F0000700502020000F12300000000000111F7".toHexByteArray()
+    assertThat(russoundCommands.turnOff(zone1)).isEqualTo(expected)
   }
 
-  @Test fun testSource0Zone0() {
-    val expected = "F000007F0000700502000000F13E0000000000012AF7".toByteArray()
-    assertThat(russoundCommands.listen(toSource = source0, inZone = zone0)).isEqualTo(expected)
+  @Test fun testZone2PowerOff() {
+    val expected = "F000007F0000700502020000F12300000001000112F7".toHexByteArray()
+    assertThat(russoundCommands.turnOff(zone2)).isEqualTo(expected)
   }
 
-  @Test fun testSource1Zone0() {
-    val expected = "F000007F0000700502000000F13E0000000100012BF7".toByteArray()
-    assertThat(russoundCommands.listen(toSource = source1, inZone = zone0)).isEqualTo(expected)
+  @Test fun testZone1VolumeUp() {
+    val expected = "F000007F00007005020200007F0000000000017BF7".toHexByteArray()
+    assertThat(russoundCommands.volumeUp(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testZone2VolumeUp() {
+    val expected = "F000007F00017005020200007F0000000000017CF7".toHexByteArray()
+    assertThat(russoundCommands.volumeUp(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testZone1VolumeDown() {
+    val expected = "F000007F0000700502020000F17F0000000000016DF7".toHexByteArray()
+    assertThat(russoundCommands.volumeDown(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testZone2VolumeDown() {
+    val expected = "F000007F0001700502020000F17F0000000000016EF7".toHexByteArray()
+    assertThat(russoundCommands.volumeDown(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testZone1VolumeSet() {
+    var expected = "F000007F0000700502020000F1210000000000010FF7".toHexByteArray()
+    assertThat(russoundCommands.volume(zone1, 0)).isEqualTo(expected)
+
+    expected = "F000007F0000700502020000F121000B000000011AF7".toHexByteArray()
+    assertThat(russoundCommands.volume(zone1, 22)).isEqualTo(expected)
+
+    expected = "F000007F0000700502020000F12100140000000123F7".toHexByteArray()
+    assertThat(russoundCommands.volume(zone1, 40)).isEqualTo(expected)
+
+    expected = "F000007F0000700502020000F12100320000000141F7".toHexByteArray()
+    assertThat(russoundCommands.volume(zone1, 100)).isEqualTo(expected)
+  }
+
+  @Test fun testZone2VolumeSt() {
+    var expected = "F000007F0000700502020000F12100000001000110F7".toHexByteArray()
+    assertThat(russoundCommands.volume(zone2, 0)).isEqualTo(expected)
+
+    expected = "F000007F0000700502020000F121000B000100011BF7".toHexByteArray()
+    assertThat(russoundCommands.volume(zone2, 22)).isEqualTo(expected)
+
+    expected = "F000007F0000700502020000F12100140001000124F7".toHexByteArray()
+    assertThat(russoundCommands.volume(zone2, 40)).isEqualTo(expected)
+
+    expected = "F000007F0000700502020000F12100320001000142F7".toHexByteArray()
+    assertThat(russoundCommands.volume(zone2, 100)).isEqualTo(expected)
   }
 
   @Test fun testSource0Zone1() {
-    val expected = "F000007F0001700502000000F13E0000000000012BF7".toByteArray()
+    val expected = "F000007F0000700502000000F13E0000000000012AF7".toHexByteArray()
     assertThat(russoundCommands.listen(toSource = source0, inZone = zone1)).isEqualTo(expected)
   }
 
   @Test fun testSource1Zone1() {
-    val expected = "F000007F0001700502000000F13E0000000100012CF7".toByteArray()
+    val expected = "F000007F0000700502000000F13E0000000100012BF7".toHexByteArray()
     assertThat(russoundCommands.listen(toSource = source1, inZone = zone1)).isEqualTo(expected)
   }
-}
 
-
-private val HEX_CHARS = "0123456789ABCDEF"
-private fun String.toByteArray() : ByteArray {
-  val result = ByteArray(length / 2)
-
-  for (i in 0 until length step 2) {
-    val firstIndex = HEX_CHARS.indexOf(this[i]);
-    val secondIndex = HEX_CHARS.indexOf(this[i + 1]);
-
-    val octet = firstIndex.shl(4).or(secondIndex)
-    result[i.shr(1)] = octet.toByte()
+  @Test fun testSource0Zone2() {
+    val expected = "F000007F0001700502000000F13E0000000000012BF7".toHexByteArray()
+    assertThat(russoundCommands.listen(toSource = source0, inZone = zone2)).isEqualTo(expected)
   }
 
-  return result
+  @Test fun testSource1Zone2() {
+    val expected = "F000007F0001700502000000F13E0000000100012CF7".toHexByteArray()
+    assertThat(russoundCommands.listen(toSource = source1, inZone = zone2)).isEqualTo(expected)
+  }
 }
