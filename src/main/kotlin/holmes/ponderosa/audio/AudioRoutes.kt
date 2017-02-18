@@ -30,7 +30,7 @@ class AudioRoutes {
     }
 
   val audioCommander = AudioCommander(RussoundCommands(), outputStream)
-  val audioManager = AudioManager(zones, sources, audioCommander)
+  val audioManager = AudioManager(zones, audioCommander)
   val templateEngine = MyHandlebarsTemplateEngine()
 
   fun initialize() {
