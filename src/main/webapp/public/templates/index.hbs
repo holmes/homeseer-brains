@@ -8,16 +8,9 @@
 <body>
 <h1>Zones</h1>
 <ul>
-  {{#zones}}
-    <li>{{name}}</li>
-  {{/zones}}
-</ul>
-
-<h1>Sources</h1>
-<ul>
-  {{#sources}}
-    <li>{{name}}</li>
-  {{/sources}}
+  {{#zoneInformation}}
+    <li>{{zone.zoneNumber}}: {{zone.name}} - {{source.name}}</li>
+  {{/zoneInformation}}
 </ul>
 
 </body>

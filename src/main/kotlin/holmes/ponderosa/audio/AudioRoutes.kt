@@ -36,8 +36,7 @@ class AudioRoutes {
   fun initialize() {
     get("/", { _, _ ->
       val params = HashMap<String, Any>()
-      params.put("zones", zones.all)
-      params.put("sources", sources.all)
+      params.put("zoneInformation", audioManager.zoneInformation.values.sortedBy { it.zone.zoneId })
       ModelAndView(params, "index.hbs")
     }, templateEngine)
 

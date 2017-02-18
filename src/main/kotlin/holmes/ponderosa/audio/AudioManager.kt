@@ -1,20 +1,19 @@
 package holmes.ponderosa.audio
 
-import io.reactivex.Observable
-import io.reactivex.subjects.BehaviorSubject
-
 data class ZoneInfo(val zone: Zone, val source: Source?, val power: Boolean?, val volume: Int?)
 
 private const val VOLUME_STEP_LEVEL: Int = 2
 private const val VOLUME_DEFAULT_LEVEL: Int = 30
 
+/**
+ * The brains of the operation. Now we have to decide - send this information to Homeseer and
+ * let it be the brains, or just let this store all the info.
+ */
 class AudioManager(zones: Zones, val audioCommander: AudioCommander) {
-
   private val allZoneInfo: MutableMap<Zone, ZoneInfo> = HashMap()
-  private val zoneInfoSubject: BehaviorSubject<Map<Zone, ZoneInfo>> = BehaviorSubject.create()
 
-  val zoneInfo: Observable<Map<Zone, ZoneInfo>>
-    get() = zoneInfoSubject
+  val zoneInformation: Map<Zone, ZoneInfo>
+    get() = allZoneInfo
 
   init {
     zones.all.forEach {
@@ -56,6 +55,5 @@ class AudioManager(zones: Zones, val audioCommander: AudioCommander) {
 
   private fun updateZone(updatedInfo: ZoneInfo) {
     this.allZoneInfo.put(updatedInfo.zone, updatedInfo)
-    this.zoneInfoSubject.onNext(allZoneInfo)
   }
 }
