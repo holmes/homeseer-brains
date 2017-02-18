@@ -29,9 +29,28 @@ class AudioCommanderUnitTest {
 
       on { listen(any(), any()) }
           .doAnswer {
-            val source = it.arguments[0] as Source
-            val zone = it.arguments[1] as Zone
+            val zone = it.arguments[0] as Zone
+            val source = it.arguments[1] as Source
             "Zone${zone.zoneId}Source${source.sourceId}".toByteArray()
+          }
+
+      on { volume(any(), any()) }
+          .doAnswer {
+            val zone = it.arguments[0] as Zone
+            val level = it.arguments[1] as Int
+            "Zone${zone.zoneId}Volume$level".toByteArray()
+          }
+
+      on { volumeUp(any()) }
+          .doAnswer {
+            val zone = it.arguments[0] as Zone
+            "Zone${zone.zoneId}VolumeUp".toByteArray()
+          }
+
+      on { volumeDown(any()) }
+          .doAnswer {
+            val zone = it.arguments[0] as Zone
+            "Zone${zone.zoneId}VolumeDown".toByteArray()
           }
     }
 
@@ -51,7 +70,24 @@ class AudioCommanderUnitTest {
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
-  @Test fun changeSourceTurnsZoneOnAndChangesSource() {
+  @Test fun volumeUp() {
+    val expected = "Zone1VolumeUp".toByteArray()
+    audioCommander.volume(Zone(1, "Place"), VolumeChange.Up())
+    assertThat(outputStream.toByteArray()).isEqualTo(expected)
+  }
+
+  @Test fun volumeDown() {
+    val expected = "Zone1VolumeDown".toByteArray()
+    audioCommander.volume(Zone(1, "Place"), VolumeChange.Down())
+    assertThat(outputStream.toByteArray()).isEqualTo(expected)
+  }
+  @Test fun volumeSet() {
+    val expected = "Zone1Volume22".toByteArray()
+    audioCommander.volume(Zone(1, "Place"), VolumeChange.Set(22))
+    assertThat(outputStream.toByteArray()).isEqualTo(expected)
+  }
+
+  @Test fun changeSourceChangesSource() {
     val zone = Zone(0, "Place")
     val source = Source(0, "Source")
     val expected = "Zone${zone.zoneId}Source${source.sourceId}".toByteArray()
