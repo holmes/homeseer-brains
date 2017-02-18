@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Ponderosa Audio Controller</title>
+</head>
+
+<body>
+<h1>Zones</h1>
+<ul>
+  {{#zoneInformation}}
+    <li>{{zone.zoneNumber}}: {{zone.name}} - {{source.name}}</li>
+  {{/zoneInformation}}
+</ul>
+
+</body>
+</html>
