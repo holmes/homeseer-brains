@@ -25,8 +25,10 @@ repositories {
 
 
 task buildReact(type:Exec) {
-  inputs.file("src/main/react")
-
+  inputs.file("src/main/react/package.json")
+  inputs.dir("src/main/react/src")
+  inputs.dir("src/main/react/public")
+  outputs.dir("src/main/react/build")
 
   workingDir './src/main/react'
   executable 'sh'
@@ -44,7 +46,6 @@ task buildReact(type:Exec) {
 war.dependsOn buildReact
 war {
   from('src/main/react/build') {
-//    include 'your-file.txt'
     into 'WEB-INF/classes/public/react'
   }
 }
