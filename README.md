@@ -10,16 +10,53 @@ things.
 At this point, HomeSeer will still be the master and know the current state of everything. The brains will just be stateless
 and calculate actions based on information passed to it.
 
+
+### TODOs
+* Make this easier to deploy
+* Prettify the React app for Audio Control
+* Get HomeSeer to actually ask Ponderosa about the light levels
+
+
+## How does it work?
+Magic.
+
+###Hardware
+I've got a Homeseer SEL, which is basically just a Ubuntu 14.04 box. Attached are a couple of USB modules:
+* Z-Wave SmartStick+ to control the Z-Wave network. As of now, this is just lights. I plan on buying a few of those
+cheap Aeon Remotes to be able to easily send events which can control the audio system.
+* A USB->RS232 adapter. The RS-232 adapter is connected to a Russound CAA-66 system which allows me
+to control audio throughout the house. This will definitely be expanded and upgraded, but it's a great start.
+
+###Software
+The box is running a program called Homeseer. It's tolerable and does its job. You can script things w/ it, but the problem
+is it's an ancient version of VB.NET. Which precludes writing tests or generally doing anything useful.
+
+So I've got another web-app running on port 8080 to be the brains behind the project. This is written in Kotlin and running
+on a small Java framework called Spark.
+* To control lights, HomeSeer sends a web request to this service to ask what the light level should be
+* To control audio, you hit a React webapp that generates a very simple control page. When you make changes on the
+web page it POSTS to the service which writes out bytes to /dev/ttyUSB0 and in turn controls the Russound CAA-66!
+
+Amazing!
+
+
+## Developing
+
+Trying to figure this out now.
+* React runs on :3000, currently hitting 192.168.100.5:8080. Should hit either localhost:4567 or a mock.
+* Ponderosa Service runs fine, but needs the serial device to be mocked out.
+
+
 ## RS-232 Connections
 Ubuntu already has the Prolific drivers installed. So we just need to configure a few things.
 
 ### Permissions
-Add jetty and homeseer to the dialout group 
+Add jetty and homeseer to the dialout group
 ```
 sudo adduser jetty dialout
 sudo adduser homeseer dialout
-```    
-    
+```
+
 ### Set stty properties
 Each time the cable is connected we have to reset the baud rate to 19200. There's a script in /scripts to do just that
 
