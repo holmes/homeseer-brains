@@ -1,0 +1,5 @@
+Sometimes it's just easier to get stuff to work. Especially shit you won't be sharing.
+
+There's a bug in the gradle-ssh-plugin that isn't working w/ passphrases and ssh-agents. So the password is right there for all to see.
+
+C'est la vie.

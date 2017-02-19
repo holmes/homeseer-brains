@@ -8,14 +8,17 @@ buildscript {
   repositories {
     maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
     mavenCentral()
+    jcenter()
   }
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    classpath 'org.hidetake:gradle-ssh-plugin:2.8.0'
   }
 }
 
 apply plugin: 'kotlin'
 apply plugin: 'war'
+apply plugin: 'org.hidetake.ssh'
 
 repositories {
   maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
@@ -23,8 +26,41 @@ repositories {
   mavenCentral()
 }
 
+remotes {
+  web01 {
+    host = '192.168.100.5'
+    port = 22
+    user = 'homeseer'
 
-task buildReact(type:Exec) {
+    // There's a bug in the ssh-plugin that doesn't allow us to auth.
+    // So let's hack around this for a while.
+    password = new File("$projectDir/unfortunately/password").text
+
+    // being lazy and just symlinking it.
+    agent = true
+    identity = file('$projectDir/unfortunately/id_rsa')
+  }
+}
+
+task npmstart(type: Exec) {
+  workingDir "$projectDir/src/main/react"
+  executable 'sh'
+  args '-c', 'npm start'
+}
+
+task deploy() {
+  doLast {
+    ssh.run {
+      session(remotes.web01) {
+        put from: "$buildDir/libs/ponderosa-1.0-SNAPSHOT.war", into: '/opt/jetty9/webapps'
+      }
+    }
+  }
+}
+deploy.dependsOn build
+
+
+task buildReact(type: Exec) {
   inputs.file("src/main/react/package.json")
   inputs.dir("src/main/react/src")
   inputs.dir("src/main/react/public")
@@ -33,14 +69,6 @@ task buildReact(type:Exec) {
   workingDir './src/main/react'
   executable 'sh'
   args '-c', 'npm run build'
-
-  //store the output instead of printing to the console:
-  standardOutput = new ByteArrayOutputStream()
-
-  //extension method stopTomcat.output() can be used to obtain the output:
-  ext.output = {
-    return standardOutput.toString()
-  }
 }
 
 war.dependsOn buildReact

@@ -4,3 +4,6 @@ build
 *.iml
 out
 reports
+
+# unfortunately we do what we must
+unfortunately/*
