@@ -23,6 +23,33 @@ repositories {
   mavenCentral()
 }
 
+
+task buildReact(type:Exec) {
+  inputs.file("src/main/react")
+
+
+  workingDir './src/main/react'
+  executable 'sh'
+  args '-c', 'npm run build'
+
+  //store the output instead of printing to the console:
+  standardOutput = new ByteArrayOutputStream()
+
+  //extension method stopTomcat.output() can be used to obtain the output:
+  ext.output = {
+    return standardOutput.toString()
+  }
+}
+
+war.dependsOn buildReact
+war {
+  from('src/main/react/build') {
+//    include 'your-file.txt'
+    into 'WEB-INF/classes/public/react'
+  }
+}
+
+
 dependencies {
   compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
   compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
