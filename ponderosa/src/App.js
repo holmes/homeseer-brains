@@ -1,6 +1,12 @@
 import React, {Component} from 'react';
 import './App.css';
 
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+
+import ToggleButton from 'react-toggle-button'
+
+
 let sources = {
   sources: [{name: "TV", sourceId: 0}, {name: "Chromecast", sourceId: 1},]
 };
@@ -10,22 +16,22 @@ let zoneInformation = {
     zone: {name: "Family Room", zoneId: "0"},
     source: {name: "TV", sourceId: "0"},
     power: "true",
-    volume: "30"
+    volume: "35"
   }, {
     zone: {name: "Kitchen", zoneId: "1"},
     source: {name: "Chromecast", sourceId: "1"},
     power: "true",
-    volume: "25"
+    volume: "30"
   }, {
     zone: {name: "Outside", zoneId: "2"},
     source: {name: "Chromecast", sourceId: "1"},
     power: "false",
-    volume: "30"
+    volume: "65"
   }, {
     zone: {name: "Master", zoneId: "3"},
     source: {name: "Chromecast", sourceId: "1"},
     power: "false",
-    volume: "30"
+    volume: "22"
   }]
 };
 
@@ -52,6 +58,9 @@ class ZoneInformation extends React.Component {
   }
 
   render() {
+    const volumeLevel = parseInt(this.props.zoneInfo.volume, 10);
+    const powerValue = this.props.zoneInfo.power === "true";
+
     return (
         <div>
           <h1>Zone: {this.props.zoneInfo.zone.name}</h1>
@@ -64,7 +73,11 @@ class ZoneInformation extends React.Component {
             </select>
           </p>
           <p>Volume: {this.props.zoneInfo.volume}</p>
-          <p>On/Off: {this.props.zoneInfo.power ? "On" : "Off"}</p>
+          <Slider defaultValue={volumeLevel}/>
+          <ToggleButton
+              value={powerValue} onToggle={(value) => {
+                self.setState({ value: !value})
+          }} />
         </div>
     )
   };
