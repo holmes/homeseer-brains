@@ -85,6 +85,14 @@ class AudioRoutes {
         audioManager.change(zone, source)
         return@post "${zone.name} is now listening to ${source.name}"
       }
+
+      post("/initialVolume/:volume") { request, _ ->
+        val zone = request.zone() ?: return@post -1
+        val volume = request.params("volume").toInt()
+
+        audioManager.initialVolume(zone, volume)
+        return@post "${zone.name}'s turn-on volume is $volume"
+      }
     }
   }
 

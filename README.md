@@ -33,3 +33,19 @@ echo -en '\xF0\x00\x00\x7F\x00\x00\x70\x05\x02\x02\x00\x00\xF1\x23\x00\x01\x00\x
 # Turn off Zone 2
 echo -en '\xF0\x00\x00\x7F\x00\x00\x70\x05\x02\x02\x00\x00\xF1\x23\x00\x00\x00\x01\x00\x01\x12\xF7' > /dev/ttyUSB0
 ```
+
+
+## Settings
+These are the current settings - they're in the code but it might be easier to see them here as well.
+
+###Zones
+Turn on volumes are in the ()'s
+1. Family Room (26)
+1. Kitchen (26)
+1. Outside (60)
+1. Master (20)
+1. Nursery (planned)
+
+###Sources
+1. Family Room TV
+1. Chromecast (Family Room)

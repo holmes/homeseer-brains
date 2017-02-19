@@ -117,4 +117,14 @@ class RussoundCommandsUnitTest {
     val expected = "F000007F0001700502000000F13E0000000100012CF7".toHexByteArray()
     assertThat(russoundCommands.listen(zone = zone2, source = source1)).isEqualTo(expected)
   }
+
+  @Test fun testTurnOnVolumeZone1() {
+    val expected = "F0 00 00 7F 00 00 70 00 05 02 00 00 00 04 00 00 00 01 00 01 00 0B 0D F7".replace(" ", "") .toHexByteArray()
+    assertThat(russoundCommands.turnOnVolume(zone1, 22)).isEqualTo(expected)
+  }
+
+  @Test fun testTurnOnVolumeZone2() {
+    val expected = "F000007F00007000050200010004000000010001001619F7".toHexByteArray()
+    assertThat(russoundCommands.turnOnVolume(zone2, 44)).isEqualTo(expected)
+  }
 }

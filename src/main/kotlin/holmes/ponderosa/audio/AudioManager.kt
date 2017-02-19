@@ -39,6 +39,12 @@ class AudioManager(zones: Zones, val audioCommander: AudioCommander) {
     updateZone(newZone)
   }
 
+  /** Sets the initial volume when the zone is turned on. */
+  fun initialVolume(zone: Zone, volume: Int) {
+    // We don't pass this in the ZoneInformation. It's set once and we never care again.
+    audioCommander.initialVolume(zone, volume)
+  }
+
   fun volume(zone: Zone, volume: VolumeChange) {
     audioCommander.volume(zone, volume)
     val oldZone = allZoneInfo[zone]

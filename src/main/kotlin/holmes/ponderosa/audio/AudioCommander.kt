@@ -28,6 +28,10 @@ class AudioCommander(val russoundCommands: RussoundCommands, val outputStream: O
     sendCommand(russoundCommands.listen(zone, source))
   }
 
+  fun initialVolume(zone: Zone, volume: Int) {
+    sendCommand(russoundCommands.turnOnVolume(zone, volume))
+  }
+
   private fun sendCommand(command: ByteArray) {
     outputStream.write(command)
     outputStream.flush()

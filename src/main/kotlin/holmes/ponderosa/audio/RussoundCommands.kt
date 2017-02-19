@@ -69,6 +69,16 @@ class RussoundCommands {
     return bytes
   }
 
+  fun turnOnVolume(zone: Zone, level: Int): ByteArray {
+    val bytes = setTurnOnVolumeBytes
+
+    bytes[11] = zone.zoneId.toByte()
+    bytes[21] = (level / 2).toByte()
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
   private fun calculateChecksum(bytes: ByteArray): Byte {
     val step1 = bytes.dropLast(2).sum()
     val step2 = step1 + bytes.size - 2
@@ -91,6 +101,34 @@ class RussoundCommands {
         0x00.toByte(),
         0x00.toByte(),
         0x07.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val setTurnOnVolumeBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x00.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x04.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
         0x00.toByte(),
         0x00.toByte(),
         0x00.toByte(),
