@@ -59,11 +59,14 @@ class ZoneInformation extends React.Component {
       volume: parseInt(props.zoneInfo.volume, 10),
       power: props.zoneInfo.power === "true"
     }
+
+    this.volumeUp = this.volumeUp.bind(this)
+    this.volumeDown = this.volumeDown.bind(this)
   }
 
   sourceChanged(sourceId) {
     console.log(sourceId);
-    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.props.zoneInfo.zone.zoneId}/source/${sourceId}`;
+    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/source/${sourceId}`;
 
     const thing = this;
     fetch(url, {
@@ -74,7 +77,7 @@ class ZoneInformation extends React.Component {
   }
 
   volumeChanged(volume) {
-    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.props.zoneInfo.zone.zoneId}/volume/${volume}`;
+    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/volume/${volume}`;
 
     const thing = this;
     fetch(url, {
@@ -84,9 +87,37 @@ class ZoneInformation extends React.Component {
     });
   }
 
+  volumeUp() {
+    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/volume/up`;
+
+    const thing = this;
+    fetch(url, {
+      method: "POST", mode: 'no-cors'
+    }).then(function () {
+      console.log(thing.state.volume);
+      thing.setState((prevState, props) => {
+        return { volume: prevState.volume + 2 };
+      })
+    });
+  }
+
+  volumeDown() {
+    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/volume/down`;
+
+    const thing = this;
+    fetch(url, {
+      method: "POST", mode: 'no-cors'
+    }).then(function () {
+      console.log(thing.state.volume);
+      thing.setState((prevState, props) => {
+        return { volume: prevState.volume - 2 };
+      })
+    });
+  }
+
   powerToggled(originalPower) {
     const power = !originalPower;
-    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.props.zoneInfo.zone.zoneId}/power/${power}`;
+    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/power/${power}`;
 
     const thing = this;
     fetch(url, {
@@ -97,12 +128,16 @@ class ZoneInformation extends React.Component {
   }
 
   render() {
+    console.log(this.state)
     const volumeLevel = this.state.volume;
     const powerValue = this.state.power;
 
     return (
         <div>
-          <h1>Zone: {this.props.zoneInfo.zone.name}</h1>
+          <h1>Zone: {this.state.zone.name}</h1>
+
+          <ToggleButton value={powerValue} onToggle={(value) => { this.powerToggled(value) }}/>
+
           <p>Source:
             <select value={this.state.sourceId} onChange={(event) => { this.sourceChanged(event.target.value) }}>
               {sources.sources.map(source => {
@@ -113,9 +148,9 @@ class ZoneInformation extends React.Component {
           </p>
 
           <p>Volume: {volumeLevel}</p>
-          <Slider defaultValue={volumeLevel} onAfterChange={(value) => { this.volumeChanged(value) }}/>
-
-          <ToggleButton value={powerValue} onToggle={(value) => { this.powerToggled(value) }}/>
+          <button onClick={this.volumeUp}>Up</button>
+          <button onClick={this.volumeDown}>Down</button>
+          <Slider value={volumeLevel} onChange={(value) => { this.volumeChanged(value) }}/>
         </div>
     )
   };
