@@ -52,7 +52,7 @@ task deploy() {
   doLast {
     ssh.run {
       session(remotes.web01) {
-        put from: "$buildDir/libs/ponderosa-1.0-SNAPSHOT.war", into: '/opt/jetty9/webapps'
+        put from: "$buildDir/libs/ponderosa.war", into: '/opt/jetty9/webapps'
       }
     }
   }
@@ -73,6 +73,7 @@ task buildReact(type: Exec) {
 
 war.dependsOn buildReact
 war {
+  archiveName = 'ponderosa.war'
   from('src/main/react/build') {
     into 'WEB-INF/classes/public/react'
   }
