@@ -1,9 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import './App.css';
 
-import Slider from 'rc-slider';
-import 'rc-slider/assets/index.css';
-
 import { Button, DropdownButton, ButtonGroup, MenuItem, Panel, Grid, Row, Col } from 'react-bootstrap';
 import ToggleButton from 'react-toggle-button';
 
@@ -192,7 +189,6 @@ class ZoneInformation extends React.Component {
               <Button bsStyle="success" onClick={this.volumeDown}>Down</Button>
             </ButtonGroup>
           </ButtonGroup>
-          {/*<Slider value={volumeLevel} onChange={(value) => { this.volumeChanged(value) }}/>*/}
         </Panel>
     )
   };
