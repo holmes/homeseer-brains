@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { shallow, mount, render } from 'enzyme';
 import App from './App';
 
-it('renders without crashing', () => {
+test('renders without crashing', () => {
   const div = document.createElement('div');
   ReactDOM.render(<App />, div);
 });

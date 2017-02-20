@@ -65,7 +65,6 @@ class ZoneInformation extends React.Component {
   }
 
   sourceChanged(sourceId) {
-    console.log(sourceId);
     const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/source/${sourceId}`;
 
     const thing = this;
@@ -94,7 +93,6 @@ class ZoneInformation extends React.Component {
     fetch(url, {
       method: "POST", mode: 'no-cors'
     }).then(function () {
-      console.log(thing.state.volume);
       thing.setState((prevState, props) => {
         return { volume: prevState.volume + 2 };
       })
@@ -108,7 +106,6 @@ class ZoneInformation extends React.Component {
     fetch(url, {
       method: "POST", mode: 'no-cors'
     }).then(function () {
-      console.log(thing.state.volume);
       thing.setState((prevState, props) => {
         return { volume: prevState.volume - 2 };
       })
@@ -128,7 +125,6 @@ class ZoneInformation extends React.Component {
   }
 
   render() {
-    console.log(this.state)
     const volumeLevel = this.state.volume;
     const powerValue = this.state.power;
 
