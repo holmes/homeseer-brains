@@ -4,13 +4,22 @@ import './App.css';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 
-import ToggleButton from 'react-toggle-button'
+import { Button, DropdownButton, ButtonGroup, MenuItem, Panel, Grid, Row, Col } from 'react-bootstrap';
+import ToggleButton from 'react-toggle-button';
 
 import "whatwg-fetch"
 
-let sources = {
-  sources: [{name: "TV", sourceId: 1}, {name: "Chromecast", sourceId: 2},]
-};
+let sources = [{name: "TV", sourceId: 1}, {name: "Chromecast", sourceId: 2}];
+
+function source(sourceId) {
+  for (let s of sources) {
+    // eslint-disable-next-line
+    if (s.sourceId == sourceId) {
+      return s
+    }
+  }
+}
+
 
 let zoneInformation = {
   zones: [{
@@ -128,26 +137,63 @@ class ZoneInformation extends React.Component {
     const volumeLevel = this.state.volume;
     const powerValue = this.state.power;
 
+    let panelHeader = (
+        <Grid>
+          <Row className="show-grid">
+            <Col xs={10}>
+              {this.state.zone.name}
+            </Col>
+            <Col xs={2}>
+              <ToggleButton value={powerValue} onToggle={(value) => { this.powerToggled(value) }}/>
+            </Col>
+          </Row>
+        </Grid>
+    );
+
+    let sourceVolume = (
+        <Grid>
+          <Row className="show-grid">
+            <Col xs={6}>
+              <DropdownButton
+                  id="source-selector"
+                  title={source(this.state.sourceId).name}
+                  value={this.state.sourceId}
+                  onSelect={(eventKey) => { this.sourceChanged(eventKey) }}
+              >
+                {sources.map(source => {
+                  return (
+                      <MenuItem
+                          active={source.sourceId === this.state.sourceId}
+                          eventKey={source.sourceId}
+                          key={source.sourceId}
+                          value={source.sourceId}>
+                        {source.name}
+                      </MenuItem>)
+                })}
+              </DropdownButton>
+            </Col>
+            <Col xs={6}>
+              Volume: {volumeLevel}
+            </Col>
+          </Row>
+        </Grid>
+    );
+
     return (
-        <div>
-          <h1>Zone: {this.state.zone.name}</h1>
+        <Panel header={panelHeader}>
 
-          <ToggleButton value={powerValue} onToggle={(value) => { this.powerToggled(value) }}/>
+          {sourceVolume}
 
-          <p>Source:
-            <select value={this.state.sourceId} onChange={(event) => { this.sourceChanged(event.target.value) }}>
-              {sources.sources.map(source => {
-                return (
-                    <option key={source.sourceId} value={source.sourceId}>{source.name}</option>)
-              })}
-            </select>
-          </p>
-
-          <p>Volume: {volumeLevel}</p>
-          <button onClick={this.volumeUp}>Up</button>
-          <button onClick={this.volumeDown}>Down</button>
-          <Slider value={volumeLevel} onChange={(value) => { this.volumeChanged(value) }}/>
-        </div>
+          <ButtonGroup justified bsSize="large">
+            <ButtonGroup justified bsSize="large">
+              <Button bsStyle="primary" onClick={this.volumeUp}>Up</Button>
+            </ButtonGroup>
+            <ButtonGroup justified bsSize="large">
+              <Button bsStyle="success" onClick={this.volumeDown}>Down</Button>
+            </ButtonGroup>
+          </ButtonGroup>
+          {/*<Slider value={volumeLevel} onChange={(value) => { this.volumeChanged(value) }}/>*/}
+        </Panel>
     )
   };
 }
