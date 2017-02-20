@@ -7,30 +7,8 @@ import spark.Spark.get
 import spark.Spark.halt
 import spark.Spark.path
 import spark.Spark.post
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.OutputStream
 
-class AudioRoutes {
-  // Getting dagger to work is just too hard. Doing it by hand for now.
-  val zones = Zones()
-  val sources = Sources()
-
-  // Not sure what we want to do w/ this for now.
-  val outputStream: OutputStream
-    get() {
-      if (File("/dev/ttyUSB0").exists()) {
-        return FileOutputStream("/dev/ttyUSB0")
-      } else if (File("/dev/ttyUSB0").exists()) {
-        return FileOutputStream("/dev/tty.usbserial0")
-      } else {
-        return ByteArrayOutputStream()
-      }
-    }
-
-  val audioCommander = AudioCommander(RussoundCommands(), outputStream)
-  val audioManager = AudioManager(zones, audioCommander)
+class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: AudioManager) {
   val templateEngine = MyHandlebarsTemplateEngine()
 
   fun initialize() {

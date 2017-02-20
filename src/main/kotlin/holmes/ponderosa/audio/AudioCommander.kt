@@ -5,8 +5,7 @@ import java.io.OutputStream
 class AudioCommander(val russoundCommands: RussoundCommands, val outputStream: OutputStream) {
 
   fun requestStatus(zone: Zone) {
-    val command = russoundCommands.requestStatus(zone)
-    sendCommand(command)
+    sendCommand(russoundCommands.requestStatus(zone))
   }
 
   fun power(zone: Zone, power: PowerChange) {

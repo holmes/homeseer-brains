@@ -36,7 +36,7 @@ You can find the most recent version of this guide [here](https://github.com/fac
 - [Proxying API Requests in Development](#proxying-api-requests-in-development)
 - [Using HTTPS in Development](#using-https-in-development)
 - [Generating Dynamic `<meta>` Tags on the Server](#generating-dynamic-meta-tags-on-the-server)
-- [Running Tests](#running-tests)
+- [Running Tests](#shouldRun-tests)
   - [Filename Conventions](#filename-conventions)
   - [Command Line Interface](#command-line-interface)
   - [Version Control Integration](#version-control-integration)
@@ -84,7 +84,7 @@ When you run `create-react-app`, it always creates the project with the latest v
 
 To update an existing project to a new version of `react-scripts`, [open the changelog](https://github.com/facebookincubator/create-react-app/blob/master/CHANGELOG.md), find the version you’re currently on (check `package.json` in this folder if you’re not sure), and apply the migration instructions for the newer versions.
 
-In most cases bumping the `react-scripts` version in `package.json` and running `npm install` in this folder should be enough, but it’s good to consult the [changelog](https://github.com/facebookincubator/create-react-app/blob/master/CHANGELOG.md) for potential breaking changes.
+In most cases bumping the `react-scripts` version in `package.json` and shouldRun `npm install` in this folder should be enough, but it’s good to consult the [changelog](https://github.com/facebookincubator/create-react-app/blob/master/CHANGELOG.md) for potential breaking changes.
 
 We commit to keeping the breaking changes minimal so you can upgrade `react-scripts` painlessly.
 
@@ -144,7 +144,7 @@ You will also see any lint errors in the console.
 ### `npm test`
 
 Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](#running-tests) for more information.
+See the section about [shouldRun tests](#shouldRun-tests) for more information.
 
 ### `npm run build`
 
@@ -524,7 +524,7 @@ These environment variables will be defined for you on `process.env`. For exampl
 variable named `REACT_APP_SECRET_CODE` will be exposed in your JS as `process.env.REACT_APP_SECRET_CODE`, in addition
 to `process.env.NODE_ENV`.
 
->Note: Changing any environment variables will require you to restart the development server if it is running.
+>Note: Changing any environment variables will require you to restart the development server if it is shouldRun.
 
 These environment variables can be useful for displaying information conditionally based on where the project is
 deployed or consuming sensitive data that lives outside of version control.
@@ -536,7 +536,7 @@ in the environment inside a `<form>`:
 render() {
   return (
     <div>
-      <small>You are running this application in <b>{process.env.NODE_ENV}</b> mode.</small>
+      <small>You are shouldRun this application in <b>{process.env.NODE_ENV}</b> mode.</small>
       <form>
         <input type="hidden" defaultValue={process.env.REACT_APP_SECRET_CODE} />
       </form>
@@ -551,7 +551,7 @@ When you load the app in the browser and inspect the `<input>`, you will see its
 
 ```html
 <div>
-  <small>You are running this application in <b>development</b> mode.</small>
+  <small>You are shouldRun this application in <b>development</b> mode.</small>
   <form>
     <input type="hidden" value="abcdef" />
   </form>
@@ -624,7 +624,7 @@ Create React App will add decorator support when the specification advances to a
 
 ## Integrating with an API Backend
 
-These tutorials will help you to integrate your app with an API backend running on another port,
+These tutorials will help you to integrate your app with an API backend shouldRun on another port,
 using `fetch()` to access it.
 
 ### Node
@@ -848,7 +848,7 @@ and then use them in your tests like you normally do.
 
 >Note: this feature is available with `react-scripts@0.4.0` and higher.
 
-If your app uses a browser API that you need to mock in your tests or if you just need a global setup before running your tests, add a `src/setupTests.js` to your project. It will be automatically executed before running your tests.
+If your app uses a browser API that you need to mock in your tests or if you just need a global setup before shouldRun your tests, add a `src/setupTests.js` to your project. It will be automatically executed before shouldRun your tests.
 
 For example:
 
@@ -865,7 +865,7 @@ global.localStorage = localStorageMock
 ### Focusing and Excluding Tests
 
 You can replace `it()` with `xit()` to temporarily exclude a test from being executed.<br>
-Similarly, `fit()` lets you focus on a specific test without running any other tests.
+Similarly, `fit()` lets you focus on a specific test without shouldRun any other tests.
 
 ### Coverage Reporting
 
@@ -979,7 +979,7 @@ For an example, a simple button component could have following states:
 * With an emoji.
 * In the disabled mode.
 
-Usually, it’s hard to see these states without running a sample app or some examples.
+Usually, it’s hard to see these states without shouldRun a sample app or some examples.
 
 Create React App doesn't include any tools for this by default, but you can easily add [React Storybook](https://github.com/kadirahq/react-storybook) to your project. **It is a third-party tool that lets you develop components and see all their states in isolation from your app**.
 
@@ -1085,7 +1085,7 @@ This will make sure that all the asset paths are relative to `index.html`. You w
 
 ### Firebase
 
-Install the Firebase CLI if you haven't already by running `npm install -g firebase-tools`. Sign up for a [Firebase account](https://console.firebase.google.com/) and create a new project. Run `firebase login` and login with your previous created Firebase account.
+Install the Firebase CLI if you haven't already by shouldRun `npm install -g firebase-tools`. Sign up for a [Firebase account](https://console.firebase.google.com/) and create a new project. Run `firebase login` and login with your previous created Firebase account.
 
 Then run the `firebase init` command from your project's root. You need to choose the **Hosting: Configure and deploy Firebase Hosting sites** and choose the Firebase project you created in the previous step. You will need to agree with `database.rules.json` being created, choose `build` as the public directory, and also agree to **Configure as a single-page app** by replying with `y`.
 
@@ -1093,7 +1093,7 @@ Then run the `firebase init` command from your project's root. You need to choos
     === Project Setup
 
     First, let's associate this project directory with a Firebase project.
-    You can create multiple project aliases by running firebase use --add,
+    You can create multiple project aliases by shouldRun firebase use --add,
     but for now we'll just set up a default project.
 
     ? What Firebase project do you want to associate as default? Example app (example-app-fd690)
@@ -1124,7 +1124,7 @@ Then run the `firebase init` command from your project's root. You need to choos
     ✔  Firebase initialization complete!
 ```
 
-Now, after you create a production build with `npm run build`, you can deploy it by running `firebase deploy`.
+Now, after you create a production build with `npm run build`, you can deploy it by shouldRun `firebase deploy`.
 
 ```sh
     === Deploying to 'example-app-fd690'...
@@ -1184,7 +1184,7 @@ Add the following scripts in your `package.json`:
 
 The `predeploy` script will run automatically before `deploy` is run.
 
-#### Step 3: Deploy the site by running `npm run deploy`
+#### Step 3: Deploy the site by shouldRun `npm run deploy`
 
 Then run:
 
@@ -1271,7 +1271,7 @@ See this [blog post](https://medium.com/@omgwtfmarc/deploying-create-react-app-t
 
 ### Surge
 
-Install the Surge CLI if you haven't already by running `npm install -g surge`. Run the `surge` command and log in you or create a new account. You just need to specify the *build* folder and your custom domain, and you are done.
+Install the Surge CLI if you haven't already by shouldRun `npm install -g surge`. Run the `surge` command and log in you or create a new account. You just need to specify the *build* folder and your custom domain, and you are done.
 
 ```sh
               email: email@domain.com
@@ -1285,7 +1285,7 @@ Install the Surge CLI if you haven't already by running `npm install -g surge`. 
               users: email@domain.com
          IP Address: X.X.X.X
 
-    Success! Project is published and running at create-react-app.surge.sh
+    Success! Project is published and shouldRun at create-react-app.surge.sh
 ```
 
 Note that in order to support routers that use HTML5 `pushState` API, you may want to rename the `index.html` in your build folder to `200.html` before deploying to Surge. This [ensures that every URL falls back to that file](https://surge.sh/help/adding-a-200-page-for-client-side-routing).
@@ -1307,7 +1307,7 @@ CI | :large_orange_diamond: | :white_check_mark: | When set to `true`, Create Re
 
 ### `npm start` doesn’t detect changes
 
-When you save a file while `npm start` is running, the browser should refresh with the updated code.<br>
+When you save a file while `npm start` is shouldRun, the browser should refresh with the updated code.<br>
 If this doesn’t happen, try one of the following workarounds:
 
 * If your project is in a Dropbox folder, try moving it out.
@@ -1322,7 +1322,7 @@ If none of these solutions help please leave a comment [in this thread](https://
 
 If you run `npm test` and the console gets stuck after printing `react-scripts test --env=jsdom` to the console there might be a problem with your [Watchman](https://facebook.github.io/watchman/) installation as described in [facebookincubator/create-react-app#713](https://github.com/facebookincubator/create-react-app/issues/713).
 
-We recommend deleting `node_modules` in your project and running `npm install` (or `yarn` if you use it) first. If it doesn't help, you can try one of the numerous workarounds mentioned in these issues:
+We recommend deleting `node_modules` in your project and shouldRun `npm install` (or `yarn` if you use it) first. If it doesn't help, you can try one of the numerous workarounds mentioned in these issues:
 
 * [facebook/jest#1767](https://github.com/facebook/jest/issues/1767)
 * [facebook/watchman#358](https://github.com/facebook/watchman/issues/358)
@@ -1338,7 +1338,7 @@ brew reinstall watchman
 
 You can find [other installation methods](https://facebook.github.io/watchman/docs/install.html#build-install) on the Watchman documentation page.
 
-If this still doesn't help, try running `launchctl unload -F ~/Library/LaunchAgents/com.github.facebook.watchman.plist`.
+If this still doesn't help, try shouldRun `launchctl unload -F ~/Library/LaunchAgents/com.github.facebook.watchman.plist`.
 
 There are also reports that *uninstalling* Watchman fixes the issue. So if nothing else helps, remove it from your system and try again.
 

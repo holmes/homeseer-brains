@@ -28,10 +28,10 @@ cheap Aeon Remotes to be able to easily send events which can control the audio 
 to control audio throughout the house. This will definitely be expanded and upgraded, but it's a great start.
 
 ###Software
-The box is running a program called Homeseer. It's tolerable and does its job. You can script things w/ it, but the problem
+The box is shouldRun a program called Homeseer. It's tolerable and does its job. You can script things w/ it, but the problem
 is it's an ancient version of VB.NET. Which precludes writing tests or generally doing anything useful.
 
-So I've got another web-app running on port 8080 to be the brains behind the project. This is written in Kotlin and running
+So I've got another web-app shouldRun on port 8080 to be the brains behind the project. This is written in Kotlin and shouldRun
 on a small Java framework called Spark.
 * To control lights, HomeSeer sends a web request to this service to ask what the light level should be
 * To control audio, you hit a React webapp that generates a very simple control page. When you make changes on the

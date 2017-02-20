@@ -1,15 +1,20 @@
 package holmes.ponderosa.audio
 
+import io.reactivex.Observable
+import org.slf4j.LoggerFactory
+
 data class ZoneInfo(val zone: Zone, val source: Source?, val power: Boolean?, val volume: Int?)
 
 private const val VOLUME_STEP_LEVEL: Int = 2
 private const val VOLUME_DEFAULT_LEVEL: Int = 30
 
+private val LOG = LoggerFactory.getLogger(AudioManager::class.java)
+
 /**
  * The brains of the operation. Now we have to decide - send this information to Homeseer and
  * let it be the brains, or just let this store all the info.
  */
-class AudioManager(zones: Zones, val audioCommander: AudioCommander) {
+class AudioManager(val zones: Zones, val sources: Sources, val audioCommander: AudioCommander, receivedZoneInfo: Observable<ReceivedZoneInfo>) {
   private val allZoneInfo: MutableMap<Zone, ZoneInfo> = HashMap()
 
   val zoneInformation: Map<Zone, ZoneInfo>
@@ -19,6 +24,9 @@ class AudioManager(zones: Zones, val audioCommander: AudioCommander) {
     zones.all.forEach {
       allZoneInfo.put(it, ZoneInfo(it, null, null, null))
     }
+
+    // TODO deal w/ threading. I'm ok if data is slightly out of sync for now.
+    receivedZoneInfo.subscribe(this::updateZone)
   }
 
   fun status(zone: Zone) {
@@ -61,5 +69,14 @@ class AudioManager(zones: Zones, val audioCommander: AudioCommander) {
 
   private fun updateZone(updatedInfo: ZoneInfo) {
     this.allZoneInfo.put(updatedInfo.zone, updatedInfo)
+  }
+
+  private fun updateZone(zoneInfo: ReceivedZoneInfo) {
+    val zone = zones.zone(zoneInfo.zoneId)
+    val source = sources.source(zoneInfo.sourceId)
+    val updatedInfo = ZoneInfo(zone, source, zoneInfo.power, zoneInfo.volume)
+
+    LOG.info("Received Zone Info from Receiver: $zoneInfo, storing as $updatedInfo")
+    updateZone(updatedInfo)
   }
 }
