@@ -6,13 +6,14 @@ import org.junit.Before
 import org.junit.Test
 import java.time.LocalDate
 import java.time.LocalTime
+import javax.inject.Provider
 
 class TwilightProviderUnitTest {
   lateinit var twilightProvider: TwilightProvider
 
   @Before fun setUp() {
     val moshi = Moshi.Builder().build()
-    twilightProvider = TwilightProvider(moshi, { LocalDate.of(2017, 2, 12) })
+    twilightProvider = TwilightProvider(moshi, Provider { LocalDate.of(2017, 2, 12) })
   }
 
   @Test fun testParsingDatesFromFile() {

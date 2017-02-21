@@ -6,7 +6,8 @@ import holmes.ponderosa.audio.ReceivedZoneInfo
 import holmes.ponderosa.audio.RussoundCommandReceiver
 import holmes.ponderosa.audio.RussoundReader
 import holmes.ponderosa.audio.TransformerModule
-import holmes.ponderosa.lights.LightsRoutes
+import holmes.ponderosa.lights.DaggerLights
+import holmes.ponderosa.lights.LightModule
 import io.reactivex.subjects.PublishSubject
 import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
@@ -28,20 +29,27 @@ class Ponderosa(val readerDescriptor: RussoundReader) {
 //    externalStaticFileLocation("src/main/webapp/public")
     staticFileLocation("/public")
 
-    LightsRoutes().initialize()
+    val transformerModule = TransformerModule()
+
+    val lightsGraph = DaggerLights
+        .builder()
+        .lightModule(LightModule())
+        .transformerModule(transformerModule)
+        .build()
 
     val audioGraph = DaggerAudio
         .builder()
         .audioModule(AudioModule(readerDescriptor))
-        .transformerModule(TransformerModule())
+        .transformerModule(transformerModule)
         .build()
 
     outputStream = audioGraph.outputStream()
     receivedMessageSubject = audioGraph.receivedMessageSubject()
     russoundCommandReceiver = audioGraph.russoundCommandReceiver()
-
-    audioGraph.audioRoutes().initialize()
     russoundReceiverThread.start()
+
+    lightsGraph.lightsRoutes().initialize()
+    audioGraph.audioRoutes().initialize()
   }
 
   fun destroy() {

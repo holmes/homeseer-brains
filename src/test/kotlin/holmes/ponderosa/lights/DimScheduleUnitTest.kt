@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalTime
+import javax.inject.Provider
 
 class DimScheduleUnitTest {
   lateinit var dimSchedule: DimSchedule
@@ -18,7 +19,7 @@ class DimScheduleUnitTest {
         TimeFrame(midnight.plusHours(23).plusMinutes(59), 1, 35)
     )
 
-    dimSchedule = DimSchedule(22, timeFrames) { now }
+    dimSchedule = DimSchedule(22, timeFrames, Provider { now })
   }
 
   @Test fun testAutoDimLightIsOff() {

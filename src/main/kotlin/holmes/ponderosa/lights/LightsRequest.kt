@@ -1,8 +1,9 @@
 package holmes.ponderosa.lights
 
 import java.time.LocalTime
+import javax.inject.Provider
 
-class LightsRequest(val twilight: Twilight, val now: (() -> LocalTime)) {
+class LightsRequest(val twilight: Twilight, val now: Provider<LocalTime>) {
   fun autoDim(deviceId: Int, currentValue: Int): DimSchedule.AutoDimResult {
     return getDimSchedule(deviceId).autoDim(currentValue)
   }

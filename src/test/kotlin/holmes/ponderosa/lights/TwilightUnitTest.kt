@@ -26,7 +26,7 @@ class TwilightUnitTest {
     val twilightEnd = LocalTime.of(18, 21)
 
     twilightResult = TwilightResult(twilightBegin, sunrise, solarNoon, sunset, twilightEnd)
-    twilight = Twilight(resultsProvider = { twilightResult })
+    twilight = Twilight({ twilightResult })
   }
 
   @Test fun testSunrise() {

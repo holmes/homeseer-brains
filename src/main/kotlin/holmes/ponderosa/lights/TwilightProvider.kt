@@ -8,8 +8,9 @@ import java.time.LocalTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
+import javax.inject.Provider
 
-class TwilightProvider(moshi: Moshi, val now: () -> LocalDate) {
+class TwilightProvider(moshi: Moshi, private val now: Provider<LocalDate>) {
   private val adapter = moshi.adapter(SunriseSunsetProvider::class.java)
 
   companion object Factory {
@@ -24,7 +25,7 @@ class TwilightProvider(moshi: Moshi, val now: () -> LocalDate) {
 
   fun twilight(): TwilightResult {
     try {
-      val inputStream = getFileStream(now())
+      val inputStream = getFileStream(now.get())
       val bufferedSource = Okio.buffer(Okio.source(inputStream))
 
       val sunriseData = adapter.fromJson(bufferedSource)

@@ -5,25 +5,25 @@ import java.time.LocalTime
 /**
  * Finds sunrise/sunset and solar noon for use in [TimeFrame]s.
  */
-class Twilight(val resultsProvider: (() -> TwilightResult)) {
+class Twilight(val twilightProvider: () -> TwilightResult) {
   fun twilightBegin(offset: Int = 0): LocalTime {
-    return addOffset(offset, resultsProvider().twilightBegin)
+    return addOffset(offset, twilightProvider().twilightBegin)
   }
 
   fun sunrise(offset: Int = 0): LocalTime {
-    return addOffset(offset, resultsProvider().sunrise)
+    return addOffset(offset, twilightProvider().sunrise)
   }
 
   fun sunset(offset: Int = 0): LocalTime {
-    return addOffset(offset, resultsProvider().sunset)
+    return addOffset(offset, twilightProvider().sunset)
   }
 
   fun solarNoon(offset: Int = 0): LocalTime {
-    return addOffset(offset, resultsProvider().solarNoon)
+    return addOffset(offset, twilightProvider().solarNoon)
   }
 
   fun twilightEnd(offset: Int = 0): LocalTime {
-    return addOffset(offset, resultsProvider().twilightEnd)
+    return addOffset(offset, twilightProvider().twilightEnd)
   }
 
   private fun addOffset(offset: Int, baseDate: LocalTime): LocalTime {

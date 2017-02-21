@@ -2,12 +2,13 @@ package holmes.ponderosa.lights
 
 import java.time.Duration
 import java.time.LocalTime
+import javax.inject.Provider
 
 /**
  * Represents a room with various light levels defined by TimeFrame(s). TimeFrame(s) are defined by
  * their endTime(s) and are stored consecutively in the List.
  */
-data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val now: () -> LocalTime) {
+data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val now: Provider<LocalTime>) {
   data class AutoDimResult(val dimLevel: Int, val needsReschedule: Boolean) {
     companion object Factory {
       val NO_CHANGE: AutoDimResult = AutoDimResult(-1, false)
@@ -56,7 +57,7 @@ data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val n
 
     val startTime = previousFrame.endTime
     val endTime = currentFrame.endTime
-    val nowTime = now()
+    val nowTime = now.get()
 
     val frameLength = Duration.between(startTime, endTime)
     val inset = Duration.between(startTime, nowTime)
@@ -89,11 +90,11 @@ data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val n
   }
 
   private val isInFirstFrame: Boolean
-    get() = timeFrames[0].contains(now())
+    get() = timeFrames[0].contains(now.get())
 
   internal val previousFrame: TimeFrame
-    get() = timeFrames.last { !it.contains(now()) }
+    get() = timeFrames.last { !it.contains(now.get()) }
 
   internal val currentFrame: TimeFrame
-    get() = timeFrames.first { it.contains(now()) }
+    get() = timeFrames.first { it.contains(now.get()) }
 }
