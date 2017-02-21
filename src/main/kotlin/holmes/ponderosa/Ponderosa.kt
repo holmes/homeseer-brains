@@ -63,7 +63,12 @@ class Ponderosa(val readerDescriptor: RussoundReader) {
 class PonderosaSparkApplication : SparkApplication {
   val ponderosa = Ponderosa(object : RussoundReader {
     override val descriptor: File
-      get() = File("/dev/ttyUSB0")
+      get() {
+        return when {
+          File("/dev/ttyUSB0").exists() -> File("/dev/ttyUSB0")
+          else -> File("/dev/null")
+        }
+      }
 
     override val startMessage: Int
       get() = 0xF0
