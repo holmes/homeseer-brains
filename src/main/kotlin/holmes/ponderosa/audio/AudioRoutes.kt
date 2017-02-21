@@ -13,6 +13,8 @@ import spark.Spark.post
 
 private val LOG = LoggerFactory.getLogger(AudioRoutes::class.java)
 
+data class RootFetchInfo(val sources: List<Source>, val zoneInformation: Collection<ZoneInfo>)
+
 class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: AudioManager, val jsonTransformer: JsonTransformer) {
   fun initialize() {
     before(Filter { request, response ->
@@ -21,7 +23,10 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
     })
 
     get("/", Route { _, _ ->
-      audioManager.zoneInformation.values.sortedBy { it.zone.zoneId }
+      RootFetchInfo(
+          sources = sources.all.sortedBy { it.sourceNumber },
+          zoneInformation = audioManager.zoneInformation.values.sortedBy { it.zone.zoneNumber }
+      )
     }, jsonTransformer)
 
     path("/api/audio/:zoneId") {

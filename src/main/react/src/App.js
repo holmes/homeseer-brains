@@ -8,25 +8,15 @@ import ToggleButton from 'react-toggle-button';
 
 import "whatwg-fetch"
 
-let baseUrl = "http://192.168.100.5:8080/ponderosa/"
-// let baseUrl = "http://localhost:4567";
-let sources = [{name: "Family Room TV", sourceId: 0}, {name: "Chromecast", sourceId: 1}];
-
-function source(sourceId) {
-  for (let s of sources) {
-    // eslint-disable-next-line
-    if (s.sourceId == sourceId) {
-      return s
-    }
-  }
-}
+// let baseUrl = "http://192.168.100.5:8080/ponderosa/"
+let baseUrl = "http://localhost:4567";
 
 class App extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      zoneInformation: props.zoneInformation
+      loaded: false
     };
   }
 
@@ -37,22 +27,22 @@ class App extends Component {
     .then(function(response) {
       return response.json()
     }).then(function(json) {
-      thing.setState({zoneInformation: json})
+      thing.setState({
+        loaded: true,
+        sources: json.sources,
+        zoneInformation: json.zoneInformation
+      })
     }).catch(function(ex) {
       console.log('parsing failed', ex)
     });
   }
 
   render() {
-    console.log("state's zone info");
-    console.log(this.state.zoneInformation);
-
-
-    if (this.state.zoneInformation) {
+    if (this.state.loaded) {
       return (
           <div className="App">
             {this.state.zoneInformation.map(zoneInfo => {
-              return <ZoneInformation key={zoneInfo.zone.zoneId} zoneInfo={zoneInfo}/>
+              return <ZoneInformation key={zoneInfo.zone.zoneId} zoneInfo={zoneInfo} sources={this.state.sources}/>
             })}
           </div>
       );
@@ -79,18 +69,28 @@ class ZoneInformation extends React.Component {
       zone: zone,
       sourceId: sourceId,
       volume: volume,
-      power: power
+      power: power,
+      sources: props.sources
     };
 
     this.volumeUp = this.volumeUp.bind(this)
     this.volumeDown = this.volumeDown.bind(this)
   }
 
+  source(sourceId) {
+    for (let s of this.state.sources) {
+      // eslint-disable-next-line
+      if (s.sourceId == sourceId) {
+        return s
+      }
+    }
+  }
+
   sourceName() {
     if (this.state.sourceId === undefined || isNaN(this.state.sourceId)) {
       return ""
     } else {
-      return source(this.state.sourceId).name
+      return this.source(this.state.sourceId).name
     }
   }
 
@@ -183,7 +183,7 @@ class ZoneInformation extends React.Component {
             this.sourceChanged(eventKey)
           }}
       >
-        {sources.map(source => {
+        {this.state.sources.map(source => {
           return (
               <MenuItem
                   active={source.sourceId === this.state.sourceId}
