@@ -1,39 +1,28 @@
 package holmes.ponderosa
 
-import com.google.gson.Gson
-import holmes.ponderosa.audio.AudioCommander
-import holmes.ponderosa.audio.AudioManager
-import holmes.ponderosa.audio.AudioRoutes
+import holmes.ponderosa.audio.AudioModule
+import holmes.ponderosa.audio.DaggerAudio
 import holmes.ponderosa.audio.ReceivedZoneInfo
 import holmes.ponderosa.audio.RussoundCommandReceiver
-import holmes.ponderosa.audio.RussoundCommands
 import holmes.ponderosa.audio.RussoundReader
-import holmes.ponderosa.audio.Sources
-import holmes.ponderosa.audio.Zones
+import holmes.ponderosa.audio.TransformerModule
 import holmes.ponderosa.lights.LightsRoutes
-import holmes.ponderosa.util.JsonTransformer
 import io.reactivex.subjects.PublishSubject
 import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
 import spark.servlet.SparkApplication
-import java.io.ByteArrayOutputStream
 import java.io.File
-import java.io.FileOutputStream
 import java.io.OutputStream
 
 private val LOG = LoggerFactory.getLogger(Ponderosa::class.java)
 
 /** The main initializer. */
-class Ponderosa(readerDescriptor: RussoundReader) {
-  // TODO omg this needs dagger pronto.
-  val receivedMessageSubject: PublishSubject<ReceivedZoneInfo> = PublishSubject.create()
-  val russoundCommandReceiver = RussoundCommandReceiver(readerDescriptor, receivedMessageSubject)
-
+class Ponderosa(val readerDescriptor: RussoundReader) {
+  lateinit var receivedMessageSubject: PublishSubject<ReceivedZoneInfo>
+  lateinit var russoundCommandReceiver: RussoundCommandReceiver
   lateinit var outputStream: OutputStream
-  val russoundReceiverThread = Thread(Runnable { russoundCommandReceiver.start() }, "russound-input-receiver")
 
-  val gson = Gson()
-  val jsonTransformer = JsonTransformer(gson)
+  val russoundReceiverThread = Thread(Runnable { russoundCommandReceiver.start() }, "russound-input-receiver")
 
   fun start() {
 //    externalStaticFileLocation("src/main/webapp/public")
@@ -41,22 +30,17 @@ class Ponderosa(readerDescriptor: RussoundReader) {
 
     LightsRoutes().initialize()
 
-    // Getting dagger to work is just too hard. Doing it by hand for now.
-    val zones = Zones()
-    val sources = Sources()
+    val audioGraph = DaggerAudio
+        .builder()
+        .audioModule(AudioModule(readerDescriptor))
+        .transformerModule(TransformerModule())
+        .build()
 
-    // Not sure what we want to do w/ this for now.
-    outputStream = when {
-      File("/dev/ttyUSB0").exists() -> FileOutputStream("/dev/ttyUSB0")
-      File("/dev/ttyUSB0").exists() -> FileOutputStream("/dev/tty.usbserial0")
-      else -> ByteArrayOutputStream()
-    }
+    outputStream = audioGraph.outputStream()
+    receivedMessageSubject = audioGraph.receivedMessageSubject()
+    russoundCommandReceiver = audioGraph.russoundCommandReceiver()
 
-
-    val audioCommander = AudioCommander(RussoundCommands(), outputStream)
-    val audioManager = AudioManager(zones, sources, audioCommander, receivedMessageSubject)
-    AudioRoutes(zones, sources, audioManager, jsonTransformer).initialize()
-
+    audioGraph.audioRoutes().initialize()
     russoundReceiverThread.start()
   }
 
