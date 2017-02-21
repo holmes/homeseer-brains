@@ -1,5 +1,6 @@
 package holmes.ponderosa
 
+import com.google.gson.Gson
 import holmes.ponderosa.audio.AudioCommander
 import holmes.ponderosa.audio.AudioManager
 import holmes.ponderosa.audio.AudioRoutes
@@ -10,6 +11,7 @@ import holmes.ponderosa.audio.RussoundReader
 import holmes.ponderosa.audio.Sources
 import holmes.ponderosa.audio.Zones
 import holmes.ponderosa.lights.LightsRoutes
+import holmes.ponderosa.util.JsonTransformer
 import io.reactivex.subjects.PublishSubject
 import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
@@ -19,16 +21,19 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 
-/** The main innitializer. */
 private val LOG = LoggerFactory.getLogger(Ponderosa::class.java)
 
-// TODO omg this needs dagger pronto.
+/** The main initializer. */
 class Ponderosa(readerDescriptor: RussoundReader) {
+  // TODO omg this needs dagger pronto.
   val receivedMessageSubject: PublishSubject<ReceivedZoneInfo> = PublishSubject.create()
   val russoundCommandReceiver = RussoundCommandReceiver(readerDescriptor, receivedMessageSubject)
 
   lateinit var outputStream: OutputStream
   val russoundReceiverThread = Thread(Runnable { russoundCommandReceiver.start() }, "russound-input-receiver")
+
+  val gson = Gson()
+  val jsonTransformer = JsonTransformer(gson)
 
   fun start() {
 //    externalStaticFileLocation("src/main/webapp/public")
@@ -47,9 +52,10 @@ class Ponderosa(readerDescriptor: RussoundReader) {
       else -> ByteArrayOutputStream()
     }
 
+
     val audioCommander = AudioCommander(RussoundCommands(), outputStream)
     val audioManager = AudioManager(zones, sources, audioCommander, receivedMessageSubject)
-    AudioRoutes(zones, sources, audioManager).initialize()
+    AudioRoutes(zones, sources, audioManager, jsonTransformer).initialize()
 
     russoundReceiverThread.start()
   }

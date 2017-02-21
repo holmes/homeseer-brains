@@ -85,11 +85,10 @@ dependencies {
   compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
   compile "com.sparkjava:spark-core:2.5.5"
-  compile "com.sparkjava:spark-template-handlebars:2.3"
-
   compile "org.slf4j:slf4j-simple:1.7.22"
-  compile 'com.squareup.moshi:moshi:1.4.0'
 
+  compile 'com.squareup.moshi:moshi:1.4.0'
+  compile 'com.google.code.gson:gson:1.7.2'
   compile 'io.reactivex.rxjava2:rxjava:2.0.4'
   compile 'com.squareup.okio:okio:1.11.0'
 

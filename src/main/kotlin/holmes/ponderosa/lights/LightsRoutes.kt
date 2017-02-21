@@ -9,7 +9,7 @@ import java.time.LocalTime
 
 class LightsRoutes {
   // Getting dagger to work is just too hard. Doing it by hand for now.
-  val moshi = Moshi.Builder().build()
+  val moshi: Moshi = Moshi.Builder().build()
   val today = { LocalDate.now() }
   val now = { LocalTime.now() }
   val twilightProvider = TwilightProvider(moshi, today)::twilight

@@ -1,22 +1,25 @@
 package holmes.ponderosa.audio
 
-import holmes.ponderosa.util.MyHandlebarsTemplateEngine
-import spark.ModelAndView
+import holmes.ponderosa.util.JsonTransformer
+import org.slf4j.LoggerFactory
+import spark.Filter
 import spark.Request
+import spark.Route
+import spark.Spark.before
 import spark.Spark.get
 import spark.Spark.halt
 import spark.Spark.path
 import spark.Spark.post
 
-class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: AudioManager) {
-  val templateEngine = MyHandlebarsTemplateEngine()
+private val LOG = LoggerFactory.getLogger(AudioRoutes::class.java)
 
+class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: AudioManager, val jsonTransformer: JsonTransformer) {
   fun initialize() {
-    get("/", { _, _ ->
-      val params = HashMap<String, Any>()
-      params.put("zoneInformation", audioManager.zoneInformation.values.sortedBy { it.zone.zoneId })
-      ModelAndView(params, "index.hbs")
-    }, templateEngine)
+    before(Filter { request, _ -> LOG.info("Requested: " + request.pathInfo()) })
+
+    get("/", Route { _, _ ->
+      audioManager.zoneInformation.values.sortedBy { it.zone.zoneId }
+    }, jsonTransformer)
 
     path("/api/audio/:zoneId") {
       post("/status") { request, _ ->
