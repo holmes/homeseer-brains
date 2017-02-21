@@ -12,8 +12,6 @@ and calculate actions based on information passed to it.
 
 
 ### TODOs
-* Make this easier to deploy
-* Prettify the React app for Audio Control
 * Get HomeSeer to actually ask Ponderosa about the light levels
 
 
@@ -45,6 +43,14 @@ Amazing!
 Trying to figure this out now.
 * React runs on :3000, currently hitting 192.168.100.5:8080. Should hit either localhost:4567 or a mock.
 * Ponderosa Service runs fine, but needs the serial device to be mocked out.
+
+### IDEA Errors
+If you see something about an AbstractMethodError in KotlinCoreEnvironment but the build works from the command line, delete
+this line in `.idea/modules/ponderosa_[main|test].iml`
+```xml
+<option name="additionalArguments" value="-Xplugin /home/tomasz/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-annotation-processing/1.1.0-rc-91/5a3a018b3d9948d50cfe1af741d10f016edcc12c/kotlin-annotation-processing-1.1.0-rc-91.jar,/home/tomasz/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-noarg/1.1.0-rc-91/cce5206f28940c7751ca131caeedc591cbc44af9/kotlin-noarg-1.1.0-rc-91.jar,/home/tomasz/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-allopen/1.1.0-rc-91/ea929388f4abd559e160aea641b11cb7e45c2cc0/kotlin-allopen-1.1.0-rc-91.jar -P plugin:org.jetbrains.kotlin.noarg:annotation=javax.persistence.Entity,plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.stereotype.Component,plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.transaction.annotation.Transactional,plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.scheduling.annotation.Async,plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.cache.annotation.Cacheable" />
+```  
+  
 
 
 ## RS-232 Connections
