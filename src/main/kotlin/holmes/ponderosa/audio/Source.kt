@@ -1,20 +1,16 @@
 package holmes.ponderosa.audio
 
+data class Source(val controllerId:Int, val sourceId: Int, val sourceNumber: Int, val name: String)
+
 class Sources {
-  val all: Array<Source>
-    get() = arrayOf(
-        Source(0, "Family Room TV"),
-        Source(1, "Chromecast")
+  val all: Set<Source>
+    get() = setOf(
+        Source(0, 0, 0, "Family Room TV"),
+        Source(0, 1, 1, "Chromecast")
     )
 
-  fun source(sourceId: Int): Source? = when (sourceId) {
-    in 0..all.size -> all[sourceId]
-    else -> null
+  fun source(sourceId: Int): Source = when (sourceId) {
+    in 0..all.size -> all.first { it.sourceId == sourceId }
+    else -> throw IllegalArgumentException("Unknown Source: $sourceId")
   }
-}
-
-data class Source(val sourceId: Int, val name: String) {
-  /** The Display number, 1-based. */
-  val sourceNumber: String
-    get() = (sourceId + 1).toString()
 }

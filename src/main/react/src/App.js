@@ -1,12 +1,16 @@
 import React, {Component, PropTypes} from 'react';
 import './App.css';
 
-import { Button, DropdownButton, ButtonGroup, MenuItem, Panel, Grid, Row, Col } from 'react-bootstrap';
+import {
+  Button, DropdownButton, ButtonGroup, MenuItem, Panel, Grid, Row, Col
+} from 'react-bootstrap';
 import ToggleButton from 'react-toggle-button';
 
 import "whatwg-fetch"
 
-let sources = [{name: "TV", sourceId: 1}, {name: "Chromecast", sourceId: 2}];
+let baseUrl = "http://192.168.100.5:8080/ponderosa/"
+// let baseUrl = "http://localhost:4567";
+let sources = [{name: "Family Room TV", sourceId: 0}, {name: "Chromecast", sourceId: 1}];
 
 function source(sourceId) {
   for (let s of sources) {
@@ -17,61 +21,81 @@ function source(sourceId) {
   }
 }
 
-
-let zoneInformation = {
-  zones: [{
-    zone: {name: "Family Room", zoneId: "1"},
-    source: {name: "TV", sourceId: "1"},
-    power: "true",
-    volume: "26"
-  }, {
-    zone: {name: "Kitchen", zoneId: "2"},
-    source: {name: "Chromecast", sourceId: "2"},
-    power: "true",
-    volume: "26"
-  }, {
-    zone: {name: "Outside", zoneId: "3"},
-    source: {name: "Chromecast", sourceId: "2"},
-    power: "false",
-    volume: "60"
-  }, {
-    zone: {name: "Master", zoneId: "4"},
-    source: {name: "Chromecast", sourceId: "2"},
-    power: "false",
-    volume: "30"
-  }]
-};
-
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      zoneInformation: props.zoneInformation
+    };
+  }
+
+  componentDidMount() {
+    let thing = this;
+
+    fetch(baseUrl, { mode: 'cors' } )
+    .then(function(response) {
+      return response.json()
+    }).then(function(json) {
+      thing.setState({zoneInformation: json})
+    }).catch(function(ex) {
+      console.log('parsing failed', ex)
+    });
+  }
+
   render() {
-    return (
-        <div className="App">
-          <ul>
-            {zoneInformation.zones.map(zone => {
-              return <ZoneInformation key={zone.zone.zoneId} zoneInfo={zone}/>
+    console.log("state's zone info");
+    console.log(this.state.zoneInformation);
+
+
+    if (this.state.zoneInformation) {
+      return (
+          <div className="App">
+            {this.state.zoneInformation.map(zoneInfo => {
+              return <ZoneInformation key={zoneInfo.zone.zoneId} zoneInfo={zoneInfo}/>
             })}
-          </ul>
-        </div>
-    );
+          </div>
+      );
+    } else {
+      return (
+          <div className="App">
+            <h1>Loading...</h1>
+          </div>
+      );
+    }
   }
 }
 
 class ZoneInformation extends React.Component {
   constructor(props) {
     super(props);
+
+    let zone = props.zoneInfo.zone;
+    let sourceId = props.zoneInfo.source && props.zoneInfo.source.sourceId;
+    let volume = props.zoneInfo.volume;
+    let power = props.zoneInfo.power;
+
     this.state = {
-      zone: props.zoneInfo.zone,
-      sourceId: props.zoneInfo.source.sourceId,
-      volume: parseInt(props.zoneInfo.volume, 10),
-      power: props.zoneInfo.power === "true"
-    }
+      zone: zone,
+      sourceId: sourceId,
+      volume: volume,
+      power: power
+    };
 
     this.volumeUp = this.volumeUp.bind(this)
     this.volumeDown = this.volumeDown.bind(this)
   }
 
+  sourceName() {
+    if (this.state.sourceId === undefined || isNaN(this.state.sourceId)) {
+      return ""
+    } else {
+      return source(this.state.sourceId).name
+    }
+  }
+
   sourceChanged(sourceId) {
-    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/source/${sourceId}`;
+    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/source/${sourceId}`;
 
     const thing = this;
     fetch(url, {
@@ -82,7 +106,7 @@ class ZoneInformation extends React.Component {
   }
 
   volumeChanged(volume) {
-    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/volume/${volume}`;
+    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/volume/${volume}`;
 
     const thing = this;
     fetch(url, {
@@ -93,34 +117,34 @@ class ZoneInformation extends React.Component {
   }
 
   volumeUp() {
-    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/volume/up`;
+    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/volume/up`;
 
     const thing = this;
     fetch(url, {
       method: "POST", mode: 'no-cors'
     }).then(function () {
       thing.setState((prevState, props) => {
-        return { volume: prevState.volume + 2 };
+        return {volume: prevState.volume + 2};
       })
     });
   }
 
   volumeDown() {
-    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/volume/down`;
+    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/volume/down`;
 
     const thing = this;
     fetch(url, {
       method: "POST", mode: 'no-cors'
     }).then(function () {
       thing.setState((prevState, props) => {
-        return { volume: prevState.volume - 2 };
+        return {volume: prevState.volume - 2};
       })
     });
   }
 
   powerToggled(originalPower) {
     const power = !originalPower;
-    const url = `http://192.168.100.5:8080/ponderosa/api/audio/${this.state.zone.zoneId}/power/${power}`;
+    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/power/${power}`;
 
     const thing = this;
     fetch(url, {
@@ -131,49 +155,45 @@ class ZoneInformation extends React.Component {
   }
 
   render() {
-    const volumeLevel = this.state.volume;
     const powerValue = this.state.power;
 
     let panelHeader = (
         <Grid>
           <Row className="show-grid">
             <Col xs={10}>
-              {this.state.zone.name}
+              <span className="zoneName">{this.state.zone.name}</span>
             </Col>
             <Col xs={2}>
-              <ToggleButton value={powerValue} onToggle={(value) => { this.powerToggled(value) }}/>
+              <ToggleButton value={powerValue} onToggle={(value) => {
+                this.powerToggled(value)
+              }}/>
             </Col>
           </Row>
         </Grid>
     );
 
+    let id = this.state.zone.zoneId + "SourceSelector";
     let sourceVolume = (
-        <Grid>
-          <Row className="show-grid">
-            <Col xs={6}>
-              <DropdownButton
-                  id="source-selector"
-                  title={source(this.state.sourceId).name}
-                  value={this.state.sourceId}
-                  onSelect={(eventKey) => { this.sourceChanged(eventKey) }}
-              >
-                {sources.map(source => {
-                  return (
-                      <MenuItem
-                          active={source.sourceId === this.state.sourceId}
-                          eventKey={source.sourceId}
-                          key={source.sourceId}
-                          value={source.sourceId}>
-                        {source.name}
-                      </MenuItem>)
-                })}
-              </DropdownButton>
-            </Col>
-            <Col xs={6}>
-              Volume: {volumeLevel}
-            </Col>
-          </Row>
-        </Grid>
+      <DropdownButton
+          id={id}
+          className="source-selector"
+          title={this.sourceName()}
+          value={this.state.sourceId}
+          onSelect={(eventKey) => {
+            this.sourceChanged(eventKey)
+          }}
+      >
+        {sources.map(source => {
+          return (
+              <MenuItem
+                  active={source.sourceId === this.state.sourceId}
+                  eventKey={source.sourceId}
+                  key={source.sourceId}
+                  value={source.sourceId}>
+                {source.name}
+              </MenuItem>)
+        })}
+      </DropdownButton>
     );
 
     return (
@@ -183,10 +203,10 @@ class ZoneInformation extends React.Component {
 
           <ButtonGroup justified bsSize="large">
             <ButtonGroup justified bsSize="large">
-              <Button bsStyle="primary" onClick={this.volumeUp}>Up</Button>
+              <Button bsStyle="success" onClick={this.volumeDown}>Volume Down</Button>
             </ButtonGroup>
             <ButtonGroup justified bsSize="large">
-              <Button bsStyle="success" onClick={this.volumeDown}>Down</Button>
+              <Button bsStyle="primary" onClick={this.volumeUp}>Volume Up</Button>
             </ButtonGroup>
           </ButtonGroup>
         </Panel>
@@ -197,13 +217,13 @@ class ZoneInformation extends React.Component {
 ZoneInformation.propTypes = {
   zoneInfo: PropTypes.shape({
     zone: PropTypes.shape({
-      name: PropTypes.string.isRequired, zoneId: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired, zoneId: PropTypes.number.isRequired
     }), //
     source: PropTypes.shape({
-      name: PropTypes.string.isRequired, sourceId: PropTypes.string.isRequired
+      name: PropTypes.string.isRequired, sourceId: PropTypes.number.isOptional
     }), //
-    volume: PropTypes.string.isRequired, //
-    power: PropTypes.string.isRequired
+    volume: PropTypes.string.isOptional, //
+    power: PropTypes.string.isOptional
   })
 };
 

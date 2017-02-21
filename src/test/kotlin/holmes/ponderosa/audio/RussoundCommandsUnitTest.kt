@@ -13,10 +13,10 @@ class RussoundCommandsUnitTest {
   lateinit var source1: Source
 
   @Before fun setUp() {
-    zone1 = Zone(0, "Kitchen")
-    zone2 = Zone(1, "Outside")
-    source0 = Source(0, "TV Family Room")
-    source1 = Source(1, "Chromecast")
+    zone1 = Zone(0, 0, 0, "Kitchen")
+    zone2 = Zone(0, 1, 1, "Outside")
+    source0 = Source(0, 0, 0, "TV Family Room")
+    source1 = Source(0, 1, 1, "Chromecast")
     russoundCommands = RussoundCommands()
   }
 

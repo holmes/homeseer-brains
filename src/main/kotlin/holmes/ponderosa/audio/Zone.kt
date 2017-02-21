@@ -1,25 +1,22 @@
 package holmes.ponderosa.audio
 
+data class Zone(val controllerId: Int, val zoneId: Int, val zoneNumber: Int, val name: String)
+
 class Zones {
-  val all: Array<Zone>
-    get() = arrayOf(
-        Zone(0, "Family Room"),
-        Zone(1, "Kitchen"),
-        Zone(2, "Outside"),
-        Zone(3, "Master"),
-        Zone(4, "Nursery")
-    )
+  val all: Map<Int, Zone>
+    get() = mapOf(
+        Pair(0, Zone(0, 0, 1, "Family Room")),
+        Pair(1, Zone(0, 1, 2, "Kitchen")),
+        Pair(2, Zone(0, 2, 3, "Outside")),
+        Pair(3, Zone(0, 3, 4, "Master")),
+        Pair(4, Zone(0, 4, 5, "Nursery")))
 
   fun zone(zoneId: Int): Zone {
-    when (zoneId) {
-      in 0..all.size -> return all[zoneId]
-      else -> throw IllegalArgumentException("Unknown Zone: $zoneId")
+    val zone = all[zoneId]
+
+    return when (zone) {
+      null -> throw IllegalArgumentException("Unknown Zone: $zoneId")
+      else -> zone
     }
   }
-}
-
-data class Zone(val zoneId: Int, val name: String) {
-  /** The Display number, 1-based. */
-  val zoneNumber: String
-    get() = (zoneId + 1).toString()
 }

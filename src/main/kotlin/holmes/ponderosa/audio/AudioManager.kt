@@ -21,7 +21,7 @@ class AudioManager(val zones: Zones, val sources: Sources, val audioCommander: A
     get() = allZoneInfo
 
   init {
-    zones.all.forEach {
+    zones.all.values.forEach {
       allZoneInfo.put(it, ZoneInfo(it, null, null, null))
     }
 

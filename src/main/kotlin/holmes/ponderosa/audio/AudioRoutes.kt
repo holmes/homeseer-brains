@@ -15,7 +15,10 @@ private val LOG = LoggerFactory.getLogger(AudioRoutes::class.java)
 
 class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: AudioManager, val jsonTransformer: JsonTransformer) {
   fun initialize() {
-    before(Filter { request, _ -> LOG.info("Requested: " + request.pathInfo()) })
+    before(Filter { request, response ->
+      response.header("Access-Control-Allow-Origin", "*")
+      LOG.info("Requested: " + request.pathInfo())
+    })
 
     get("/", Route { _, _ ->
       audioManager.zoneInformation.values.sortedBy { it.zone.zoneId }
@@ -78,7 +81,7 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
   }
 
   private fun Request.zone(): Zone? {
-    val zoneId = params("zoneId")?.toInt()?.minus(1)
+    val zoneId = params("zoneId")?.toInt()
     val zone = zoneId?.let { zones.zone(zoneId) }
 
     return if (zone != null) zone else {
@@ -88,7 +91,7 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
   }
 
   private fun Request.source(): Source? {
-    val sourceId = params("sourceId")?.toInt()?.minus(1)
+    val sourceId = params("sourceId")?.toInt()
     val source = sourceId?.let { sources.source(it) }
 
     return if (source != null) source else {

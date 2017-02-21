@@ -13,6 +13,10 @@ class AudioCommanderUnitTest {
   lateinit var russoundCommands: RussoundCommands
   lateinit var audioCommander: AudioCommander
 
+  val zone0 = Zone(0, 0, 0, "Place")
+  val zone1 = Zone(0, 1, 1, "Place")
+  val source0 = Source(0, 0, 0, "TV")
+
   @Before fun setUp() {
     russoundCommands = mock<RussoundCommands> {
       on { turnOn(any()) }
@@ -60,36 +64,36 @@ class AudioCommanderUnitTest {
 
   @Test fun powerOnTurnsOn() {
     val expected = "Zone0On".toByteArray()
-    audioCommander.power(Zone(0, "Place"), PowerChange.ON)
+    audioCommander.power(zone0, PowerChange.ON)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
   @Test fun powerOffTurnsOff() {
     val expected = "Zone1Off".toByteArray()
-    audioCommander.power(Zone(1, "Place"), PowerChange.OFF)
+    audioCommander.power(zone1, PowerChange.OFF)
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
   @Test fun volumeUp() {
     val expected = "Zone1VolumeUp".toByteArray()
-    audioCommander.volume(Zone(1, "Place"), VolumeChange.Up())
+    audioCommander.volume(zone1, VolumeChange.Up())
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
   @Test fun volumeDown() {
     val expected = "Zone1VolumeDown".toByteArray()
-    audioCommander.volume(Zone(1, "Place"), VolumeChange.Down())
+    audioCommander.volume(zone1, VolumeChange.Down())
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
   @Test fun volumeSet() {
     val expected = "Zone1Volume22".toByteArray()
-    audioCommander.volume(Zone(1, "Place"), VolumeChange.Set(22))
+    audioCommander.volume(zone1, VolumeChange.Set(22))
     assertThat(outputStream.toByteArray()).isEqualTo(expected)
   }
 
   @Test fun changeSourceChangesSource() {
-    val zone = Zone(0, "Place")
-    val source = Source(0, "Source")
+    val zone = zone0
+    val source = source0
     val expected = "Zone${zone.zoneId}Source${source.sourceId}".toByteArray()
 
     audioCommander.changeSource(zone, source)
