@@ -8,22 +8,28 @@ import ToggleButton from 'react-toggle-button';
 
 import "whatwg-fetch"
 
-// let baseUrl = "http://192.168.100.5:8080/ponderosa/"
-let baseUrl = "http://localhost:4567";
-
 class App extends Component {
   constructor(props) {
     super(props);
 
+    let remoteHost; // It's just so much easier to do it this way than inject it properly.
+    if ( process.env.NODE_ENV === "development") {
+      remoteHost = "http://localhost:4567/";
+    } else {
+      remoteHost = "http://192.168.100.5:8080/ponderosa/"
+    }
+    console.log("Using host at " + remoteHost);
+
     this.state = {
-      loaded: false
+      loaded: false,
+      baseUrl: remoteHost
     };
   }
 
   componentDidMount() {
     let thing = this;
 
-    fetch(baseUrl, { mode: 'cors' } )
+    fetch(this.state.baseUrl, { mode: 'cors' } )
     .then(function(response) {
       return response.json()
     }).then(function(json) {
@@ -42,7 +48,9 @@ class App extends Component {
       return (
           <div className="App">
             {this.state.zoneInformation.map(zoneInfo => {
-              return <ZoneInformation key={zoneInfo.zone.zoneId} zoneInfo={zoneInfo} sources={this.state.sources}/>
+              return <ZoneInformation key={zoneInfo.zone.zoneId} zoneInfo={zoneInfo}
+                                      baseUrl={this.state.baseUrl}
+                                      sources={this.state.sources}/>
             })}
           </div>
       );
@@ -56,6 +64,7 @@ class App extends Component {
   }
 }
 
+// TODO I think it's time to move callbacks to App.
 class ZoneInformation extends React.Component {
   constructor(props) {
     super(props);
@@ -70,6 +79,8 @@ class ZoneInformation extends React.Component {
       sourceId: sourceId,
       volume: volume,
       power: power,
+
+      baseUrl: props.baseUrl,
       sources: props.sources
     };
 
@@ -95,33 +106,33 @@ class ZoneInformation extends React.Component {
   }
 
   sourceChanged(sourceId) {
-    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/source/${sourceId}`;
+    const url = `${this.state.baseUrl}api/audio/${this.state.zone.zoneId}/source/${sourceId}`;
 
     const thing = this;
     fetch(url, {
-      method: "POST", mode: 'no-cors'
+      method: "POST", mode: 'cors'
     }).then(function () {
       thing.setState({sourceId: sourceId})
     });
   }
 
   volumeChanged(volume) {
-    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/volume/${volume}`;
+    const url = `${this.state.baseUrl}api/audio/${this.state.zone.zoneId}/volume/${volume}`;
 
     const thing = this;
     fetch(url, {
-      method: "POST", mode: 'no-cors'
+      method: "POST", mode: 'cors'
     }).then(function () {
       thing.setState({volume: volume})
     });
   }
 
   volumeUp() {
-    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/volume/up`;
+    const url = `${this.state.baseUrl}api/audio/${this.state.zone.zoneId}/volume/up`;
 
     const thing = this;
     fetch(url, {
-      method: "POST", mode: 'no-cors'
+      method: "POST", mode: 'cors'
     }).then(function () {
       thing.setState((prevState, props) => {
         return {volume: prevState.volume + 2};
@@ -130,11 +141,11 @@ class ZoneInformation extends React.Component {
   }
 
   volumeDown() {
-    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/volume/down`;
+    const url = `${this.state.baseUrl}api/audio/${this.state.zone.zoneId}/volume/down`;
 
     const thing = this;
     fetch(url, {
-      method: "POST", mode: 'no-cors'
+      method: "POST", mode: 'cors'
     }).then(function () {
       thing.setState((prevState, props) => {
         return {volume: prevState.volume - 2};
@@ -144,11 +155,11 @@ class ZoneInformation extends React.Component {
 
   powerToggled(originalPower) {
     const power = !originalPower;
-    const url = `${baseUrl}/api/audio/${this.state.zone.zoneId}/power/${power}`;
+    const url = `${this.state.baseUrl}api/audio/${this.state.zone.zoneId}/power/${power}`;
 
     const thing = this;
     fetch(url, {
-      method: "POST", mode: 'no-cors'
+      method: "POST", mode: 'cors'
     }).then(function () {
       thing.setState({power: power})
     });
