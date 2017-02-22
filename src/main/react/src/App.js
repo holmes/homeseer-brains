@@ -29,7 +29,7 @@ class App extends Component {
   componentDidMount() {
     let thing = this;
 
-    fetch(this.state.baseUrl, { mode: 'cors' } )
+    fetch(`${this.state.baseUrl}api/audio/zoneInfo`, { mode: 'cors' } )
     .then(function(response) {
       return response.json()
     }).then(function(json) {

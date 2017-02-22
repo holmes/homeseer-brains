@@ -26,8 +26,7 @@ class Ponderosa(val readerDescriptor: RussoundReader) {
   val russoundReceiverThread = Thread(Runnable { russoundCommandReceiver.start() }, "russound-input-receiver")
 
   fun start() {
-//    externalStaticFileLocation("src/main/webapp/public")
-    staticFileLocation("/public")
+    staticFileLocation("/public/react")
 
     val transformerModule = TransformerModule()
 

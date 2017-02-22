@@ -22,7 +22,8 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
       LOG.info("Requested: " + request.pathInfo())
     })
 
-    get("/", Route { _, _ ->
+    get("/api/audio/zoneInfo", Route { _, response ->
+      response.type("application/json")
       RootFetchInfo(
           sources = sources.all.sortedBy { it.sourceNumber },
           zoneInformation = audioManager.zoneInformation.values.sortedBy { it.zone.zoneNumber }
