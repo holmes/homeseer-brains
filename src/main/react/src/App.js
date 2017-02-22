@@ -64,6 +64,23 @@ class App extends Component {
   }
 }
 
+function PanelHeader(props) {
+  return (
+      <Grid>
+        <Row className="show-grid">
+          <Col xs={10}>
+            <span className="zoneName">{props.zoneName}</span>
+          </Col>
+          <Col xs={2}>
+            <ToggleButton value={props.power} onToggle={(value) => {
+              props.onToggle(value)
+            }}/>
+          </Col>
+        </Row>
+      </Grid>
+  )
+}
+
 class SourceSelector extends React.Component {
   sourceName(sourceId) {
     if (sourceId === undefined || isNaN(sourceId)) {
@@ -79,10 +96,9 @@ class SourceSelector extends React.Component {
   }
 
   render() {
-    let id = this.props.zoneId + "SourceSelector";
     return (
         <DropdownButton
-            id={id}
+            id={this.props.zoneId + "SourceSelector"}
             className="source-selector"
             title={this.sourceName(this.props.selectedSourceId)}
             value={this.props.selectedSourceId}
@@ -105,19 +121,17 @@ class SourceSelector extends React.Component {
   }
 }
 
-class VolumeSection extends React.Component {
-  render() {
-    return (
+function VolumeSection(props) {
+  return (
+    <ButtonGroup justified bsSize="large">
       <ButtonGroup justified bsSize="large">
-        <ButtonGroup justified bsSize="large">
-          <Button bsStyle="success" onClick={this.props.volumeDown}>Volume Down</Button>
-        </ButtonGroup>
-        <ButtonGroup justified bsSize="large">
-          <Button bsStyle="primary" onClick={this.props.volumeUp}>Volume Up</Button>
-        </ButtonGroup>
+        <Button bsStyle="success" onClick={props.volumeDown}>Volume Down</Button>
       </ButtonGroup>
-    )
-  }
+      <ButtonGroup justified bsSize="large">
+        <Button bsStyle="primary" onClick={props.volumeUp}>Volume Up</Button>
+      </ButtonGroup>
+    </ButtonGroup>
+  )
 }
 
 // TODO I think it's time to move callbacks to App.
@@ -140,6 +154,7 @@ class ZoneInformation extends React.Component {
     this.volumeUp = this.volumeUp.bind(this);
     this.volumeDown = this.volumeDown.bind(this);
     this.sourceChanged = this.sourceChanged.bind(this);
+    this.powerToggled = this.powerToggled.bind(this);
   }
 
   sourceChanged(sourceId) {
@@ -192,21 +207,12 @@ class ZoneInformation extends React.Component {
   }
 
   render() {
-    const powerValue = this.state.power;
-
     let panelHeader = (
-        <Grid>
-          <Row className="show-grid">
-            <Col xs={10}>
-              <span className="zoneName">{this.state.zone.name}</span>
-            </Col>
-            <Col xs={2}>
-              <ToggleButton value={powerValue} onToggle={(value) => {
-                this.powerToggled(value)
-              }}/>
-            </Col>
-          </Row>
-        </Grid>
+        <PanelHeader
+            zoneName={this.state.zone.name}
+            power={this.state.power}
+            onToggle={this.powerToggled}
+        />
     );
 
     return (
@@ -226,6 +232,12 @@ class ZoneInformation extends React.Component {
     )
   };
 }
+
+PanelHeader.propTypes = {
+  zoneName: PropTypes.string.isRequired,
+  power: PropTypes.bool,
+  onToggle: PropTypes.func.isRequired
+};
 
 SourceSelector.propTypes = {
   zoneId: PropTypes.number.isRequired, //
