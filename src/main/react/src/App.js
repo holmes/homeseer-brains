@@ -105,6 +105,21 @@ class SourceSelector extends React.Component {
   }
 }
 
+class VolumeSection extends React.Component {
+  render() {
+    return (
+      <ButtonGroup justified bsSize="large">
+        <ButtonGroup justified bsSize="large">
+          <Button bsStyle="success" onClick={this.props.volumeDown}>Volume Down</Button>
+        </ButtonGroup>
+        <ButtonGroup justified bsSize="large">
+          <Button bsStyle="primary" onClick={this.props.volumeUp}>Volume Up</Button>
+        </ButtonGroup>
+      </ButtonGroup>
+    )
+  }
+}
+
 // TODO I think it's time to move callbacks to App.
 class ZoneInformation extends React.Component {
   constructor(props) {
@@ -135,17 +150,6 @@ class ZoneInformation extends React.Component {
       method: "POST", mode: 'cors'
     }).then(function () {
       thing.setState({sourceId: sourceId})
-    });
-  }
-
-  volumeChanged(volume) {
-    const url = `${this.props.baseUrl}api/audio/${this.state.zone.zoneId}/volume/${volume}`;
-
-    const thing = this;
-    fetch(url, {
-      method: "POST", mode: 'cors'
-    }).then(function () {
-      thing.setState({volume: volume})
     });
   }
 
@@ -207,7 +211,6 @@ class ZoneInformation extends React.Component {
 
     return (
         <Panel header={panelHeader}>
-
           <SourceSelector
               zoneId={this.state.zone.zoneId}
               selectedSourceId={this.state.sourceId}
@@ -215,14 +218,10 @@ class ZoneInformation extends React.Component {
               sourceChanged={this.sourceChanged}
           />
 
-          <ButtonGroup justified bsSize="large">
-            <ButtonGroup justified bsSize="large">
-              <Button bsStyle="success" onClick={this.volumeDown}>Volume Down</Button>
-            </ButtonGroup>
-            <ButtonGroup justified bsSize="large">
-              <Button bsStyle="primary" onClick={this.volumeUp}>Volume Up</Button>
-            </ButtonGroup>
-          </ButtonGroup>
+          <VolumeSection
+            volumeUp={this.volumeUp}
+            volumeDown={this.volumeDown}
+          />
         </Panel>
     )
   };
@@ -235,6 +234,11 @@ SourceSelector.propTypes = {
     name: PropTypes.string.isRequired, sourceId: PropTypes.number.isRequired
   })).isRequired,
   sourceChanged: PropTypes.func.isRequired
+};
+
+VolumeSection.propTypes = {
+  volumeUp: PropTypes.func.isRequired,
+  volumeDown: PropTypes.func.isRequired,
 };
 
 ZoneInformation.propTypes = {
