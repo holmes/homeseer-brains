@@ -72,9 +72,7 @@ function PanelHeader(props) {
             <span className="zoneName">{props.zoneName}</span>
           </Col>
           <Col xs={2}>
-            <ToggleButton value={props.power} onToggle={(value) => {
-              props.onToggle(value)
-            }}/>
+            <ToggleButton value={props.power} onToggle={props.onToggle} />
           </Col>
         </Row>
       </Grid>
@@ -102,9 +100,7 @@ class SourceSelector extends React.Component {
             className="source-selector"
             title={this.sourceName(this.props.selectedSourceId)}
             value={this.props.selectedSourceId}
-            onSelect={(eventKey) => {
-              this.props.sourceChanged(eventKey)
-            }}
+            onSelect={this.props.sourceChanged}
         >
           {this.props.sources.map(source => {
             return (
@@ -134,7 +130,6 @@ function VolumeSection(props) {
   )
 }
 
-// TODO I think it's time to move callbacks to App.
 class ZoneInformation extends React.Component {
   constructor(props) {
     super(props);
@@ -175,8 +170,8 @@ class ZoneInformation extends React.Component {
     fetch(url, {
       method: "POST", mode: 'cors'
     }).then(function () {
-      thing.setState((prevState, props) => {
-        return {volume: prevState.volume + 2};
+      thing.setState((prevState) => {
+        return { volume: prevState.volume + 2 };
       })
     });
   }
@@ -188,8 +183,8 @@ class ZoneInformation extends React.Component {
     fetch(url, {
       method: "POST", mode: 'cors'
     }).then(function () {
-      thing.setState((prevState, props) => {
-        return {volume: prevState.volume - 2};
+      thing.setState((prevState) => {
+        return { volume: prevState.volume - 2 };
       })
     });
   }
