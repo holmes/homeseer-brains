@@ -1,11 +1,10 @@
 package holmes.ponderosa.audio
 
 class RussoundCommands {
-
   fun requestStatus(zone: Zone): ByteArray {
     val bytes = statusBytes
 
-    bytes[11] = zone.zoneId.toByte()
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
     bytes[15] = calculateChecksum(bytes)
 
     return bytes
@@ -15,7 +14,7 @@ class RussoundCommands {
     val bytes = powerBytes
 
     bytes[15] = 0x01.toByte()
-    bytes[17] = zone.zoneId.toByte()
+    bytes[17] = zone.zoneNumber.minus(1).toByte()
     bytes[20] = calculateChecksum(bytes)
 
     return bytes
@@ -25,7 +24,7 @@ class RussoundCommands {
     val bytes = powerBytes
 
     bytes[15] = 0x00.toByte()
-    bytes[17] = zone.zoneId.toByte()
+    bytes[17] = zone.zoneNumber.minus(1).toByte()
     bytes[20] = calculateChecksum(bytes)
 
     return bytes
@@ -34,7 +33,7 @@ class RussoundCommands {
   fun listen(zone: Zone, source: Source): ByteArray {
     val bytes = sourceSelectBytes
 
-    bytes[5] = zone.zoneId.toByte()
+    bytes[5] = zone.zoneNumber.minus(1).toByte()
     bytes[17] = source.sourceId.toByte()
     bytes[20] = calculateChecksum(bytes)
 
@@ -45,7 +44,7 @@ class RussoundCommands {
     val bytes = setVolumeBytes
 
     bytes[15] = (level / 2).toByte()
-    bytes[17] = zone.zoneId.toByte()
+    bytes[17] = zone.zoneNumber.minus(1).toByte()
     bytes[20] = calculateChecksum(bytes)
 
     return bytes
@@ -54,7 +53,7 @@ class RussoundCommands {
   fun volumeUp(zone: Zone): ByteArray {
     val bytes = volumeUpBytes
 
-    bytes[5] = zone.zoneId.toByte()
+    bytes[5] = zone.zoneNumber.minus(1).toByte()
     bytes[19] = calculateChecksum(bytes)
 
     return bytes
@@ -63,7 +62,7 @@ class RussoundCommands {
   fun volumeDown(zone: Zone): ByteArray {
     val bytes = volumeDownBytes
 
-    bytes[5] = zone.zoneId.toByte()
+    bytes[5] = zone.zoneNumber.minus(1).toByte()
     bytes[20] = calculateChecksum(bytes)
 
     return bytes
@@ -72,7 +71,7 @@ class RussoundCommands {
   fun turnOnVolume(zone: Zone, level: Int): ByteArray {
     val bytes = setTurnOnVolumeBytes
 
-    bytes[11] = zone.zoneId.toByte()
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
     bytes[21] = (level / 2).toByte()
     bytes[22] = calculateChecksum(bytes)
 
