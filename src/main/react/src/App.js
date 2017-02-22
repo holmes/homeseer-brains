@@ -48,7 +48,8 @@ class App extends Component {
       return (
           <div className="App">
             {this.state.zoneInformation.map(zoneInfo => {
-              return <ZoneInformation key={zoneInfo.zone.zoneId} zoneInfo={zoneInfo}
+              return <ZoneInformation key={zoneInfo.zone.zoneId}
+                                      zoneInfo={zoneInfo}
                                       baseUrl={this.state.baseUrl}
                                       sources={this.state.sources}/>
             })}
