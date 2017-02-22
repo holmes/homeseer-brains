@@ -15,6 +15,13 @@ fun Byte.toHexString(): String {
   return "$char1$char2".toUpperCase()
 }
 
+fun ByteArray.toHexString(forCommandLine: Boolean = false): String {
+  return map(Byte::toHexString)
+      .joinToString(
+          separator = (if (forCommandLine) "\\x" else ""),
+          prefix = if (forCommandLine) "\\x" else "")
+}
+
 fun ByteArray.toHexString(): String {
   return map(Byte::toHexString)
       .joinToString(separator = "")

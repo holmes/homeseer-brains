@@ -1,9 +1,12 @@
 package holmes.ponderosa.audio
 
+import holmes.ponderosa.util.toHexString
+import org.slf4j.LoggerFactory
 import java.io.OutputStream
 
-class AudioCommander(val russoundCommands: RussoundCommands, val outputStream: OutputStream) {
+private val LOG = LoggerFactory.getLogger(AudioCommander::class.java)
 
+class AudioCommander(val russoundCommands: RussoundCommands, val outputStream: OutputStream) {
   fun requestStatus(zone: Zone) {
     sendCommand(russoundCommands.requestStatus(zone))
   }
@@ -32,6 +35,7 @@ class AudioCommander(val russoundCommands: RussoundCommands, val outputStream: O
   }
 
   private fun sendCommand(command: ByteArray) {
+    LOG.info("Sending message: ${command.toHexString()}")
     outputStream.write(command)
     outputStream.flush()
   }
