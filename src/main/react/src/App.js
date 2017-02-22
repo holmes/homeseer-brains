@@ -171,7 +171,10 @@ class ZoneInformation extends React.Component {
       method: "POST", mode: 'cors'
     }).then(function () {
       thing.setState((prevState) => {
-        return { volume: prevState.volume + 2 };
+        return {
+          power: true,
+          volume: prevState.volume + 2
+        };
       })
     });
   }
@@ -184,7 +187,10 @@ class ZoneInformation extends React.Component {
       method: "POST", mode: 'cors'
     }).then(function () {
       thing.setState((prevState) => {
-        return { volume: prevState.volume - 2 };
+        return {
+          power: true,
+          volume: prevState.volume - 2
+        };
       })
     });
   }
