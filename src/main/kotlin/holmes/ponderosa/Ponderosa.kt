@@ -4,7 +4,7 @@ import holmes.ponderosa.audio.AudioModule
 import holmes.ponderosa.audio.DaggerAudio
 import holmes.ponderosa.audio.ReceivedZoneInfo
 import holmes.ponderosa.audio.RussoundCommandReceiver
-import holmes.ponderosa.audio.RussoundReader
+import holmes.ponderosa.audio.RussoundReaderDescriptor
 import holmes.ponderosa.audio.TransformerModule
 import holmes.ponderosa.lights.DaggerLights
 import holmes.ponderosa.lights.LightModule
@@ -18,7 +18,7 @@ import java.io.OutputStream
 private val LOG = LoggerFactory.getLogger(Ponderosa::class.java)
 
 /** The main initializer. */
-class Ponderosa(val readerDescriptor: RussoundReader) {
+class Ponderosa(val readerDescriptor: RussoundReaderDescriptor) {
   lateinit var receivedMessageSubject: PublishSubject<ReceivedZoneInfo>
   lateinit var russoundCommandReceiver: RussoundCommandReceiver
   lateinit var outputStream: OutputStream
@@ -60,7 +60,7 @@ class Ponderosa(val readerDescriptor: RussoundReader) {
 
 /** Application for jetty deploy. */
 class PonderosaSparkApplication : SparkApplication {
-  val ponderosa = Ponderosa(object : RussoundReader {
+  val ponderosa = Ponderosa(object : RussoundReaderDescriptor {
     override val descriptor: File
       get() {
         return when {
@@ -89,7 +89,7 @@ class PonderosaSparkApplication : SparkApplication {
 /** Embedded application for development. */
 object PonderosaEmbedded {
   @JvmStatic fun main(args: Array<String>) {
-    Ponderosa(object : RussoundReader {
+    Ponderosa(object : RussoundReaderDescriptor {
       override val descriptor: File
         get() = File("/dev/ttys003")
 

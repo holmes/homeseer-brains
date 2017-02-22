@@ -10,7 +10,7 @@ import java.io.InputStream
 
 private val LOG = LoggerFactory.getLogger(RussoundCommandReceiver::class.java)
 
-interface RussoundReader {
+interface RussoundReaderDescriptor {
   val descriptor: File
   val startMessage: Int
   val endMessage: Int
@@ -23,7 +23,7 @@ interface RussoundReader {
  * Also, the USB driver doesn't flush all the bytes as they come in, so getting status will probably require an
  * extra read to ensure the requested messages make it all the way through.
  */
-class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReader, private val receivedMessageSubject: PublishSubject<ReceivedZoneInfo>) {
+class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDescriptor, private val receivedMessageSubject: PublishSubject<ReceivedZoneInfo>) {
   private enum class State {
     LOOKING_FOR_START, LOOKING_FOR_END
   }

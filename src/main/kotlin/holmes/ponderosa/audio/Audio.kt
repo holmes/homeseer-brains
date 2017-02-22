@@ -35,7 +35,7 @@ annotation class RussoundCAA66
   @Singleton @Provides fun jsonTransformer(gson: Gson) = JsonTransformer(gson)
 }
 
-@Module class AudioModule(val readerDescriptor: RussoundReader) {
+@Module class AudioModule(val readerDescriptor: RussoundReaderDescriptor) {
   @Singleton @Provides fun zones() = Zones()
   @Singleton @Provides fun sources() = Sources()
   @Singleton @Provides fun russoundCommands() = RussoundCommands()

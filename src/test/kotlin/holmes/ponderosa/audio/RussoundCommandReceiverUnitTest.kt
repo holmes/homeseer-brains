@@ -9,12 +9,12 @@ import org.junit.Test
 import java.io.File
 
 class RussoundCommandReceiverUnitTest {
-  lateinit var readerDescriptor: RussoundReader
+  lateinit var readerDescriptor: RussoundReaderDescriptor
   lateinit var russound: RussoundCommandReceiver
   val subject: PublishSubject<ReceivedZoneInfo> = PublishSubject.create()
 
   @Before fun setUp() {
-    readerDescriptor = object : RussoundReader {
+    readerDescriptor = object : RussoundReaderDescriptor {
       override val descriptor: File
         get() = File("/dev/null")
       override val startMessage: Int
