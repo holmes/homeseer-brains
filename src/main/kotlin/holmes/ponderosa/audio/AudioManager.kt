@@ -14,7 +14,9 @@ private val LOG = LoggerFactory.getLogger(AudioManager::class.java)
  * The brains of the operation. Now we have to decide - send this information to Homeseer and
  * let it be the brains, or just let this store all the info.
  */
-class AudioManager(val zones: Zones, val sources: Sources, val audioCommander: AudioCommander, receivedZoneInfo: Observable<ReceivedZoneInfo>) {
+class AudioManager(private val zones: Zones, private val sources: Sources,
+                   private val audioCommander: AudioCommander, receivedZoneInfo: Observable<ReceivedZoneInfo>) {
+
   private val allZoneInfo: MutableMap<Zone, ZoneInfo> = HashMap()
 
   val zoneInformation: Map<Zone, ZoneInfo>
@@ -33,18 +35,18 @@ class AudioManager(val zones: Zones, val sources: Sources, val audioCommander: A
     audioCommander.requestStatus(zone)
   }
 
-  fun power(zone: Zone, power: PowerChange) {
+  fun power(zone: Zone, power: PowerChange): ZoneInfo {
     audioCommander.power(zone, power)
     val oldZone = allZoneInfo[zone]
     val newZone = ZoneInfo(zone, oldZone?.source, power.isOn, oldZone?.volume)
-    updateZone(newZone)
+    return updateZone(newZone)
   }
 
-  fun change(zone: Zone, source: Source) {
+  fun source(zone: Zone, source: Source): ZoneInfo {
     audioCommander.changeSource(zone, source)
     val oldZone = allZoneInfo[zone]
     val newZone = ZoneInfo(zone, source, oldZone?.power, oldZone?.volume)
-    updateZone(newZone)
+    return updateZone(newZone)
   }
 
   /** Sets the initial volume when the zone is turned on. */
@@ -53,7 +55,7 @@ class AudioManager(val zones: Zones, val sources: Sources, val audioCommander: A
     audioCommander.initialVolume(zone, volume)
   }
 
-  fun volume(zone: Zone, volume: VolumeChange) {
+  fun volume(zone: Zone, volume: VolumeChange): ZoneInfo {
     audioCommander.volume(zone, volume)
     val oldZone = allZoneInfo[zone]
 
@@ -63,12 +65,14 @@ class AudioManager(val zones: Zones, val sources: Sources, val audioCommander: A
       is VolumeChange.Set -> volume.level
     }
 
-    val newZone = ZoneInfo(zone, oldZone?.source, oldZone?.power, level)
-    updateZone(newZone)
+    // Changing the volume automatically turns the zone on.
+    val newZone = ZoneInfo(zone, oldZone?.source, true, level)
+    return updateZone(newZone)
   }
 
-  private fun updateZone(updatedInfo: ZoneInfo) {
+  private fun updateZone(updatedInfo: ZoneInfo): ZoneInfo {
     this.allZoneInfo.put(updatedInfo.zone, updatedInfo)
+    return updatedInfo
   }
 
   private fun updateZone(zoneInfo: ReceivedZoneInfo) {

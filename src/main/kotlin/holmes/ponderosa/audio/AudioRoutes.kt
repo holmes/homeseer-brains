@@ -72,7 +72,7 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
         val zone = request.zone() ?: return@post -1
         val source = request.source() ?: return@post -1
 
-        audioManager.change(zone, source)
+        audioManager.source(zone, source)
         return@post "${zone.name} is now listening to ${source.name}"
       }
 
