@@ -2,7 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import './App.css';
 
 import {
-  Button, DropdownButton, ButtonGroup, MenuItem, Panel, Grid, Row, Col
+  Button, DropdownButton, ButtonGroup, MenuItem, Panel, Grid, Row, Col, FormGroup,
+  ControlLabel, Glyphicon
 } from 'react-bootstrap';
 import ToggleButton from 'react-toggle-button';
 
@@ -65,15 +66,75 @@ class App extends Component {
   }
 }
 
+function AdvancedPanel(props) {
+  return (
+    <Panel className="advancedPanel" collapsible expanded={props.visible}>
+        <FormGroup controlId="balance">
+          <Col className="adjustmentLabel" componentClass={ControlLabel} sm={2}>Balance</Col>
+          <Col sm={10}>
+            <ButtonGroup justified bsSize="large" className="adjustmentGroup">
+              <ButtonGroup justified bsSize="large">
+                <Button bsStyle="success" onClick={() => { props.balance("left") }}>Left</Button>
+              </ButtonGroup>
+              <ButtonGroup justified bsSize="large">
+                <Button bsStyle="primary" onClick={() => { props.balance("center") }}>Center</Button>
+              </ButtonGroup>
+              <ButtonGroup justified bsSize="large">
+                <Button bsStyle="success" onClick={() => { props.balance("right") }}>Right</Button>
+              </ButtonGroup>
+            </ButtonGroup>
+          </Col>
+        </FormGroup>
+        <FormGroup controlId="bass">
+          <Col className="adjustmentLabel"componentClass={ControlLabel} sm={2}>Bass</Col>
+          <Col sm={10}>
+            <ButtonGroup justified bsSize="large" className="adjustmentGroup">
+              <ButtonGroup justified bsSize="large">
+                <Button bsStyle="success" onClick={() => { props.bass("down") }}>Down</Button>
+              </ButtonGroup>
+              <ButtonGroup justified bsSize="large">
+                <Button bsStyle="primary" onClick={() => { props.bass("flat") }}>Flat</Button>
+              </ButtonGroup>
+              <ButtonGroup justified bsSize="large">
+                <Button bsStyle="success" onClick={() => { props.bass("up") }}>Up</Button>
+              </ButtonGroup>
+            </ButtonGroup>
+          </Col>
+        </FormGroup>
+        <FormGroup controlId="treble">
+          <Col className="adjustmentLabel"componentClass={ControlLabel} sm={2}>Treble</Col>
+          <Col sm={10}>
+            <ButtonGroup justified bsSize="large"className="adjustmentGroup">
+              <ButtonGroup justified bsSize="large">
+                <Button bsStyle="success" onClick={() => { props.treble("down") }}>Down</Button>
+              </ButtonGroup>
+              <ButtonGroup justified bsSize="large">
+                <Button bsStyle="primary" onClick={() => { props.treble("flat") }}>Flat</Button>
+              </ButtonGroup>
+              <ButtonGroup justified bsSize="large">
+                <Button bsStyle="success" onClick={() => { props.treble("up") }}>Up</Button>
+              </ButtonGroup>
+            </ButtonGroup>
+          </Col>
+        </FormGroup>
+    </Panel>
+  )
+}
+
 function PanelHeader(props) {
   return (
       <Grid>
         <Row className="show-grid">
-          <Col xs={10}>
+          <Col xs={1} className="powerToggle">
+            <ToggleButton value={props.power} onToggle={props.onToggle} />
+          </Col>
+          <Col xs={9}>
             <span className="zoneName">{props.zoneName}</span>
           </Col>
-          <Col xs={2}>
-            <ToggleButton value={props.power} onToggle={props.onToggle} />
+          <Col xs={1}>
+            <Button onClick={props.onAdvancedClicked} active={props.advancedVisible}>
+              <Glyphicon glyph="cog"/>
+            </Button>
           </Col>
         </Row>
       </Grid>
@@ -122,10 +183,10 @@ function VolumeSection(props) {
   return (
     <ButtonGroup justified bsSize="large">
       <ButtonGroup justified bsSize="large">
-        <Button bsStyle="success" onClick={props.volumeDown}>Volume Down</Button>
+        <Button bsStyle="success" onClick={() => { props.volumeChanged("down") }}>Volume Down</Button>
       </ButtonGroup>
       <ButtonGroup justified bsSize="large">
-        <Button bsStyle="primary" onClick={props.volumeUp}>Volume Up</Button>
+        <Button bsStyle="primary" onClick={() => { props.volumeChanged("up") }}>Volume Up</Button>
       </ButtonGroup>
     </ButtonGroup>
   )
@@ -145,12 +206,16 @@ class ZoneInformation extends React.Component {
       sourceId: sourceId,
       volume: volume,
       power: power,
+      advancedVisible: false
     };
 
-    this.volumeUp = this.volumeUp.bind(this);
-    this.volumeDown = this.volumeDown.bind(this);
+    this.volumeChanged = this.volumeChanged.bind(this);
     this.sourceChanged = this.sourceChanged.bind(this);
     this.powerToggled = this.powerToggled.bind(this);
+    this.bassChanged = this.bassChanged.bind(this);
+    this.trebleChanged = this.trebleChanged.bind(this);
+    this.balanceChanged = this.balanceChanged.bind(this);
+    this.advancedClicked = this.advancedClicked.bind(this);
   }
 
   sourceChanged(sourceId) {
@@ -164,35 +229,14 @@ class ZoneInformation extends React.Component {
     });
   }
 
-  volumeUp() {
-    const url = `${this.props.baseUrl}api/audio/${this.state.zone.zoneId}/volume/up`;
+  volumeChanged(type) {
+    const url = `${this.props.baseUrl}api/audio/${this.state.zone.zoneId}/volume/${type}`;
 
     const thing = this;
     fetch(url, {
       method: "POST", mode: 'cors'
     }).then(function () {
-      thing.setState((prevState) => {
-        return {
-          power: true,
-          volume: prevState.volume + 2
-        };
-      })
-    });
-  }
-
-  volumeDown() {
-    const url = `${this.props.baseUrl}api/audio/${this.state.zone.zoneId}/volume/down`;
-
-    const thing = this;
-    fetch(url, {
-      method: "POST", mode: 'cors'
-    }).then(function () {
-      thing.setState((prevState) => {
-        return {
-          power: true,
-          volume: prevState.volume - 2
-        };
-      })
+      thing.setState({power: true})
     });
   }
 
@@ -208,12 +252,41 @@ class ZoneInformation extends React.Component {
     });
   }
 
+  bassChanged(type) {
+    const url = `${this.props.baseUrl}api/audio/${this.state.zone.zoneId}/bass/${type}`;
+    fetch(url, {
+      method: "POST", mode: 'cors'
+    })
+  }
+
+  trebleChanged(type) {
+    const url = `${this.props.baseUrl}api/audio/${this.state.zone.zoneId}/treble/${type}`;
+    fetch(url, {
+      method: "POST", mode: 'cors'
+    })
+  }
+
+  balanceChanged(type) {
+    const url = `${this.props.baseUrl}api/audio/${this.state.zone.zoneId}/balance/${type}`;
+    fetch(url, {
+      method: "POST", mode: 'cors'
+    })
+  }
+
+  advancedClicked() {
+    this.setState((prevState) => {
+      return { advancedVisible: !prevState.advancedVisible }
+    })
+  }
+
   render() {
     let panelHeader = (
         <PanelHeader
             zoneName={this.state.zone.name}
             power={this.state.power}
             onToggle={this.powerToggled}
+            advancedVisible={this.state.advancedVisible}
+            onAdvancedClicked={this.advancedClicked}
         />
     );
 
@@ -227,8 +300,14 @@ class ZoneInformation extends React.Component {
           />
 
           <VolumeSection
-            volumeUp={this.volumeUp}
-            volumeDown={this.volumeDown}
+            volumeChanged={this.volumeChanged}
+          />
+
+          <AdvancedPanel
+            visible={this.state.advancedVisible}
+            bass={this.bassChanged}
+            treble={this.trebleChanged}
+            balance={this.balanceChanged}
           />
         </Panel>
     )
@@ -238,7 +317,9 @@ class ZoneInformation extends React.Component {
 PanelHeader.propTypes = {
   zoneName: PropTypes.string.isRequired,
   power: PropTypes.bool,
-  onToggle: PropTypes.func.isRequired
+  onToggle: PropTypes.func.isRequired,
+  advancedVisible: PropTypes.bool.isRequired,
+  onAdvancedClicked: PropTypes.func.isRequired
 };
 
 SourceSelector.propTypes = {
@@ -251,8 +332,14 @@ SourceSelector.propTypes = {
 };
 
 VolumeSection.propTypes = {
-  volumeUp: PropTypes.func.isRequired,
-  volumeDown: PropTypes.func.isRequired,
+  volumeChanged: PropTypes.func.isRequired,
+};
+
+AdvancedPanel.propType = {
+  visible: PropTypes.bool.isRequired,
+  bass: PropTypes.func.isRequired,
+  treble: PropTypes.func.isRequired,
+  balance: PropTypes.func.isRequired,
 };
 
 ZoneInformation.propTypes = {
@@ -263,7 +350,6 @@ ZoneInformation.propTypes = {
     source: PropTypes.shape({
       name: PropTypes.string.isRequired, sourceId: PropTypes.number.isRequired
     }), //
-    volume: PropTypes.number, //
     power: PropTypes.bool
   })
 };

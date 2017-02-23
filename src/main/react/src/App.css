@@ -9,9 +9,31 @@ body {
 }
 
 .zoneName {
+  font-size: 25px;
   font-weight: 600;
+  padding-left: 35px;
+}
+
+.powerToggle {
+  margin-top: 9px;
 }
 
 .source-selector {
   margin-bottom: 13px;
+}
+
+.advancedPanel, .adjustmentLabel {
+  margin-top: 13px;
+}
+
+.adjustmentGroup {
+  margin-bottom: 15px;
+}
+
+.show-grid .col-xs-1:first-child {
+  padding-left: 0px;
+}
+
+.show-grid .col-xs-1:last-child {
+  padding-right: 0px;
 }

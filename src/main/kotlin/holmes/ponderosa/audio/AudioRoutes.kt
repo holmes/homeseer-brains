@@ -121,11 +121,11 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
         when (bassParam.toLowerCase()) {
           "left" -> {
             audioManager.balance(zone, Balance.LEFT)
-            return@post "Balance turned up in ${zone.name}"
+            return@post "Balance shifted left in ${zone.name}"
           }
           "right" -> {
             audioManager.balance(zone, Balance.RIGHT)
-            return@post "Balance turned down in ${zone.name}"
+            return@post "Balance shifted right in ${zone.name}"
           }
           "center" -> {
             audioManager.balance(zone, Balance.CENTER)
