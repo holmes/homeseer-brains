@@ -40,6 +40,106 @@ class RussoundCommands {
     return bytes
   }
 
+  fun bassUp(zone: Zone): ByteArray {
+    val bytes = bassAdjustBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[15] = 0x69
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun bassDown(zone: Zone): ByteArray {
+    val bytes = bassAdjustBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[15] = 0x6A
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun bassFlat(zone: Zone): ByteArray {
+    val bytes = bassSetBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[21] = 0x0A
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun trebleUp(zone: Zone): ByteArray {
+    val bytes = trebleBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[15] = 0x69
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun trebleDown(zone: Zone): ByteArray {
+    val bytes = trebleBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[15] = 0x6A
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun trebleFlat(zone: Zone): ByteArray {
+    val bytes = trebleSetBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[21] = 0x0A
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun loudness(zone: Zone): ByteArray {
+    val bytes = loudnessBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[15] = 0x69
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun balanceLeft(zone: Zone): ByteArray {
+    val bytes = balanceAdjustBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[15] = 0x69
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun balanceRight(zone: Zone): ByteArray {
+    val bytes = balanceAdjustBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[15] = 0x6A
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
+  fun balanceCentered(zone: Zone): ByteArray {
+    val bytes = balanceSetBytes
+
+    bytes[11] = zone.zoneNumber.minus(1).toByte()
+    bytes[21] = 0x0A
+    bytes[22] = calculateChecksum(bytes)
+
+    return bytes
+  }
+
   fun volume(zone: Zone, level: Int): ByteArray {
     val bytes = setVolumeBytes
 
@@ -106,6 +206,32 @@ class RussoundCommands {
         0xf7.toByte()
     )
 
+  private val sourceSelectBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0xf1.toByte(),
+        0x3e.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
   private val setTurnOnVolumeBytes: ByteArray
     get() = byteArrayOf(
         0xf0.toByte(),
@@ -122,6 +248,202 @@ class RussoundCommands {
         0x00.toByte(),
         0x00.toByte(),
         0x04.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val bassAdjustBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x05.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val bassSetBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x00.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val trebleBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x05.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val trebleSetBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x00.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val loudnessBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x05.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val balanceAdjustBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x05.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x03.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x01.toByte(),
+        0x00.toByte(),
+        0xf7.toByte()
+    )
+
+  private val balanceSetBytes: ByteArray
+    get() = byteArrayOf(
+        0xf0.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x7f.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x70.toByte(),
+        0x00.toByte(),
+        0x05.toByte(),
+        0x02.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x00.toByte(),
+        0x03.toByte(),
         0x00.toByte(),
         0x00.toByte(),
         0x00.toByte(),
@@ -227,32 +549,6 @@ class RussoundCommands {
         0x00.toByte(),
         0xf1.toByte(),
         0x23.toByte(),
-        0x00.toByte(),
-        0x00.toByte(),
-        0x00.toByte(),
-        0x00.toByte(),
-        0x00.toByte(),
-        0x01.toByte(),
-        0x00.toByte(),
-        0xf7.toByte()
-    )
-
-  private val sourceSelectBytes: ByteArray
-    get() = byteArrayOf(
-        0xf0.toByte(),
-        0x00.toByte(),
-        0x00.toByte(),
-        0x7f.toByte(),
-        0x00.toByte(),
-        0x00.toByte(),
-        0x70.toByte(),
-        0x05.toByte(),
-        0x02.toByte(),
-        0x00.toByte(),
-        0x00.toByte(),
-        0x00.toByte(),
-        0xf1.toByte(),
-        0x3e.toByte(),
         0x00.toByte(),
         0x00.toByte(),
         0x00.toByte(),

@@ -31,11 +31,11 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
     }, jsonTransformer)
 
     path("/api/audio/:zoneId") {
-      post("/status") { request, _ ->
+      post("/requestStatus") { request, _ ->
         val zone = request.zone() ?: return@post -1
 
-        audioManager.status(zone)
-        return@post "Requesting status for ${zone.name}"
+        audioManager.requestStatus(zone)
+        return@post "Requesting requestStatus for ${zone.name}"
       }
 
       post("/power/:newValue") { request, _ ->
@@ -64,6 +64,75 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
             val volume = Math.min(100, volumeParam.toInt())
             audioManager.volume(zone, VolumeChange.Set(volume))
             return@post "Set ${zone.name} to $volume%"
+          }
+        }
+      }
+
+      post("/bass/:newValue") { request, _ ->
+        val zone = request.zone() ?: return@post -1
+
+        val bassParam = request.params("newValue")
+        when (bassParam.toLowerCase()) {
+          "up" -> {
+            audioManager.bass(zone, BassLevel.UP)
+            return@post "Bass turned up in ${zone.name}"
+          }
+          "down" -> {
+            audioManager.bass(zone, BassLevel.DOWN)
+            return@post "Bass turned down in ${zone.name}"
+          }
+          "flat" -> {
+            audioManager.bass(zone, BassLevel.FLAT)
+            return@post "Bass flattened in ${zone.name}"
+          }
+          else -> {
+            halt(400, "Unknown bass value. Accepted values: [up|flat|down] ")
+          }
+        }
+      }
+
+      post("/treble/:newValue") { request, _ ->
+        val zone = request.zone() ?: return@post -1
+
+        val bassParam = request.params("newValue")
+        when (bassParam.toLowerCase()) {
+          "up" -> {
+            audioManager.treble(zone, TrebleLevel.UP)
+            return@post "Treble turned up in ${zone.name}"
+          }
+          "down" -> {
+            audioManager.treble(zone, TrebleLevel.DOWN)
+            return@post "Treble turned down in ${zone.name}"
+          }
+          "flat" -> {
+            audioManager.treble(zone, TrebleLevel.FLAT)
+            return@post "Treble flattened in ${zone.name}"
+          }
+          else -> {
+            halt(400, "Unknown treble value. Accepted values: [up|flat|down] ")
+          }
+        }
+      }
+
+      post("/balance/:newValue") { request, _ ->
+        val zone = request.zone() ?: return@post -1
+
+        val bassParam = request.params("newValue")
+        when (bassParam.toLowerCase()) {
+          "left" -> {
+            audioManager.balance(zone, Balance.LEFT)
+            return@post "Balance turned up in ${zone.name}"
+          }
+          "right" -> {
+            audioManager.balance(zone, Balance.RIGHT)
+            return@post "Balance turned down in ${zone.name}"
+          }
+          "center" -> {
+            audioManager.balance(zone, Balance.CENTER)
+            return@post "Balance centered in ${zone.name}"
+          }
+          else -> {
+            halt(400, "Unknown treble value. Accepted values: [left|center|right] ")
           }
         }
       }

@@ -35,7 +35,7 @@ class RussoundCommandReceiverUnitTest {
     assertWithMessage("volume").that(zoneInfo.volume).isEqualTo(10)
     assertWithMessage("bass").that(zoneInfo.bass).isEqualTo(7)
     assertWithMessage("treble").that(zoneInfo.treble).isEqualTo(10)
-    assertWithMessage("loudness").that(zoneInfo.loudness).isEqualTo(true)
+    assertWithMessage("loudnessToggle").that(zoneInfo.loudness).isEqualTo(true)
     assertWithMessage("balance").that(zoneInfo.balance).isEqualTo(10)
     assertWithMessage("systemOn").that(zoneInfo.systemOn).isEqualTo(true)
   }
@@ -50,7 +50,7 @@ class RussoundCommandReceiverUnitTest {
     assertWithMessage("volume").that(zoneInfo.volume).isEqualTo(20)
     assertWithMessage("bass").that(zoneInfo.bass).isEqualTo(10)
     assertWithMessage("treble").that(zoneInfo.treble).isEqualTo(10)
-    assertWithMessage("loudness").that(zoneInfo.loudness).isEqualTo(false)
+    assertWithMessage("loudnessToggle").that(zoneInfo.loudness).isEqualTo(false)
     assertWithMessage("balance").that(zoneInfo.balance).isEqualTo(10)
     assertWithMessage("systemOn").that(zoneInfo.systemOn).isEqualTo(true)
   }

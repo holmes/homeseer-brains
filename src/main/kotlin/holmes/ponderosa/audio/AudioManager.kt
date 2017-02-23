@@ -31,7 +31,7 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
     receivedZoneInfo.subscribe(this::updateZone)
   }
 
-  fun status(zone: Zone) {
+  fun requestStatus(zone: Zone) {
     audioCommander.requestStatus(zone)
   }
 
@@ -68,6 +68,22 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
     // Changing the volume automatically turns the zone on.
     val newZone = ZoneInfo(zone, oldZone?.source, true, level)
     return updateZone(newZone)
+  }
+
+  fun bass(zone: Zone, bass: BassLevel) {
+    audioCommander.bass(zone, bass)
+  }
+
+  fun treble(zone: Zone, treble: TrebleLevel) {
+    audioCommander.treble(zone, treble)
+  }
+
+  fun loudnessToggle(zone: Zone) {
+    audioCommander.loudness(zone)
+  }
+
+  fun balance(zone: Zone, balance: Balance) {
+    audioCommander.balance(zone, balance)
   }
 
   private fun updateZone(updatedInfo: ZoneInfo): ZoneInfo {

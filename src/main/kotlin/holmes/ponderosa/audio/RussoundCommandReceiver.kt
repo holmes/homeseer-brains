@@ -17,10 +17,10 @@ interface RussoundReaderDescriptor {
 }
 
 /**
- * The receiver does some weird shit. Zone 5 isn't reporting status correctly - it's missing the zone bit.
+ * The receiver does some weird shit. Zone 5 isn't reporting requestStatus correctly - it's missing the zone bit.
  * I have no idea if that's because there aren't any speakers connected to it - or if it's just dumb.
  *
- * Also, the USB driver doesn't flush all the bytes as they come in, so getting status will probably require an
+ * Also, the USB driver doesn't flush all the bytes as they come in, so getting requestStatus will probably require an
  * extra read to ensure the requested messages make it all the way through.
  */
 class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDescriptor, private val receivedMessageSubject: PublishSubject<ReceivedZoneInfo>) {

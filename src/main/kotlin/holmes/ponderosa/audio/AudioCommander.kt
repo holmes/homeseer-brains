@@ -30,6 +30,34 @@ class AudioCommander(val russoundCommands: RussoundCommands, val outputStream: O
     sendCommand(russoundCommands.listen(zone, source))
   }
 
+  fun bass(zone: Zone, bass: BassLevel) {
+    sendCommand(when (bass) {
+      BassLevel.UP -> russoundCommands.bassUp(zone)
+      BassLevel.DOWN -> russoundCommands.bassDown(zone)
+      BassLevel.FLAT -> russoundCommands.bassFlat(zone)
+    })
+  }
+
+  fun treble(zone: Zone, treble: TrebleLevel) {
+    sendCommand(when (treble) {
+      TrebleLevel.UP -> russoundCommands.trebleUp(zone)
+      TrebleLevel.DOWN -> russoundCommands.trebleDown(zone)
+      TrebleLevel.FLAT -> russoundCommands.trebleFlat(zone)
+    })
+  }
+
+  fun balance(zone: Zone, balance: Balance) {
+    sendCommand(when (balance) {
+      Balance.LEFT -> russoundCommands.balanceLeft(zone)
+      Balance.RIGHT -> russoundCommands.balanceRight(zone)
+      Balance.CENTER -> russoundCommands.balanceCentered(zone)
+    })
+  }
+
+  fun loudness(zone: Zone) {
+    sendCommand(russoundCommands.loudness(zone))
+  }
+
   fun initialVolume(zone: Zone, volume: Int) {
     sendCommand(russoundCommands.turnOnVolume(zone, volume))
   }

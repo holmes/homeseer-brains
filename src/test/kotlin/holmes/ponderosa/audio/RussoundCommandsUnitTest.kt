@@ -119,12 +119,112 @@ class RussoundCommandsUnitTest {
   }
 
   @Test fun testTurnOnVolumeZone1() {
-    val expected = "F0 00 00 7F 00 00 70 00 05 02 00 00 00 04 00 00 00 01 00 01 00 0B 0D F7".replace(" ", "") .toHexByteArray()
+    val expected = "F0 00 00 7F 00 00 70 00 05 02 00 00 00 04 00 00 00 01 00 01 00 0B 0D F7".replace(" ", "").toHexByteArray()
     assertThat(russoundCommands.turnOnVolume(zone1, 22)).isEqualTo(expected)
   }
 
   @Test fun testTurnOnVolumeZone2() {
     val expected = "F000007F00007000050200010004000000010001001619F7".toHexByteArray()
     assertThat(russoundCommands.turnOnVolume(zone2, 44)).isEqualTo(expected)
+  }
+
+  @Test fun testBassUpZone1() {
+    val expected = "F000007F0000700505020000000000690000000000016BF7".toHexByteArray()
+    assertThat(russoundCommands.bassUp(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testBassUpZone2() {
+    val expected = "F000007F0000700505020001000000690000000000016CF7".toHexByteArray()
+    assertThat(russoundCommands.bassUp(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testBassDownZone1() {
+    val expected = "F000007F00007005050200000000006A0000000000016CF7".toHexByteArray()
+    assertThat(russoundCommands.bassDown(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testBassDownZone2() {
+    val expected = "F000007F00007005050200010000006A0000000000016DF7".toHexByteArray()
+    assertThat(russoundCommands.bassDown(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testBassFlatZone1() {
+    val expected = "F000007F00007000050200000000000000010001000A08F7".toHexByteArray()
+    assertThat(russoundCommands.bassFlat(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testBassFlatZone2() {
+    val expected = "F000007F00007000050200010000000000010001000A09F7".toHexByteArray()
+    assertThat(russoundCommands.bassFlat(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testTrebleUpZone1() {
+    val expected = "F000007F0000700505020000000100690000000000016CF7".toHexByteArray()
+    assertThat(russoundCommands.trebleUp(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testTrebleUpZone2() {
+    val expected = "F000007F0000700505020001000100690000000000016DF7".toHexByteArray()
+    assertThat(russoundCommands.trebleUp(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testTrebleDownZone1() {
+    val expected = "F000007F00007005050200000001006A0000000000016DF7".toHexByteArray()
+    assertThat(russoundCommands.trebleDown(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testTrebleDownZone2() {
+    val expected = "F000007F00007005050200010001006A0000000000016EF7".toHexByteArray()
+    assertThat(russoundCommands.trebleDown(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testTrebleFlatZone1() {
+    val expected = "F000007F00007000050200000001000000010001000A09F7".toHexByteArray()
+    assertThat(russoundCommands.trebleFlat(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testTrebleFlatZone2() {
+    val expected = "F000007F00007000050200010001000000010001000A0AF7".toHexByteArray()
+    assertThat(russoundCommands.trebleFlat(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testLoudnessToggleZone1() {
+    val expected = "F000007F0000700505020000000200690000000000016DF7".toHexByteArray()
+    assertThat(russoundCommands.loudness(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testLoudnessToggleZone2() {
+    val expected = "F000007F0000700505020001000200690000000000016EF7".toHexByteArray()
+    assertThat(russoundCommands.loudness(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testBalanceLeftZone1() {
+    val expected = "F000007F0000700505020000000300690000000000016EF7".toHexByteArray()
+    assertThat(russoundCommands.balanceLeft(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testBalanceLeftZone2() {
+    val expected = "F000007F0000700505020001000300690000000000016FF7".toHexByteArray()
+    assertThat(russoundCommands.balanceLeft(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testBalanceRightZone1() {
+    val expected = "F000007F00007005050200000003006A0000000000016FF7".toHexByteArray()
+    assertThat(russoundCommands.balanceRight(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testBalanceRightZone2() {
+    val expected = "F000007F00007005050200010003006A00000000000170F7".toHexByteArray()
+    assertThat(russoundCommands.balanceRight(zone2)).isEqualTo(expected)
+  }
+
+  @Test fun testBalanceCenteredZone1() {
+    val expected = "F000007F00007000050200000003000000010001000A0BF7".toHexByteArray()
+    assertThat(russoundCommands.balanceCentered(zone1)).isEqualTo(expected)
+  }
+
+  @Test fun testBalanceCenteredZone2() {
+    val expected = "F000007F00007000050200010003000000010001000A0CF7".toHexByteArray()
+    assertThat(russoundCommands.balanceCentered(zone2)).isEqualTo(expected)
   }
 }
