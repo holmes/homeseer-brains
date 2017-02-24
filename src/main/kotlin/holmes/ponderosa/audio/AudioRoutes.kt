@@ -86,7 +86,7 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
             return@post "Bass flattened in ${zone.name}"
           }
           else -> {
-            halt(400, "Unknown bass value. Accepted values: [up|flat|down] ")
+            halt(400, "Unknown bass value. Accepted results: [up|flat|down] ")
           }
         }
       }
@@ -109,7 +109,7 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
             return@post "Treble flattened in ${zone.name}"
           }
           else -> {
-            halt(400, "Unknown treble value. Accepted values: [up|flat|down] ")
+            halt(400, "Unknown treble value. Accepted results: [up|flat|down] ")
           }
         }
       }
@@ -132,7 +132,7 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
             return@post "Balance centered in ${zone.name}"
           }
           else -> {
-            halt(400, "Unknown treble value. Accepted values: [left|center|right] ")
+            halt(400, "Unknown treble value. Accepted results: [left|center|right] ")
           }
         }
       }

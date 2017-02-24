@@ -9,6 +9,14 @@ import javax.inject.Provider
  * their endTime(s) and are stored consecutively in the List.
  */
 data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val now: Provider<LocalTime>) {
+  /**
+   * Toggling on a light can result in other lights being turned on at the same time. One example is between
+   * midnight and twilight: turning on the family room light should turn on the kitchen as well.
+   */
+  data class ToggleLightResult(val results: Set<ToggleLightValue>) {
+    data class ToggleLightValue(val deviceId: Int, val value: Int)
+  }
+
   data class AutoDimResult(val dimLevel: Int, val needsReschedule: Boolean) {
     companion object Factory {
       val NO_CHANGE: AutoDimResult = AutoDimResult(-1, false)
@@ -36,14 +44,15 @@ data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val n
    * If the lights are off, set them to the low value.
    *
    * If they're already on, brighten or dim them depending on how bright they currently are.
-   * Pick the level opposite of what the current value is currently closest to.
+   * Pick the level opposite of what the current value is closest to.
    */
-  fun toggleLights(currentValue: Int): Int {
-    if (isInLowLevel(currentValue)) {
-      return currentFrame.highLevel
-    } else {
-      return calculateLightLevel()
+  fun toggleLights(currentValue: Int): ToggleLightResult {
+    val lightLevel = when {
+      isInLowLevel(currentValue) -> currentFrame.highLevel
+      else -> calculateLightLevel()
     }
+
+    return ToggleLightResult(setOf(ToggleLightResult.ToggleLightValue(deviceId, lightLevel)))
   }
 
   private fun calculateLightLevel(): Int {

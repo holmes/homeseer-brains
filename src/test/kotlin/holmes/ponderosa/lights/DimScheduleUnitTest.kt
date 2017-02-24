@@ -93,56 +93,64 @@ class DimScheduleUnitTest {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(100)
-    assertThat(dimSchedule.toggleLights(0)).isEqualTo(20)
+    val result = dimSchedule.toggleLights(0).results.first().value
+    assertThat(result).isEqualTo(20)
   }
 
   @Test fun testToggleLightsWhenWellBelowLevel() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(100)
-    assertThat(dimSchedule.toggleLights(6)).isEqualTo(currentFrame.highLevel)
+    val result = dimSchedule.toggleLights(6).results.first().value
+    assertThat(result).isEqualTo(currentFrame.highLevel)
   }
 
   @Test fun testToggleLightsWhenJustBelowLevel() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(100)
-    assertThat(dimSchedule.toggleLights(18)).isEqualTo(currentFrame.highLevel)
+    val result = dimSchedule.toggleLights(18).results.first().value
+    assertThat(result).isEqualTo(currentFrame.highLevel)
   }
 
   @Test fun testToggleLightsWhenAtLevel() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(100)
-    assertThat(dimSchedule.toggleLights(20)).isEqualTo(currentFrame.highLevel)
+    val result = dimSchedule.toggleLights(20).results.first().value
+    assertThat(result).isEqualTo(currentFrame.highLevel)
   }
 
   @Test fun testToggleLightsWhenJustAboveLevel() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(100)
-    assertThat(dimSchedule.toggleLights(23)).isEqualTo(currentFrame.highLevel)
+    val result = dimSchedule.toggleLights(23).results.first().value
+    assertThat(result).isEqualTo(currentFrame.highLevel)
   }
 
   @Test fun testToggleLightsWhenNearHigh() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(100)
-    assertThat(dimSchedule.toggleLights(currentFrame.highLevel - 2)).isEqualTo(20)
+    val result = dimSchedule.toggleLights(currentFrame.highLevel - 2).results.first().value
+    assertThat(result).isEqualTo(20)
   }
 
   @Test fun testToggleLightsWhenOnHigh() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(100)
-    assertThat(dimSchedule.toggleLights(currentFrame.highLevel)).isEqualTo(20)
+    val result = dimSchedule.toggleLights(currentFrame.highLevel).results.first().value
+    assertThat(result).isEqualTo(20)
   }
 
   @Test fun testToggleLightsWhenAboveHigh() {
     val currentFrame = dimSchedule.timeFrames[2]
 
     now = currentFrame.endTime.minusMinutes(100)
-    assertThat(dimSchedule.toggleLights(currentFrame.highLevel + 7)).isEqualTo(20)
+    val result = dimSchedule.toggleLights(currentFrame.highLevel + 7).results.first().value
+    assertThat(result).isEqualTo(20)
   }
 
   @Test fun testIsInLowLevel() {

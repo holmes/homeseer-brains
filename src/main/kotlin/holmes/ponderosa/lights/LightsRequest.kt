@@ -8,7 +8,7 @@ class LightsRequest(val twilight: Twilight, val now: Provider<LocalTime>) {
     return getDimSchedule(deviceId).autoDim(currentValue)
   }
 
-  fun toggleLights(deviceId: Int, currentValue: Int): Int {
+  fun toggleLights(deviceId: Int, currentValue: Int): DimSchedule.ToggleLightResult {
     return getDimSchedule(deviceId).toggleLights(currentValue)
   }
 
