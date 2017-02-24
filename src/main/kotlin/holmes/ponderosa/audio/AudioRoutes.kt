@@ -30,6 +30,16 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
       )
     }, jsonTransformer)
 
+    post("/api/audio/:zoneId/tripleTapOn", { request, _ ->
+      val zone = request.zone() ?: return@post -1
+      audioManager.power(zone, PowerChange.ON)
+    })
+
+    post("/api/audio/:zoneId/tripleTapOff", { request, _ ->
+      val zone = request.zone() ?: return@post -1
+      audioManager.power(zone, PowerChange.OFF)
+    })
+
     path("/api/audio/:zoneId") {
       post("/requestStatus") { request, _ ->
         val zone = request.zone() ?: return@post -1
