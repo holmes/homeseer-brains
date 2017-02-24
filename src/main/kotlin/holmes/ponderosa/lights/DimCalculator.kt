@@ -1,6 +1,6 @@
 package holmes.ponderosa.lights
 
-import holmes.ponderosa.lights.DimSchedule.ToggleLightResult.ToggleLightValue
+import holmes.ponderosa.lights.DimCalculator.ToggleLightResult.ToggleLightValue
 import java.time.Duration
 import java.time.LocalTime
 import javax.inject.Provider
@@ -9,7 +9,7 @@ import javax.inject.Provider
  * Represents a room with various light levels defined by TimeFrame(s). TimeFrame(s) are defined by
  * their endTime(s) and are stored consecutively in the List.
  */
-data class DimSchedule(val now: Provider<LocalTime>) {
+class DimCalculator(val now: Provider<LocalTime>) {
   /**
    * Toggling on a light can result in other lights being turned on at the same time. One example is between
    * midnight and twilight: turning on the family room light should turn on the kitchen as well.

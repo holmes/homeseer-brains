@@ -1,8 +1,8 @@
 package holmes.ponderosa.lights
 
 import com.google.common.truth.Truth.assertThat
-import holmes.ponderosa.lights.DimSchedule.ToggleLightResult
-import holmes.ponderosa.lights.DimSchedule.ToggleLightResult.ToggleLightValue
+import holmes.ponderosa.lights.DimCalculator.ToggleLightResult
+import holmes.ponderosa.lights.DimCalculator.ToggleLightResult.ToggleLightValue
 import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
@@ -39,7 +39,7 @@ class LightsTransformerUnitTest {
   }
 
   @Test fun convertAutoDimResult() {
-    val autoDimResult = DimSchedule.AutoDimResult(22, false)
+    val autoDimResult = DimCalculator.AutoDimResult(22, false)
     assertThat(transformer.render(autoDimResult)).isEqualTo("22,false")
   }
 }

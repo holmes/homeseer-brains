@@ -29,12 +29,12 @@ interface Lights {
   @Singleton @Provides fun lightZones(twilight: Twilight): LightZones
       = LightZones(twilight)
 
-  @Singleton @Provides fun lightsRequest(twilight: Twilight, zones: LightZones, now: Provider<LocalTime>)
-      = LightsRequest(twilight, zones, now)
-
   @Singleton @Provides fun lightToggleResultTransformer()
       = LightsTransformer()
 
-  @Singleton @Provides fun lightsRoutes(lightsRequest: LightsRequest, lightResultTransformer: LightsTransformer)
-      = LightsRoutes(lightsRequest, lightResultTransformer)
+  @Singleton @Provides fun dimCalculator(now: Provider<LocalTime>)
+      = DimCalculator(now)
+
+  @Singleton @Provides fun lightsRoutes(zones: LightZones, dimCalculator: DimCalculator, lightResultTransformer: LightsTransformer)
+      = LightsRoutes(zones, dimCalculator, lightResultTransformer)
 }

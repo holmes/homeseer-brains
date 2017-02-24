@@ -69,7 +69,7 @@ class LightZones(twilight: Twilight) {
     )
   }
 
-  fun zone(deviceId: Int): LightZone {
-    return zones[deviceId]!!
+  fun zone(deviceId: Int): LightZone? {
+    return zones[deviceId]
   }
 }

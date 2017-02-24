@@ -9,8 +9,8 @@ import spark.Spark.halt
 class LightsTransformer : ResponseTransformer {
   override fun render(model: Any?): String {
     return when (model) {
-      is DimSchedule.AutoDimResult -> renderAutoDim(model)
-      is DimSchedule.ToggleLightResult -> renderToggle(model)
+      is DimCalculator.AutoDimResult -> renderAutoDim(model)
+      is DimCalculator.ToggleLightResult -> renderToggle(model)
       else -> {
         halt(500, "Cannot render ${model?.toString()}")
         ""
@@ -18,10 +18,10 @@ class LightsTransformer : ResponseTransformer {
     }
   }
 
-  private fun renderAutoDim(model: DimSchedule.AutoDimResult)
+  private fun renderAutoDim(model: DimCalculator.AutoDimResult)
       = "${model.dimLevel},${model.needsReschedule}"
 
-  private fun renderToggle(model: DimSchedule.ToggleLightResult): String {
+  private fun renderToggle(model: DimCalculator.ToggleLightResult): String {
     return model.results
         .map { "[${it.deviceId}:${it.value}]" }
         .joinToString(",")

@@ -91,7 +91,7 @@ object PonderosaEmbedded {
   @JvmStatic fun main(args: Array<String>) {
     Ponderosa(object : RussoundReaderDescriptor {
       override val descriptor: File
-        get() = File("/dev/ttys003")
+        get() = File("/dev/null")
 
       override val startMessage: Int
         get() = '0'.toInt()
