@@ -8,11 +8,11 @@ import org.junit.Before
 import org.junit.Test
 import spark.HaltException
 
-class ToggleLightResultTransformerUnitTest {
-  lateinit var transformer: ToggleLightResultTransformer
+class LightsTransformerUnitTest {
+  lateinit var transformer: LightsTransformer
 
   @Before fun setUp() {
-    transformer = ToggleLightResultTransformer()
+    transformer = LightsTransformer()
   }
 
   @Test fun failsOnNotLightToggleResult() {
@@ -36,5 +36,10 @@ class ToggleLightResultTransformerUnitTest {
     ))
 
     assertThat(transformer.render(model)).isEqualTo("[12:87],[19:57]")
+  }
+
+  @Test fun convertAutoDimResult() {
+    val autoDimResult = DimSchedule.AutoDimResult(22, false)
+    assertThat(transformer.render(autoDimResult)).isEqualTo("22,false")
   }
 }

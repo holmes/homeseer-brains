@@ -1,5 +1,6 @@
 package holmes.ponderosa.lights
 
+import holmes.ponderosa.lights.DimSchedule.ToggleLightResult.ToggleLightValue
 import java.time.Duration
 import java.time.LocalTime
 import javax.inject.Provider
@@ -8,7 +9,7 @@ import javax.inject.Provider
  * Represents a room with various light levels defined by TimeFrame(s). TimeFrame(s) are defined by
  * their endTime(s) and are stored consecutively in the List.
  */
-data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val now: Provider<LocalTime>) {
+data class DimSchedule(val now: Provider<LocalTime>) {
   /**
    * Toggling on a light can result in other lights being turned on at the same time. One example is between
    * midnight and twilight: turning on the family room light should turn on the kitchen as well.
@@ -28,12 +29,12 @@ data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val n
    * because a person in the room might have turned the lights up intentionally. We don't want to turn them
    * down if that's the case.
    */
-  fun autoDim(currentValue: Int): AutoDimResult {
+  fun autoDim(zone: LightZone, currentValue: Int): AutoDimResult {
     if (currentValue == 0) {
       return AutoDimResult.NO_CHANGE
     }
 
-    val calculatedLevel = calculateLightLevel()
+    val calculatedLevel = calculateLightLevel(zone)
     val delta = Math.abs(calculatedLevel - currentValue)
     val allowed = delta <= 3
 
@@ -46,26 +47,26 @@ data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val n
    * If they're already on, brighten or dim them depending on how bright they currently are.
    * Pick the level opposite of what the current value is closest to.
    */
-  fun toggleLights(currentValue: Int): ToggleLightResult {
+  fun toggleLights(zone: LightZone, currentValue: Int): ToggleLightResult {
     val lightLevel = when {
-      isInLowLevel(currentValue) -> currentFrame.highLevel
-      else -> calculateLightLevel()
+      isInLowLevel(zone, currentValue) -> zone.currentFrame(now).highLevel
+      else -> calculateLightLevel(zone)
     }
 
-    return ToggleLightResult(setOf(ToggleLightResult.ToggleLightValue(deviceId, lightLevel)))
+    return ToggleLightResult(setOf(ToggleLightValue(zone.deviceId, lightLevel)))
   }
 
-  private fun calculateLightLevel(): Int {
+  private fun calculateLightLevel(zone: LightZone): Int {
     // Always use lowLevel in the morning.
-    if (isInFirstFrame) {
-      return timeFrames.first().lowLevel
+    if (zone.isInFirstFrame(now)) {
+      return zone.timeFrames.first().lowLevel
     }
 
-    val startValue = previousFrame.lowLevel
-    val endValue = currentFrame.lowLevel
+    val startValue = zone.previousFrame(now).lowLevel
+    val endValue = zone.currentFrame(now).lowLevel
 
-    val startTime = previousFrame.endTime
-    val endTime = currentFrame.endTime
+    val startTime = zone.previousFrame(now).endTime
+    val endTime = zone.currentFrame(now).endTime
     val nowTime = now.get()
 
     val frameLength = Duration.between(startTime, endTime)
@@ -85,25 +86,17 @@ data class DimSchedule(val deviceId: Int, val timeFrames: List<TimeFrame>, val n
     return calculatedLevel
   }
 
-  internal fun isInLowLevel(currentValue: Int): Boolean {
+  internal fun isInLowLevel(zone: LightZone, currentValue: Int): Boolean {
     val startValue: Int
-    val endValue = currentFrame.lowLevel
+    val endValue = zone.currentFrame(now).lowLevel
 
-    if (isInFirstFrame) {
-      startValue = timeFrames.last().lowLevel
+    if (zone.isInFirstFrame(now)) {
+      startValue = zone.timeFrames.last().lowLevel
     } else {
-      startValue = previousFrame.lowLevel
+      startValue = zone.previousFrame(now).lowLevel
     }
 
     return currentValue in startValue..endValue || currentValue in endValue..startValue
   }
-
-  private val isInFirstFrame: Boolean
-    get() = timeFrames[0].contains(now.get())
-
-  internal val previousFrame: TimeFrame
-    get() = timeFrames.last { !it.contains(now.get()) }
-
-  internal val currentFrame: TimeFrame
-    get() = timeFrames.first { it.contains(now.get()) }
 }
+
