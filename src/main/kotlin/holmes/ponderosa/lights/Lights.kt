@@ -32,8 +32,8 @@ interface Lights {
   @Singleton @Provides fun lightToggleResultTransformer()
       = LightsTransformer()
 
-  @Singleton @Provides fun dimCalculator(now: Provider<LocalTime>)
-      = DimCalculator(now)
+  @Singleton @Provides fun dimCalculator(lightZones: LightZones, now: Provider<LocalTime>)
+      = DimCalculator(lightZones, now)
 
   @Singleton @Provides fun lightsRoutes(zones: LightZones, dimCalculator: DimCalculator, lightResultTransformer: LightsTransformer)
       = LightsRoutes(zones, dimCalculator, lightResultTransformer)

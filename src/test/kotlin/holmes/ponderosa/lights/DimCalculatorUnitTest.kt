@@ -1,6 +1,11 @@
 package holmes.ponderosa.lights
 
 import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockito_kotlin.any
+import com.nhaarman.mockito_kotlin.doAnswer
+import com.nhaarman.mockito_kotlin.mock
+import holmes.ponderosa.lights.LightZone.DependentZone
+import holmes.ponderosa.lights.LightZone.DependentZone.DependentTimeFrame
 import org.junit.Before
 import org.junit.Test
 import java.time.LocalTime
@@ -20,8 +25,17 @@ class DimCalculatorUnitTest {
         TimeFrame(midnight.plusHours(23).plusMinutes(59), 1, 35)
     )
 
-    zone = LightZone(11, setOf(), timeFrames)
-    dimCalculator = DimCalculator(Provider { now })
+    zone = LightZone(11, setOf(
+        DependentZone(17, listOf(DependentTimeFrame(midnight, midnight.plusHours(8))))
+    ), timeFrames)
+
+    val childZone = LightZone(17, emptySet(), timeFrames)
+
+    val lightZones = mock<LightZones> {
+      on { zone(any()) }.doAnswer { childZone }
+    }
+
+    dimCalculator = DimCalculator(lightZones, Provider { now })
   }
 
   @Test fun testAutoDimLightIsOff() {
@@ -153,6 +167,22 @@ class DimCalculatorUnitTest {
     now = currentFrame.endTime.minusMinutes(100)
     val result = dimCalculator.toggleLights(zone, currentFrame.highLevel + 7).results.first().value
     assertThat(result).isEqualTo(20)
+  }
+
+  @Test fun testMultipleResultsWhenLightsOn() {
+    val currentFrame = zone.timeFrames[0]
+    now = currentFrame.endTime.minusMinutes(100)
+
+    val result = dimCalculator.toggleLights(zone, 20)
+    assertThat(result.results.size).isEqualTo(1)
+  }
+
+  @Test fun testMultipleResultsWhenLightsOff() {
+    val currentFrame = zone.timeFrames[0]
+    now = currentFrame.endTime.minusMinutes(100)
+
+    val result = dimCalculator.toggleLights(zone, 0)
+    assertThat(result.results.size).isEqualTo(2)
   }
 
   @Test fun testIsInLowLevel() {

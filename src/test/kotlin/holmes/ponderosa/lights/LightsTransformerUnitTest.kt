@@ -25,12 +25,12 @@ class LightsTransformerUnitTest {
   }
 
   @Test fun convertsSingleResult() {
-    val model = ToggleLightResult(setOf(ToggleLightValue(12, 87)))
+    val model = ToggleLightResult(listOf(ToggleLightValue(12, 87)))
     assertThat(transformer.render(model)).isEqualTo("[12:87]")
   }
 
   @Test fun convertsMultipleResult() {
-    val model = ToggleLightResult(setOf(
+    val model = ToggleLightResult(listOf(
         ToggleLightValue(12, 87),
         ToggleLightValue(19, 57)
     ))

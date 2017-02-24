@@ -27,7 +27,7 @@ class LightsRoutes(val zones: LightZones, val dimCalculator: DimCalculator, val 
         val currentValue = request.params("currentValue")?.toInt()
 
         return@Route when (currentValue) {
-          null -> ToggleLightResult(setOf())
+          null -> ToggleLightResult(emptyList())
           else -> dimCalculator.toggleLights(zone, currentValue)
         }
       }, lightsTransformer)

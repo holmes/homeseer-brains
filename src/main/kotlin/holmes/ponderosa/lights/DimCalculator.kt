@@ -9,12 +9,12 @@ import javax.inject.Provider
  * Represents a room with various light levels defined by TimeFrame(s). TimeFrame(s) are defined by
  * their endTime(s) and are stored consecutively in the List.
  */
-class DimCalculator(val now: Provider<LocalTime>) {
+class DimCalculator(val lightZones: LightZones, val now: Provider<LocalTime>) {
   /**
    * Toggling on a light can result in other lights being turned on at the same time. One example is between
    * midnight and twilight: turning on the family room light should turn on the kitchen as well.
    */
-  data class ToggleLightResult(val results: Set<ToggleLightValue>) {
+  data class ToggleLightResult(val results: List<ToggleLightValue>) {
     data class ToggleLightValue(val deviceId: Int, val value: Int)
   }
 
@@ -53,7 +53,21 @@ class DimCalculator(val now: Provider<LocalTime>) {
       else -> calculateLightLevel(zone)
     }
 
-    return ToggleLightResult(setOf(ToggleLightValue(zone.deviceId, lightLevel)))
+    val results = listOf(ToggleLightValue(zone.deviceId, lightLevel))
+
+    val childResults: List<ToggleLightValue>
+    if (currentValue == 0) {
+      childResults = zone.subZones
+          .filter { it.contains(now) }
+          .map { lightZones.zone(it.deviceId) }
+          .filterNotNull()
+          .map { toggleLights(it, 0) }
+          .flatMap { it.results }
+    } else {
+      childResults = emptyList()
+    }
+
+    return ToggleLightResult(results.plus(childResults))
   }
 
   private fun calculateLightLevel(zone: LightZone): Int {
