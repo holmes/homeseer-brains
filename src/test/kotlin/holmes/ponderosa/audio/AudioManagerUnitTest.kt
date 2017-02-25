@@ -111,6 +111,9 @@ class AudioManagerUnitTest {
       on { sourceId }.doReturn(source.sourceId)
       on { power }.doReturn(true)
       on { volume }.doReturn(66)
+      on { bass }.doReturn(18)
+      on { treble }.doReturn(10)
+      on { balance }.doReturn(2)
     }
 
     val originalInfo = audioManager.zoneInformation[zone]!!
@@ -124,5 +127,8 @@ class AudioManagerUnitTest {
     assertThat(zoneInfo.source).isEqualTo(source)
     assertThat(zoneInfo.power).isEqualTo(true)
     assertThat(zoneInfo.volume).isEqualTo(66)
+    assertThat(zoneInfo.bass).isEqualTo(8)
+    assertThat(zoneInfo.treble).isEqualTo(0)
+    assertThat(zoneInfo.balance).isEqualTo(-8)
   }
 }

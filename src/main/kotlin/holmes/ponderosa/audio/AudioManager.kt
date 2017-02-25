@@ -109,7 +109,13 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
   private fun updateZone(zoneInfo: ReceivedZoneInfo) {
     val zone = zones.zone(zoneInfo.zoneId)
     val source = sources.source(zoneInfo.sourceId)
-    val updatedInfo = ZoneInfo(zone, source, zoneInfo.power, zoneInfo.volume, zoneInfo.bass, zoneInfo.treble, zoneInfo.balance, zoneInfo.loudness)
+
+    // Convert from Russound code to something human readable.
+    val bass = zoneInfo.bass - 10
+    val treble = zoneInfo.treble - 10
+    val balance = zoneInfo.balance - 10
+
+    val updatedInfo = ZoneInfo(zone, source, zoneInfo.power, zoneInfo.volume, bass, treble, balance, zoneInfo.loudness)
 
     LOG.info("Received Zone Info from Receiver: $zoneInfo, storing as $updatedInfo")
     updateZone(updatedInfo)
@@ -120,7 +126,6 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
     return updatedInfo
   }
 }
-
 
 private fun BassLevel.adjust(zone: ZoneInfo): Int {
   return Math.max(-10, Math.min(10, zone.bass.plus(adjustment)))
