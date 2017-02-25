@@ -2,6 +2,7 @@ package holmes.ponderosa.lights
 
 import com.squareup.moshi.Moshi
 import okio.Okio
+import java.io.File
 import java.io.InputStream
 import java.time.LocalDate
 import java.time.LocalTime
@@ -10,7 +11,7 @@ import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Provider
 
-class TwilightProvider(moshi: Moshi, private val now: Provider<LocalDate>) {
+class TwilightProvider(moshi: Moshi, private val now: Provider<LocalDate>, private val dataLocation: File) {
   private val adapter = moshi.adapter(SunriseSunsetProvider::class.java)
 
   companion object Factory {
@@ -53,9 +54,9 @@ class TwilightProvider(moshi: Moshi, private val now: Provider<LocalDate>) {
     val dayValue = today.dayOfMonth
 
     val fileName = "$yearValue-$monthValue-$dayValue.json"
-    val fileStream = TwilightProvider::class.java.classLoader.getResourceAsStream(fileName)
+    val actualFile = File(dataLocation, fileName)
 
-    return fileStream
+    return actualFile.inputStream()
   }
 }
 

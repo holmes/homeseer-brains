@@ -5,6 +5,7 @@ import dagger.Component
 import dagger.Module
 import dagger.Provides
 import holmes.ponderosa.audio.TransformerModule
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Provider
@@ -16,12 +17,12 @@ interface Lights {
   fun lightsRoutes(): LightsRoutes
 }
 
-@Module class LightModule {
+@Module class LightModule(val dataLocation: File) {
   @Provides fun today(): LocalDate = LocalDate.now()
   @Provides fun now(): LocalTime = LocalTime.now()
 
   @Singleton @Provides fun twilightProvider(moshi: Moshi, todayProvider: Provider<LocalDate>)
-      = TwilightProvider(moshi, todayProvider)
+      = TwilightProvider(moshi, todayProvider, dataLocation)
 
   @Singleton @Provides fun twilight(twilightProvider: TwilightProvider)
       = Twilight({ twilightProvider.twilight() })

@@ -15,7 +15,7 @@ import java.io.File
 private val LOG = LoggerFactory.getLogger(Ponderosa::class.java)
 
 /** The main initializer. */
-class Ponderosa(val readerDescriptor: RussoundReaderDescriptor) {
+class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightDataDirectory: File) {
   lateinit var audioStatusHandler: AudioStatusHandler
 
   fun start() {
@@ -25,7 +25,7 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor) {
 
     val lightsGraph = DaggerLights
         .builder()
-        .lightModule(LightModule())
+        .lightModule(LightModule(twilightDataDirectory))
         .transformerModule(transformerModule)
         .build()
 
@@ -62,7 +62,7 @@ class PonderosaSparkApplication : SparkApplication {
 
     override val endMessage: Int
       get() = 0xF7
-  })
+  }, File("/opt/sunrise-data/data"))
 
   override fun init() {
     ponderosa.start()
@@ -86,6 +86,6 @@ object PonderosaEmbedded {
 
       override val endMessage: Int
         get() = 'F'.toInt()
-    }).start()
+    }, File("/work/sunrise-data/data/")).start()
   }
 }

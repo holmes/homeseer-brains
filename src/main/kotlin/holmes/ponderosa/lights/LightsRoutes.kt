@@ -8,12 +8,12 @@ import spark.Spark.get
 import spark.Spark.halt
 import spark.Spark.path
 
-class LightsRoutes(val zones: LightZones, val dimCalculator: DimCalculator, val lightsTransformer: LightsTransformer) {
+class LightsRoutes(val lightZones: LightZones, val dimCalculator: DimCalculator, val lightsTransformer: LightsTransformer) {
   fun initialize() {
     path("/api/lights/:deviceId") {
 
       get("/autoDim/:currentValue", Route { request, _ ->
-        val zone = request.zone() ?: return@Route NO_CHANGE
+        val zone = request.lightZone() ?: return@Route NO_CHANGE
         val currentValue = request.params("currentValue")?.toInt()
 
         return@Route when (currentValue) {
@@ -23,7 +23,7 @@ class LightsRoutes(val zones: LightZones, val dimCalculator: DimCalculator, val 
       }, lightsTransformer)
 
       get("/toggle/:currentValue", Route { request, _ ->
-        val zone = request.zone() ?: return@Route NO_CHANGE
+        val zone = request.lightZone() ?: return@Route NO_CHANGE
         val currentValue = request.params("currentValue")?.toInt()
 
         return@Route when (currentValue) {
@@ -34,9 +34,9 @@ class LightsRoutes(val zones: LightZones, val dimCalculator: DimCalculator, val 
     }
   }
 
-  private fun Request.zone(): LightZone? {
+  private fun Request.lightZone(): LightZone? {
     val zoneId = params("deviceId").toInt()
-    val zone = zoneId.let { zones.zone(zoneId) }
+    val zone = zoneId.let { lightZones.zone(zoneId) }
 
     return if (zone != null) zone else {
       halt(400, "Bad zoneId")

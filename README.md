@@ -52,6 +52,14 @@ this line in `.idea/modules/ponderosa_[main|test].iml`
 ```  
   
 
+## Lighting
+We calculate light levels on a range is adjusted from sunrise and sunset data.
+
+### Sunrise & SunsetData
+I leached data for Lafayette from [sunrise-sunset.org](http://sunrise-sunset.org/) until the end of 2050. Those files are 
+available on [Github](https://github.com/holmes/sunrise-data). They're currently checked out in `/opt/sunrise-data/`. That path needs
+to be passed to `Ponderosa` during initialization.
+
 
 ## RS-232 Connections
 Ubuntu already has the Prolific drivers installed. So we just need to configure a few things.

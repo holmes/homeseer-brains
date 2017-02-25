@@ -4,6 +4,7 @@ import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
 import org.junit.Before
 import org.junit.Test
+import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
 import javax.inject.Provider
@@ -13,7 +14,7 @@ class TwilightProviderUnitTest {
 
   @Before fun setUp() {
     val moshi = Moshi.Builder().build()
-    twilightProvider = TwilightProvider(moshi, Provider { LocalDate.of(2017, 2, 12) })
+    twilightProvider = TwilightProvider(moshi, Provider { LocalDate.of(2017, 2, 12) }, File("src/test/resources"))
   }
 
   @Test fun testParsingDatesFromFile() {
