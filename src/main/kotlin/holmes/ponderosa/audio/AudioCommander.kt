@@ -62,6 +62,11 @@ class AudioCommander(val russoundCommands: RussoundCommands, val outputStream: O
     sendCommand(russoundCommands.turnOnVolume(zone, volume))
   }
 
+  fun destroy() {
+    LOG.info("Closing the output stream")
+    outputStream.close()
+  }
+
   private fun sendCommand(command: ByteArray) {
     LOG.info("Sending message: ${command.toHexString()}")
     outputStream.write(command)

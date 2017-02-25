@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
+import kotlin.concurrent.thread
 
 private val LOG = LoggerFactory.getLogger(RussoundCommandReceiver::class.java)
 
@@ -38,15 +39,17 @@ class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDe
   }
 
   fun start() {
-    LOG.info("Watching for bytes on ${readerDescriptor.descriptor.absolutePath}")
+    LOG.info("Reading input from Russound Matrix at ${readerDescriptor.descriptor.absolutePath}")
 
-    try {
-      runReadLoop()
-    } catch(e: Exception) {
-      LOG.error("Error receiving bytes", e)
-      runReadLoop()
-    } finally {
-      inputStream.close()
+    thread(true, true, null, "audio-status-receiver") {
+      try {
+        runReadLoop()
+      } catch(e: Exception) {
+        LOG.error("Error receiving bytes", e)
+        runReadLoop()
+      } finally {
+        inputStream.close()
+      }
     }
   }
 
@@ -83,8 +86,8 @@ class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDe
     }
   }
 
-  fun destroy() {
-    LOG.info("Closing the input stream")
+  fun stop() {
+    LOG.info("Closing the input stream at ${readerDescriptor.descriptor.absolutePath}")
     shouldRun = false
     inputStream.close()
   }

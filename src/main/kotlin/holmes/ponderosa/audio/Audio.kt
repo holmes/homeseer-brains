@@ -8,8 +8,6 @@ import dagger.Provides
 import holmes.ponderosa.util.JsonTransformer
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import java.io.ByteArrayOutputStream
-import java.io.File
 import java.io.FileOutputStream
 import java.io.OutputStream
 import javax.inject.Qualifier
@@ -19,9 +17,7 @@ import javax.inject.Singleton
 @Component(modules = arrayOf(AudioModule::class, TransformerModule::class))
 interface Audio {
   fun audioRoutes(): AudioRoutes
-  @RussoundCAA66 fun outputStream(): OutputStream
-  fun receivedMessageSubject(): PublishSubject<ReceivedZoneInfo>
-  fun russoundCommandReceiver(): RussoundCommandReceiver
+  fun audioStatusHandler(): AudioStatusHandler
 }
 
 @Qualifier
@@ -44,12 +40,14 @@ annotation class RussoundCAA66
   @Singleton @Provides fun receivedZoneInfo(subject: PublishSubject<ReceivedZoneInfo>): Observable<ReceivedZoneInfo> = subject
 
   @RussoundCAA66 @Singleton @Provides fun outputStream(): OutputStream {
-    return when {
-      File("/dev/ttyUSB0").exists() -> FileOutputStream("/dev/ttyUSB0")
-      File("/dev/ttyUSB0").exists() -> FileOutputStream("/dev/tty.usbserial0")
-      else -> ByteArrayOutputStream()
-    }
+    return FileOutputStream(readerDescriptor.descriptor)
   }
+
+  @Singleton @Provides fun statusRequestTimer(zones: Zones, audioManager: AudioManager)
+      = StatusRequestTimer(zones, audioManager)
+
+  @Singleton @Provides fun audioStatusHandler(audioCommander: AudioCommander, commandReceiver: RussoundCommandReceiver, statusRequestor: StatusRequestTimer)
+      = AudioStatusHandler(audioCommander, commandReceiver, statusRequestor)
 
   @Singleton @Provides fun russoundCommandReceiver(subject: PublishSubject<ReceivedZoneInfo>)
       = RussoundCommandReceiver(readerDescriptor, subject)

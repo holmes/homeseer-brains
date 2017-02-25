@@ -1,29 +1,22 @@
 package holmes.ponderosa
 
 import holmes.ponderosa.audio.AudioModule
+import holmes.ponderosa.audio.AudioStatusHandler
 import holmes.ponderosa.audio.DaggerAudio
-import holmes.ponderosa.audio.ReceivedZoneInfo
-import holmes.ponderosa.audio.RussoundCommandReceiver
 import holmes.ponderosa.audio.RussoundReaderDescriptor
 import holmes.ponderosa.audio.TransformerModule
 import holmes.ponderosa.lights.DaggerLights
 import holmes.ponderosa.lights.LightModule
-import io.reactivex.subjects.PublishSubject
 import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
 import spark.servlet.SparkApplication
 import java.io.File
-import java.io.OutputStream
 
 private val LOG = LoggerFactory.getLogger(Ponderosa::class.java)
 
 /** The main initializer. */
 class Ponderosa(val readerDescriptor: RussoundReaderDescriptor) {
-  lateinit var receivedMessageSubject: PublishSubject<ReceivedZoneInfo>
-  lateinit var russoundCommandReceiver: RussoundCommandReceiver
-  lateinit var outputStream: OutputStream
-
-  val russoundReceiverThread = Thread(Runnable { russoundCommandReceiver.start() }, "russound-input-receiver")
+  lateinit var audioStatusHandler: AudioStatusHandler
 
   fun start() {
     staticFileLocation("/public/react")
@@ -42,19 +35,15 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor) {
         .transformerModule(transformerModule)
         .build()
 
-    outputStream = audioGraph.outputStream()
-    receivedMessageSubject = audioGraph.receivedMessageSubject()
-    russoundCommandReceiver = audioGraph.russoundCommandReceiver()
-    russoundReceiverThread.start()
+    audioStatusHandler = audioGraph.audioStatusHandler()
+    audioStatusHandler.start()
 
     lightsGraph.lightsRoutes().initialize()
     audioGraph.audioRoutes().initialize()
   }
 
   fun destroy() {
-    LOG.info("Closing the output stream")
-    outputStream.close()
-    russoundCommandReceiver.destroy()
+    audioStatusHandler.stop()
   }
 }
 

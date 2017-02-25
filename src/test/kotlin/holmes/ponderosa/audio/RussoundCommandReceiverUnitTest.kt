@@ -26,13 +26,13 @@ class RussoundCommandReceiverUnitTest {
   }
 
   @Test fun testZone1GetStatus() {
-    val expected = "F000007000000002000007000001000C00010105070A010A01000000003DF7".toHexByteArray()
+    val expected = "F000007000007F00000402000007000001000C0001010A070A010A010000000045F7".toHexByteArray()
 
     val zoneInfo = ReceivedZoneInfo.from(expected)!!
     assertWithMessage("zoneId").that(zoneInfo.zoneId).isEqualTo(0)
     assertWithMessage("power").that(zoneInfo.power).isEqualTo(true)
     assertWithMessage("sourceId").that(zoneInfo.sourceId).isEqualTo(1)
-    assertWithMessage("volume").that(zoneInfo.volume).isEqualTo(10)
+    assertWithMessage("volume").that(zoneInfo.volume).isEqualTo(20)
     assertWithMessage("bass").that(zoneInfo.bass).isEqualTo(7)
     assertWithMessage("treble").that(zoneInfo.treble).isEqualTo(10)
     assertWithMessage("loudnessToggle").that(zoneInfo.loudness).isEqualTo(true)
@@ -41,15 +41,15 @@ class RussoundCommandReceiverUnitTest {
   }
 
   @Test fun testZone2GetStatus() {
-    val expected = "F000007000000002000107000001000C0001010A0A0A000A010000000048F7".toHexByteArray()
+    val expected = "F000007000007F00000402000107000001000C0000010A0C0C000A01000000004BF7".toHexByteArray()
 
     val zoneInfo = ReceivedZoneInfo.from(expected)!!
     assertWithMessage("zoneId").that(zoneInfo.zoneId).isEqualTo(1)
-    assertWithMessage("power").that(zoneInfo.power).isEqualTo(true)
+    assertWithMessage("power").that(zoneInfo.power).isEqualTo(false)
     assertWithMessage("sourceId").that(zoneInfo.sourceId).isEqualTo(1)
     assertWithMessage("volume").that(zoneInfo.volume).isEqualTo(20)
-    assertWithMessage("bass").that(zoneInfo.bass).isEqualTo(10)
-    assertWithMessage("treble").that(zoneInfo.treble).isEqualTo(10)
+    assertWithMessage("bass").that(zoneInfo.bass).isEqualTo(12)
+    assertWithMessage("treble").that(zoneInfo.treble).isEqualTo(12)
     assertWithMessage("loudnessToggle").that(zoneInfo.loudness).isEqualTo(false)
     assertWithMessage("balance").that(zoneInfo.balance).isEqualTo(10)
     assertWithMessage("systemOn").that(zoneInfo.systemOn).isEqualTo(true)
@@ -61,7 +61,7 @@ class RussoundCommandReceiverUnitTest {
   }
 
   @Test fun testToString() {
-    val input = "F000007000000002000107000001000C0001010A0A0A000A010000000048F7"
+    val input = "F000007000007F00000402000107000001000C0000010A0C0C000A01000000004BF7"
     val bytes = input.toHexByteArray()
     assertThat(ReceivedZoneInfo.from(bytes).toString()).isEqualTo(input)
   }
