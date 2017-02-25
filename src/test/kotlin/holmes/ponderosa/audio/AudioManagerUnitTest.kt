@@ -3,6 +3,8 @@ package holmes.ponderosa.audio
 import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
+import com.nhaarman.mockito_kotlin.verifyZeroInteractions
 import io.reactivex.subjects.PublishSubject
 import org.junit.Before
 import org.junit.Test
@@ -22,7 +24,7 @@ class AudioManagerUnitTest {
 
   @Test fun powerChangeUpdatesPower() {
     val oldZone = audioManager.zoneInformation[zones.zone(0)]!!
-    assertThat(oldZone.power).isNull()
+    assertThat(oldZone.power).isFalse()
 
     var newZoneInfo = audioManager.power(oldZone.zone, PowerChange.OFF)
     assertThat(newZoneInfo.power).isFalse()
@@ -40,17 +42,9 @@ class AudioManagerUnitTest {
     assertThat(newZoneInfo.source).isEqualTo(selectedSource)
   }
 
-  @Test fun updateVolumeSetsToDefaultLevelWhenUnknown() {
-    val oldZone = audioManager.zoneInformation[zones.zone(1)]!!
-    assertThat(oldZone.volume).isNull()
-
-    val (_, _, _, volume) = audioManager.volume(oldZone.zone, VolumeChange.Up())
-    assertThat(volume).isEqualTo(30)
-  }
-
   @Test fun updateVolumeAlwaysTurnsOnZoneWhenNull() {
     val oldZone = audioManager.zoneInformation[zones.zone(1)]!!
-    assertThat(oldZone.power).isNull()
+    assertThat(oldZone.power).isFalse()
 
     val (_, _, power) = audioManager.volume(oldZone.zone, VolumeChange.Up())
     assertThat(power).isTrue()
@@ -62,6 +56,50 @@ class AudioManagerUnitTest {
 
     val (_, _, power) = audioManager.volume(oldZone.zone, VolumeChange.Up())
     assertThat(power).isTrue()
+  }
+
+  @Test fun updateLoudnessDoesNothingWhenSameValue() {
+    val zone = zones.zone(1)
+    val zoneInfo = audioManager.zoneInformation.getValue(zone)
+
+    assertThat(zoneInfo.loudness).isFalse()
+    audioManager.loudness(zone, Loudness.OFF)
+
+    verifyZeroInteractions(audioCommander)
+  }
+
+  @Test fun updateLoudnessUpdatesWhenDifferentValue() {
+    val zone = zones.zone(1)
+    val zoneInfo = audioManager.zoneInformation.getValue(zone)
+
+    assertThat(zoneInfo.loudness).isFalse()
+    audioManager.loudness(zone, Loudness.ON)
+    verify(audioCommander).loudness(zone)
+  }
+
+  @Test fun adjustBass() {
+    val zone = zones.zone(1)
+    val zoneInfo = audioManager.zoneInformation.getValue(zone)
+
+    assertThat(zoneInfo.bass).isEqualTo(0)
+    val updatedZone = audioManager.bass(zone, BassLevel.DOWN)
+
+    verify(audioCommander).bass(zone, BassLevel.DOWN)
+    assertThat(updatedZone.bass).isEqualTo(-1)
+  }
+
+  @Test fun minMaxBass() {
+    val zone = zones.zone(1)
+
+    for (i in 0..50) {
+      audioManager.bass(zone, BassLevel.DOWN)
+    }
+    assertThat(audioManager.zoneInformation.getValue(zone).bass).isEqualTo(-10)
+
+    for (i in 0..50) {
+      audioManager.bass(zone, BassLevel.UP)
+    }
+    assertThat(audioManager.zoneInformation.getValue(zone).bass).isEqualTo(10)
   }
 
   @Test fun receivedZoneInfoUpdatesZone() {
@@ -77,8 +115,8 @@ class AudioManagerUnitTest {
 
     val originalInfo = audioManager.zoneInformation[zone]!!
     assertThat(originalInfo.source).isNull()
-    assertThat(originalInfo.power).isNull()
-    assertThat(originalInfo.volume).isNull()
+    assertThat(originalInfo.power).isFalse()
+    assertThat(originalInfo.volume).isEqualTo(0)
 
     receivedZoneInfo.onNext(mockData)
 

@@ -50,101 +50,50 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
 
       post("/power/:newValue") { request, _ ->
         val zone = request.zone() ?: return@post -1
-        val turnOn = request.powerOn()
+        val power = request.powerOn()
 
-        audioManager.power(zone, turnOn)
-        val verb = if (turnOn == PowerChange.ON) "on" else "off"
-        return@post "Turned $verb ${zone.name}"
+        audioManager.power(zone, power)
+        return@post "Turned ${power.name.toLowerCase()} ${zone.name}"
       }
 
       post("/volume/:newValue") { request, _ ->
         val zone = request.zone() ?: return@post -1
+        val volume = request.volume()
 
-        val volumeParam = request.params("newValue")
-        when (volumeParam.toLowerCase()) {
-          "up" -> {
-            audioManager.volume(zone, VolumeChange.Up())
-            return@post "Volume turned up in ${zone.name}"
-          }
-          "down" -> {
-            audioManager.volume(zone, VolumeChange.Down())
-            return@post "Volume turned down in ${zone.name}"
-          }
-          else -> {
-            val volume = Math.min(100, volumeParam.toInt())
-            audioManager.volume(zone, VolumeChange.Set(volume))
-            return@post "Set ${zone.name} to $volume%"
-          }
-        }
+        audioManager.volume(zone, volume)
+        return@post "Turned volume ${volume.verb} in ${zone.name}"
       }
 
       post("/bass/:newValue") { request, _ ->
         val zone = request.zone() ?: return@post -1
+        val bass = request.bass() ?: return@post -1
 
-        val bassParam = request.params("newValue")
-        when (bassParam.toLowerCase()) {
-          "up" -> {
-            audioManager.bass(zone, BassLevel.UP)
-            return@post "Bass turned up in ${zone.name}"
-          }
-          "down" -> {
-            audioManager.bass(zone, BassLevel.DOWN)
-            return@post "Bass turned down in ${zone.name}"
-          }
-          "flat" -> {
-            audioManager.bass(zone, BassLevel.FLAT)
-            return@post "Bass flattened in ${zone.name}"
-          }
-          else -> {
-            halt(400, "Unknown bass value. Accepted results: [up|flat|down] ")
-          }
-        }
+        audioManager.bass(zone, bass)
+        return@post "Bass turned ${bass.name.toLowerCase()} in ${zone.name}"
       }
 
       post("/treble/:newValue") { request, _ ->
         val zone = request.zone() ?: return@post -1
+        val treble = request.treble() ?: return@post -1
 
-        val bassParam = request.params("newValue")
-        when (bassParam.toLowerCase()) {
-          "up" -> {
-            audioManager.treble(zone, TrebleLevel.UP)
-            return@post "Treble turned up in ${zone.name}"
-          }
-          "down" -> {
-            audioManager.treble(zone, TrebleLevel.DOWN)
-            return@post "Treble turned down in ${zone.name}"
-          }
-          "flat" -> {
-            audioManager.treble(zone, TrebleLevel.FLAT)
-            return@post "Treble flattened in ${zone.name}"
-          }
-          else -> {
-            halt(400, "Unknown treble value. Accepted results: [up|flat|down] ")
-          }
-        }
+        audioManager.treble(zone, treble)
+        return@post "Treble turned ${treble.name.toLowerCase()} in ${zone.name}"
       }
 
       post("/balance/:newValue") { request, _ ->
         val zone = request.zone() ?: return@post -1
+        val balanceParam = request.balance() ?: return@post -1
 
-        val bassParam = request.params("newValue")
-        when (bassParam.toLowerCase()) {
-          "left" -> {
-            audioManager.balance(zone, Balance.LEFT)
-            return@post "Balance shifted left in ${zone.name}"
-          }
-          "right" -> {
-            audioManager.balance(zone, Balance.RIGHT)
-            return@post "Balance shifted right in ${zone.name}"
-          }
-          "center" -> {
-            audioManager.balance(zone, Balance.CENTER)
-            return@post "Balance centered in ${zone.name}"
-          }
-          else -> {
-            halt(400, "Unknown treble value. Accepted results: [left|center|right] ")
-          }
-        }
+        audioManager.balance(zone, balanceParam)
+        return@post "Balance shifted ${balanceParam.name.toLowerCase()} in ${zone.name}"
+      }
+
+      post("/loudness/:newValue") { request, _ ->
+        val zone = request.zone() ?: return@post -1
+        val loudness = request.loudness()
+
+        audioManager.loudness(zone, loudness)
+        return@post "Loudness is now ${loudness.name.toLowerCase()} in the ${zone.name}"
       }
 
       post("/source/:sourceId") { request, _ ->
@@ -185,11 +134,61 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
     }
   }
 
+  private fun Request.volume(): VolumeChange {
+    val value = params("newValue").toLowerCase()
+    return when (value) {
+      "up" -> VolumeChange.Up()
+      "down" -> VolumeChange.Down()
+      else -> VolumeChange.Set(Math.max(0, Math.min(100, value.toInt())))
+    }
+  }
+
+  private fun Request.bass(): BassLevel? {
+    return when (params("newValue").toLowerCase()) {
+      "down" -> BassLevel.DOWN
+      "up" -> BassLevel.UP
+      else -> {
+        halt(400, "Bad bass param. Accepted values: [up|down]")
+        null
+      }
+    }
+  }
+
+  private fun Request.treble(): TrebleLevel? {
+    return when (params("newValue").toLowerCase()) {
+      "down" -> TrebleLevel.DOWN
+      "up" -> TrebleLevel.UP
+      else -> {
+        halt(400, "Bad treble param. Accepted values: [up|down}")
+        null
+      }
+    }
+  }
+
+  private fun Request.balance(): Balance? {
+    return when (params("newValue").toLowerCase()) {
+      "left" -> Balance.LEFT
+      "right" -> Balance.RIGHT
+      else -> {
+        halt(400, "Bad balance param:. Accepted values: [left|right]")
+        null
+      }
+    }
+  }
+
   private fun Request.powerOn(): PowerChange {
     val value = params("newValue")
     when (value.toLowerCase()) {
       "on", "true", "1" -> return PowerChange.ON
       else -> return PowerChange.OFF
+    }
+  }
+
+  private fun Request.loudness(): Loudness {
+    val value = params("newValue")
+    when (value.toLowerCase()) {
+      "on", "true", "1" -> return Loudness.ON
+      else -> return Loudness.OFF
     }
   }
 }
