@@ -11,7 +11,7 @@ class StatusRequestTimer(val zones: Zones, val audioManager: AudioManager) {
   var timer: Timer? = null
 
   fun start() {
-    val initialDelay = TimeUnit.SECONDS.toMillis(10)
+    val initialDelay = TimeUnit.SECONDS.toMillis(5)
     val period = TimeUnit.MINUTES.toMillis(5)
 
     LOG.info("Starting status-requests in ${initialDelay / 1000}s")
@@ -19,7 +19,7 @@ class StatusRequestTimer(val zones: Zones, val audioManager: AudioManager) {
       LOG.info("It's time to request status")
       zones.all.values.forEach { zone ->
         audioManager.requestStatus(zone)
-        Thread.sleep(3000)
+        Thread.sleep(2000)
       }
     }
   }

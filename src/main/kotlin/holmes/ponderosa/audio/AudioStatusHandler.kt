@@ -2,15 +2,15 @@ package holmes.ponderosa.audio
 
 class AudioStatusHandler(val audioCommander: AudioCommander,
                          val commandReceiver: RussoundCommandReceiver,
-                         val statusRequestor: StatusRequestTimer) {
+                         val statusRequestTimer: StatusRequestTimer) {
   fun start() {
     commandReceiver.start()
-    statusRequestor.start()
+    statusRequestTimer.start()
   }
 
   fun stop() {
     audioCommander.destroy()
     commandReceiver.stop()
-    statusRequestor.stop()
+    statusRequestTimer.stop()
   }
 }
