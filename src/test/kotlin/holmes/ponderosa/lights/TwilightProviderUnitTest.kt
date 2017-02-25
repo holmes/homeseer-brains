@@ -14,7 +14,10 @@ class TwilightProviderUnitTest {
 
   @Before fun setUp() {
     val moshi = Moshi.Builder().build()
-    twilightProvider = TwilightProvider(moshi, Provider { LocalDate.of(2017, 2, 12) }, File("src/test/resources"))
+    val testDate = LocalDate.of(2017, 2, 12)
+
+    twilightProvider = TwilightProvider(moshi, Provider { testDate }, File("src/test/resources"))
+    twilightProvider.refresh()
   }
 
   @Test fun testParsingDatesFromFile() {

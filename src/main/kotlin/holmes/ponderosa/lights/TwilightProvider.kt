@@ -48,7 +48,7 @@ class TwilightProvider(moshi: Moshi, private val now: Provider<LocalDate>, priva
     }
   }
 
-  private fun loadData(date: LocalDate): TwilightResult {
+  internal fun loadData(date: LocalDate): TwilightResult {
     try {
       val inputStream = getFileStream(date)
       val bufferedSource = Okio.buffer(Okio.source(inputStream))

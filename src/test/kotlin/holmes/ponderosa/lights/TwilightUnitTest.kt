@@ -3,6 +3,7 @@ package holmes.ponderosa.lights
 import com.google.common.truth.Truth.assertThat
 import org.junit.Before
 import org.junit.Test
+import java.time.LocalDate
 import java.time.LocalTime
 
 class TwilightUnitTest {
@@ -25,7 +26,7 @@ class TwilightUnitTest {
     // Twilight ends at 18:21
     val twilightEnd = LocalTime.of(18, 21)
 
-    twilightResult = TwilightResult(twilightBegin, sunrise, solarNoon, sunset, twilightEnd)
+    twilightResult = TwilightResult(LocalDate.now(), twilightBegin, sunrise, solarNoon, sunset, twilightEnd)
     twilight = Twilight({ twilightResult })
   }
 
