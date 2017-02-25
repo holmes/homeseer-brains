@@ -2,7 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import './App.css';
 
 import {
-  Button, DropdownButton, ButtonGroup, MenuItem, Panel, Grid, Row, Col, FormGroup,
+  Button, DropdownButton, ButtonGroup, MenuItem, Panel, Grid, Row, Col, FormGroup, Form,
   ControlLabel, Glyphicon
 } from 'react-bootstrap';
 import ToggleButton from 'react-toggle-button';
@@ -69,54 +69,68 @@ class App extends Component {
 function AdvancedPanel(props) {
   return (
     <Panel className="advancedPanel" collapsible expanded={props.visible}>
+      <Form horizontal>
+
+        <FormGroup controlId="formHorizontalEmail">
+          <Col componentClass={ControlLabel} sm={2}>
+            Loudness
+          </Col>
+          <Col sm={10}>
+            <ToggleButton value={props.loudness} onToggle={props.loudnessToggled} />
+          </Col>
+        </FormGroup>
+
         <FormGroup controlId="balance">
-          <Col className="adjustmentLabel" componentClass={ControlLabel} sm={2}>Balance</Col>
-          <Col sm={10}>
-            <ButtonGroup justified bsSize="large" className="adjustmentGroup">
-              <ButtonGroup justified bsSize="large">
-                <Button bsStyle="success" onClick={() => { props.balance("left") }}>Left</Button>
+            <Col className="adjustmentLabel" componentClass={ControlLabel} sm={2}>Balance</Col>
+            <Col sm={10}>
+              <ButtonGroup justified bsSize="large" className="adjustmentGroup">
+                <ButtonGroup justified bsSize="large">
+                  <Button bsStyle="success" onClick={() => { props.balance("left") }}>Left</Button>
+                </ButtonGroup>
+                <ButtonGroup justified bsSize="large">
+                  <Button bsStyle="primary" onClick={() => { props.balance("center") }}>Center</Button>
+                </ButtonGroup>
+                <ButtonGroup justified bsSize="large">
+                  <Button bsStyle="success" onClick={() => { props.balance("right") }}>Right</Button>
+                </ButtonGroup>
               </ButtonGroup>
-              <ButtonGroup justified bsSize="large">
-                <Button bsStyle="primary" onClick={() => { props.balance("center") }}>Center</Button>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="bass">
+            <Col className="adjustmentLabel"componentClass={ControlLabel} sm={2}>Bass</Col>
+            <Col sm={10}>
+              <ButtonGroup justified bsSize="large" className="adjustmentGroup">
+                <ButtonGroup justified bsSize="large">
+                  <Button bsStyle="success" onClick={() => { props.bass("down") }}>Down</Button>
+                </ButtonGroup>
+                <ButtonGroup justified bsSize="large">
+                  <Button bsStyle="primary" onClick={() => { props.bass("flat") }}>Flat</Button>
+                </ButtonGroup>
+                <ButtonGroup justified bsSize="large">
+                  <Button bsStyle="success" onClick={() => { props.bass("up") }}>Up</Button>
+                </ButtonGroup>
               </ButtonGroup>
-              <ButtonGroup justified bsSize="large">
-                <Button bsStyle="success" onClick={() => { props.balance("right") }}>Right</Button>
+            </Col>
+          </FormGroup>
+
+          <FormGroup controlId="treble">
+            <Col className="adjustmentLabel"componentClass={ControlLabel} sm={2}>Treble</Col>
+            <Col sm={10}>
+              <ButtonGroup justified bsSize="large"className="adjustmentGroup">
+                <ButtonGroup justified bsSize="large">
+                  <Button bsStyle="success" onClick={() => { props.treble("down") }}>Down</Button>
+                </ButtonGroup>
+                <ButtonGroup justified bsSize="large">
+                  <Button bsStyle="primary" onClick={() => { props.treble("flat") }}>Flat</Button>
+                </ButtonGroup>
+                <ButtonGroup justified bsSize="large">
+                  <Button bsStyle="success" onClick={() => { props.treble("up") }}>Up</Button>
+                </ButtonGroup>
               </ButtonGroup>
-            </ButtonGroup>
-          </Col>
-        </FormGroup>
-        <FormGroup controlId="bass">
-          <Col className="adjustmentLabel"componentClass={ControlLabel} sm={2}>Bass</Col>
-          <Col sm={10}>
-            <ButtonGroup justified bsSize="large" className="adjustmentGroup">
-              <ButtonGroup justified bsSize="large">
-                <Button bsStyle="success" onClick={() => { props.bass("down") }}>Down</Button>
-              </ButtonGroup>
-              <ButtonGroup justified bsSize="large">
-                <Button bsStyle="primary" onClick={() => { props.bass("flat") }}>Flat</Button>
-              </ButtonGroup>
-              <ButtonGroup justified bsSize="large">
-                <Button bsStyle="success" onClick={() => { props.bass("up") }}>Up</Button>
-              </ButtonGroup>
-            </ButtonGroup>
-          </Col>
-        </FormGroup>
-        <FormGroup controlId="treble">
-          <Col className="adjustmentLabel"componentClass={ControlLabel} sm={2}>Treble</Col>
-          <Col sm={10}>
-            <ButtonGroup justified bsSize="large"className="adjustmentGroup">
-              <ButtonGroup justified bsSize="large">
-                <Button bsStyle="success" onClick={() => { props.treble("down") }}>Down</Button>
-              </ButtonGroup>
-              <ButtonGroup justified bsSize="large">
-                <Button bsStyle="primary" onClick={() => { props.treble("flat") }}>Flat</Button>
-              </ButtonGroup>
-              <ButtonGroup justified bsSize="large">
-                <Button bsStyle="success" onClick={() => { props.treble("up") }}>Up</Button>
-              </ButtonGroup>
-            </ButtonGroup>
-          </Col>
-        </FormGroup>
+            </Col>
+          </FormGroup>
+      </Form>
     </Panel>
   )
 }
@@ -198,14 +212,12 @@ class ZoneInformation extends React.Component {
 
     let zone = props.zoneInfo.zone;
     let sourceId = props.zoneInfo.source && props.zoneInfo.source.sourceId;
-    let volume = props.zoneInfo.volume;
-    let power = props.zoneInfo.power;
 
     this.state = {
       zone: zone,
       sourceId: sourceId,
-      volume: volume,
-      power: power,
+      power: props.zoneInfo.power,
+      loudness: props.zoneInfo.loudness,
       advancedVisible: false
     };
 
@@ -215,6 +227,7 @@ class ZoneInformation extends React.Component {
     this.bassChanged = this.bassChanged.bind(this);
     this.trebleChanged = this.trebleChanged.bind(this);
     this.balanceChanged = this.balanceChanged.bind(this);
+    this.loudnessToggled = this.loudnessToggled.bind(this)
     this.advancedClicked = this.advancedClicked.bind(this);
   }
 
@@ -249,6 +262,18 @@ class ZoneInformation extends React.Component {
       method: "POST", mode: 'cors'
     }).then(function () {
       thing.setState({power: power})
+    });
+  }
+
+  loudnessToggled(originalLoudness) {
+    const loudness = !originalLoudness;
+    const url = `${this.props.baseUrl}api/audio/${this.state.zone.zoneId}/loudness/${loudness}`;
+
+    const thing = this;
+    fetch(url, {
+      method: "POST", mode: 'cors'
+    }).then(function () {
+      thing.setState({loudness: loudness})
     });
   }
 
@@ -305,9 +330,11 @@ class ZoneInformation extends React.Component {
 
           <AdvancedPanel
             visible={this.state.advancedVisible}
+            loudness={this.state.loudness}
             bass={this.bassChanged}
             treble={this.trebleChanged}
             balance={this.balanceChanged}
+            loudnessToggled={this.loudnessToggled}
           />
         </Panel>
     )
@@ -337,9 +364,11 @@ VolumeSection.propTypes = {
 
 AdvancedPanel.propType = {
   visible: PropTypes.bool.isRequired,
+  loudness: PropTypes.bool.isRequired,
   bass: PropTypes.func.isRequired,
   treble: PropTypes.func.isRequired,
   balance: PropTypes.func.isRequired,
+  loudnessToggled: PropTypes.func.isRequired
 };
 
 ZoneInformation.propTypes = {
@@ -350,7 +379,8 @@ ZoneInformation.propTypes = {
     source: PropTypes.shape({
       name: PropTypes.string.isRequired, sourceId: PropTypes.number.isRequired
     }), //
-    power: PropTypes.bool
+    power: PropTypes.bool,
+    loudness: PropTypes.bool,
   })
 };
 
