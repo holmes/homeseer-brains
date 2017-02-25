@@ -34,8 +34,9 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
     receivedZoneInfo.subscribe(this::updateZone)
   }
 
-  fun requestStatus(zone: Zone) {
+  fun requestStatus(zone: Zone): ZoneInfo {
     audioCommander.requestStatus(zone)
+    return zoneInformation.getValue(zone)
   }
 
   fun power(zone: Zone, power: PowerChange): ZoneInfo {
