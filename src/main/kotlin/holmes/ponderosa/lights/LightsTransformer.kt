@@ -19,7 +19,7 @@ class LightsTransformer : ResponseTransformer {
   }
 
   private fun renderAutoDim(model: DimCalculator.AutoDimResult)
-      = "${model.dimLevel},${model.needsReschedule}"
+      = "${model.dimLevel}:${model.needsReschedule}"
 
   private fun renderToggle(model: DimCalculator.ToggleLightResult): String {
     return model.results

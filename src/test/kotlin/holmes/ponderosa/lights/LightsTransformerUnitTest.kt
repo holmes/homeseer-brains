@@ -40,6 +40,6 @@ class LightsTransformerUnitTest {
 
   @Test fun convertAutoDimResult() {
     val autoDimResult = DimCalculator.AutoDimResult(22, false)
-    assertThat(transformer.render(autoDimResult)).isEqualTo("22,false")
+    assertThat(transformer.render(autoDimResult)).isEqualTo("22:false")
   }
 }
