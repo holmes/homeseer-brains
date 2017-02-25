@@ -7,6 +7,7 @@ import holmes.ponderosa.audio.RussoundReaderDescriptor
 import holmes.ponderosa.audio.TransformerModule
 import holmes.ponderosa.lights.DaggerLights
 import holmes.ponderosa.lights.LightModule
+import holmes.ponderosa.lights.TwilightDataRefresher
 import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
 import spark.servlet.SparkApplication
@@ -17,6 +18,7 @@ private val LOG = LoggerFactory.getLogger(Ponderosa::class.java)
 /** The main initializer. */
 class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightDataDirectory: File) {
   lateinit var audioStatusHandler: AudioStatusHandler
+  lateinit var twilightDataRefresher: TwilightDataRefresher
 
   fun start() {
     staticFileLocation("/public/react")
@@ -35,6 +37,9 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
         .transformerModule(transformerModule)
         .build()
 
+    twilightDataRefresher = lightsGraph.twilightDataRefresher()
+    twilightDataRefresher.start()
+
     audioStatusHandler = audioGraph.audioStatusHandler()
     audioStatusHandler.start()
 
@@ -44,6 +49,7 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
 
   fun destroy() {
     audioStatusHandler.stop()
+    twilightDataRefresher.stop()
   }
 }
 

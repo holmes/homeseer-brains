@@ -79,8 +79,8 @@ class DimCalculator(val lightZones: LightZones, val now: Provider<LocalTime>) {
     val startValue = zone.previousFrame(now).lowLevel
     val endValue = zone.currentFrame(now).lowLevel
 
-    val startTime = zone.previousFrame(now).endTime
-    val endTime = zone.currentFrame(now).endTime
+    val startTime = zone.previousFrame(now).endTime()
+    val endTime = zone.currentFrame(now).endTime()
     val nowTime = now.get()
 
     val frameLength = Duration.between(startTime, endTime)

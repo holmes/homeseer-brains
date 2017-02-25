@@ -8,18 +8,24 @@ import javax.inject.Provider
  * A TimeFrame is a description of a light level. These are stacked togeher to
  * represent how we want to light up at a certain time of day.
  */
-data class TimeFrame(val endTime: LocalTime, val lowLevel: Int, val highLevel: Int) {
+data class TimeFrame(val endTime: () -> LocalTime, val lowLevel: Int, val highLevel: Int) {
   fun contains(currentTime: LocalTime): Boolean {
-    return endTime.isAfter(currentTime)
+    return endTime().isAfter(currentTime)
+  }
+
+  companion object Factory {
+    fun StaticTimeFrame(time: LocalTime, lowLevel: Int, highLevel: Int): TimeFrame {
+      return TimeFrame({ time }, lowLevel, highLevel)
+    }
   }
 }
 
 data class LightZone(val deviceId: Int, val subZones: Set<DependentZone>, val timeFrames: List<TimeFrame>) {
   data class DependentZone(val deviceId: Int, val timeFrames: List<DependentTimeFrame>) {
-    data class DependentTimeFrame(val startTime: LocalTime, val endTime: LocalTime)
+    data class DependentTimeFrame(val startTime: () -> LocalTime, val endTime: () -> LocalTime)
 
     fun contains(now: Provider<LocalTime>): Boolean {
-      return timeFrames.any { it.startTime < now.get() && it.endTime > now.get() }
+      return timeFrames.any { it.startTime() < now.get() && it.endTime() > now.get() }
     }
   }
 
@@ -44,14 +50,14 @@ class LightZones(twilight: Twilight) {
         // Family Room
         22, LightZone(22,
         setOf(
-            LightZone.DependentZone(19, listOf(DependentTimeFrame(LocalTime.MIDNIGHT, twilight.sunrise())))
+            LightZone.DependentZone(19, listOf(DependentTimeFrame(MIN, twilight.sunrise())))
         ),
         listOf(
             TimeFrame(twilight.twilightBegin(), 1, 35),
             TimeFrame(twilight.sunrise(), 1, 35),
             TimeFrame(twilight.solarNoon(), 30, 85),
             TimeFrame(twilight.twilightEnd(), 10, 60),
-            TimeFrame(LocalTime.MAX, 1, 35)
+            TimeFrame(MAX, 1, 35)
         )))
     zones.put(
         // Nursery
@@ -60,7 +66,7 @@ class LightZones(twilight: Twilight) {
             TimeFrame(twilight.twilightBegin(), 1, 35),
             TimeFrame(twilight.sunrise(), 1, 35),
             TimeFrame(twilight.solarNoon(), 30, 85),
-            TimeFrame(LocalTime.MAX, 1, 35)
+            TimeFrame(MAX, 1, 35)
         ))
     )
     zones.put(
@@ -70,7 +76,7 @@ class LightZones(twilight: Twilight) {
             TimeFrame(twilight.twilightBegin(), 5, 35),
             TimeFrame(twilight.solarNoon(), 35, 85),
             TimeFrame(twilight.twilightEnd(), 20, 60),
-            TimeFrame(LocalTime.of(23, 59), 5, 35)
+            TimeFrame(MAX, 5, 35)
         ))
     )
     zones.put(
@@ -80,7 +86,7 @@ class LightZones(twilight: Twilight) {
             TimeFrame(twilight.twilightBegin(), 10, 35),
             TimeFrame(twilight.solarNoon(), 35, 85),
             TimeFrame(twilight.twilightEnd(), 25, 60),
-            TimeFrame(LocalTime.of(23, 59), 18, 35)
+            TimeFrame(MAX, 18, 35)
         ))
     )
     zones.put(
@@ -90,7 +96,7 @@ class LightZones(twilight: Twilight) {
             TimeFrame(twilight.twilightBegin(), 5, 35),
             TimeFrame(twilight.solarNoon(), 30, 85),
             TimeFrame(twilight.twilightEnd(), 15, 60),
-            TimeFrame(LocalTime.of(23, 59), 5, 35)
+            TimeFrame(MAX, 5, 35)
         ))
     )
   }
@@ -98,4 +104,10 @@ class LightZones(twilight: Twilight) {
   fun zone(deviceId: Int): LightZone? {
     return zones[deviceId]
   }
+
+  private val MIN: () -> LocalTime
+    get() = { LocalTime.MIN }
+
+  private val MAX: () -> LocalTime
+    get() = { LocalTime.MAX }
 }

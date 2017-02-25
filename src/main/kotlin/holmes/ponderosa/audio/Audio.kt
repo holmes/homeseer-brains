@@ -44,9 +44,9 @@ annotation class RussoundCAA66
   }
 
   @Singleton @Provides fun statusRequestTimer(zones: Zones, audioManager: AudioManager)
-      = StatusRequestTimer(zones, audioManager)
+      = AudioStatusRequestTimer(zones, audioManager)
 
-  @Singleton @Provides fun audioStatusHandler(audioCommander: AudioCommander, commandReceiver: RussoundCommandReceiver, statusRequestor: StatusRequestTimer)
+  @Singleton @Provides fun audioStatusHandler(audioCommander: AudioCommander, commandReceiver: RussoundCommandReceiver, statusRequestor: AudioStatusRequestTimer)
       = AudioStatusHandler(audioCommander, commandReceiver, statusRequestor)
 
   @Singleton @Provides fun russoundCommandReceiver(subject: PublishSubject<ReceivedZoneInfo>)
