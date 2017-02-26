@@ -102,6 +102,29 @@ class AudioManagerUnitTest {
     assertThat(audioManager.zoneInformation.getValue(zone).bass).isEqualTo(10)
   }
 
+  @Test fun changingSomethingRequestsAnUpdate() {
+    val zone = zones.zone(1)
+    audioManager.bass(zone, BassLevel.UP)
+    verify(audioCommander).requestStatus(zone)
+  }
+
+  @Test fun receivedZoneInfoUpdatesZoneDoesNotAskForAnotherUpdate() {
+    val zone = zones.zone(2)
+    val source = sources.source(1)
+    val mockData = mock<ReceivedZoneInfo> {
+      on { zoneId }.doReturn(zone.zoneId)
+      on { sourceId }.doReturn(source.sourceId)
+      on { power }.doReturn(true)
+      on { volume }.doReturn(66)
+      on { bass }.doReturn(18)
+      on { treble }.doReturn(10)
+      on { balance }.doReturn(2)
+    }
+
+    receivedZoneInfo.onNext(mockData)
+    verifyZeroInteractions(audioCommander)
+  }
+
   @Test fun receivedZoneInfoUpdatesZone() {
     val zone = zones.zone(2)
     val source = sources.source(1)

@@ -119,12 +119,15 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
     val updatedInfo = ZoneInfo(zone, source, zoneInfo.power, zoneInfo.volume, bass, treble, balance, zoneInfo.loudness)
 
     LOG.info("Received Zone Info from Receiver: $zoneInfo, storing as $updatedInfo")
-    updateZone(updatedInfo)
+    updateZone(updatedInfo, runUpdate = false)
   }
 
-  private fun updateZone(updatedInfo: ZoneInfo): ZoneInfo {
-    this.allZoneInfo.put(updatedInfo.zone, updatedInfo)
-    return updatedInfo
+  /** Update the zone and request an update via AudioCommander */
+  private fun updateZone(updatedInfo: ZoneInfo, runUpdate: Boolean = true): ZoneInfo {
+    return updatedInfo.apply {
+      allZoneInfo.put(zone, updatedInfo)
+      if (runUpdate) audioCommander.requestStatus(zone)
+    }
   }
 }
 
