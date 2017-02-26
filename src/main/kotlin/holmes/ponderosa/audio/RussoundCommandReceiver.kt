@@ -39,9 +39,9 @@ class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDe
   }
 
   fun start() {
-    LOG.info("Reading input from Russound Matrix at ${readerDescriptor.descriptor.absolutePath}")
-
     thread(true, true, null, "audio-status-receiver") {
+      LOG.info("Reading input from Russound Matrix at ${readerDescriptor.descriptor.absolutePath}")
+
       try {
         runReadLoop()
       } catch(e: Exception) {
