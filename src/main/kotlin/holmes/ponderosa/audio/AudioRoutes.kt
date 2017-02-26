@@ -23,7 +23,7 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
       LOG.info("Requested: " + request.pathInfo())
     })
 
-    get("/api/audio/zoneInfo", Route { _, response ->
+    get("/api/audio/zoneInfo", Route { _, _ ->
       RootFetchInfo(
           sources = sources.all.sortedBy { it.sourceNumber },
           zoneInformation = audioManager.zoneInformation.values.sortedBy { it.zone.zoneNumber }
@@ -31,6 +31,11 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
     }, jsonTransformer)
 
     path("/api/audio/:zoneId") {
+      get("/status", Route { request, _ ->
+        val zone = request.zone() ?: return@Route -1
+        return@Route audioManager.zoneInformation[zone]
+      }, jsonTransformer)
+
       post("/requestStatus", Route { request, _ ->
         val zone = request.zone() ?: return@Route -1
         return@Route audioManager.requestStatus(zone)
