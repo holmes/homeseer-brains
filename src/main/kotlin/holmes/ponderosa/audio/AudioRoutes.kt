@@ -142,8 +142,9 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
     return when (params("newValue").toLowerCase()) {
       "down" -> BassLevel.DOWN
       "up" -> BassLevel.UP
+      "flat" -> BassLevel.FLAT
       else -> {
-        halt(400, "Bad bass param. Accepted values: [up|down]")
+        halt(400, "Bad bass param. Accepted values: [up|flat|down]")
         null
       }
     }
@@ -153,8 +154,9 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
     return when (params("newValue").toLowerCase()) {
       "down" -> TrebleLevel.DOWN
       "up" -> TrebleLevel.UP
+      "flat" -> TrebleLevel.FLAT
       else -> {
-        halt(400, "Bad treble param. Accepted values: [up|down}")
+        halt(400, "Bad treble param. Accepted values: [up|flat|down}")
         null
       }
     }
@@ -164,8 +166,9 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
     return when (params("newValue").toLowerCase()) {
       "left" -> Balance.LEFT
       "right" -> Balance.RIGHT
+      "center" -> Balance.CENTER
       else -> {
-        halt(400, "Bad balance param:. Accepted values: [left|right]")
+        halt(400, "Bad balance param:. Accepted values: [left|center|right]")
         null
       }
     }

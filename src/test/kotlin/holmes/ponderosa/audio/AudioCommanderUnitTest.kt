@@ -1,15 +1,14 @@
 package holmes.ponderosa.audio
 
-import com.google.common.truth.Truth.assertThat
 import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.doAnswer
 import com.nhaarman.mockito_kotlin.mock
+import com.nhaarman.mockito_kotlin.verify
 import org.junit.Before
 import org.junit.Test
-import java.io.ByteArrayOutputStream
 
 class AudioCommanderUnitTest {
-  lateinit var outputStream: ByteArrayOutputStream
+  lateinit var audioQueue: AudioQueue
   lateinit var russoundCommands: RussoundCommands
   lateinit var audioCommander: AudioCommander
 
@@ -58,37 +57,37 @@ class AudioCommanderUnitTest {
           }
     }
 
-    outputStream = ByteArrayOutputStream()
-    audioCommander = AudioCommander(russoundCommands, outputStream)
+    audioQueue = mock {  }
+    audioCommander = AudioCommander(audioQueue, russoundCommands)
   }
 
   @Test fun powerOnTurnsOn() {
     val expected = "Zone10On".toByteArray()
     audioCommander.power(zone0, PowerChange.ON)
-    assertThat(outputStream.toByteArray()).isEqualTo(expected)
+    verify(audioQueue).sendCommand(expected)
   }
 
   @Test fun powerOffTurnsOff() {
     val expected = "Zone11Off".toByteArray()
     audioCommander.power(zone1, PowerChange.OFF)
-    assertThat(outputStream.toByteArray()).isEqualTo(expected)
+    verify(audioQueue).sendCommand(expected)
   }
 
   @Test fun volumeUp() {
     val expected = "Zone11VolumeUp".toByteArray()
     audioCommander.volume(zone1, VolumeChange.Up())
-    assertThat(outputStream.toByteArray()).isEqualTo(expected)
+    verify(audioQueue).sendCommand(expected)
   }
 
   @Test fun volumeDown() {
     val expected = "Zone11VolumeDown".toByteArray()
     audioCommander.volume(zone1, VolumeChange.Down())
-    assertThat(outputStream.toByteArray()).isEqualTo(expected)
+    verify(audioQueue).sendCommand(expected)
   }
   @Test fun volumeSet() {
     val expected = "Zone11Volume22".toByteArray()
     audioCommander.volume(zone1, VolumeChange.Set(22))
-    assertThat(outputStream.toByteArray()).isEqualTo(expected)
+    verify(audioQueue).sendCommand(expected)
   }
 
   @Test fun changeSourceChangesSource() {
@@ -97,6 +96,6 @@ class AudioCommanderUnitTest {
     val expected = "Zone${zone.zoneId}Source${source.sourceId}".toByteArray()
 
     audioCommander.changeSource(zone, source)
-    assertThat(outputStream.toByteArray()).isEqualTo(expected)
+    verify(audioQueue).sendCommand(expected)
   }
 }
