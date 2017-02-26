@@ -112,11 +112,12 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
     val source = sources.source(zoneInfo.sourceId)
 
     // Convert from Russound code to something human readable.
+    val volume = zoneInfo.volume
     val bass = zoneInfo.bass - 10
     val treble = zoneInfo.treble - 10
     val balance = zoneInfo.balance - 10
 
-    val updatedInfo = ZoneInfo(zone, source, zoneInfo.power, zoneInfo.volume, bass, treble, balance, zoneInfo.loudness)
+    val updatedInfo = ZoneInfo(zone, source, zoneInfo.power, volume, bass, treble, balance, zoneInfo.loudness)
 
     LOG.info("Received Zone Info from Receiver: $zoneInfo, storing as $updatedInfo")
     updateZone(updatedInfo, runUpdate = false)
