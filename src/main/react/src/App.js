@@ -218,12 +218,15 @@ function VolumeSection(props) {
         <ButtonGroup justified bsSize="large">
           <Button bsStyle="success" onClick={() => {
             props.volumeChanged("down")
-          }}>Volume Down</Button>
+          }}><Glyphicon glyph="volume-down"/></Button>
+        </ButtonGroup>
+        <ButtonGroup justified bsSize="large">
+          <Button disabled>{props.volume}</Button>
         </ButtonGroup>
         <ButtonGroup justified bsSize="large">
           <Button bsStyle="primary" onClick={() => {
             props.volumeChanged("up")
-          }}>Volume Up</Button>
+          }}><Glyphicon glyph="volume-up"/></Button>
         </ButtonGroup>
       </ButtonGroup>
   )
@@ -240,6 +243,7 @@ class ZoneInformation extends React.Component {
       zone: zone,
       sourceId: sourceId,
       power: props.zoneInfo.power,
+      volume: props.zoneInfo.volume,
       loudness: props.zoneInfo.loudness,
       balance: props.zoneInfo.balance,
       bass: props.zoneInfo.bass,
@@ -318,6 +322,7 @@ class ZoneInformation extends React.Component {
       zone: zoneInfo.zone,
       sourceId: zoneInfo.source.sourceId,
       power: zoneInfo.power,
+      volume: zoneInfo.volume,
       loudness: zoneInfo.loudness,
       balance: zoneInfo.balance,
       bass: zoneInfo.bass,
@@ -346,6 +351,7 @@ class ZoneInformation extends React.Component {
           />
 
           <VolumeSection
+              volume={this.state.volume}
               volumeChanged={this.volumeChanged}
           />
 
@@ -382,6 +388,7 @@ SourceSelector.propTypes = {
 };
 
 VolumeSection.propTypes = {
+  volume: PropTypes.number.isRequired,
   volumeChanged: PropTypes.func.isRequired,
 };
 
