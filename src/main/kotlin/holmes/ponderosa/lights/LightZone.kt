@@ -54,9 +54,9 @@ class LightZones(twilight: Twilight) {
         ),
         listOf(
             TimeFrame(twilight.twilightBegin(), 1, 35),
-            TimeFrame(twilight.sunrise(), 1, 35),
-            TimeFrame(twilight.solarNoon(), 30, 85),
-            TimeFrame(twilight.twilightEnd(), 10, 60),
+            TimeFrame(twilight.sunrise(), 30, 60),
+            TimeFrame(twilight.solarNoon(), 60, 85),
+            TimeFrame(twilight.twilightEnd(), 30, 60),
             TimeFrame(MAX, 1, 35)
         )))
     zones.put(
@@ -64,8 +64,9 @@ class LightZones(twilight: Twilight) {
         28, LightZone(28, setOf(),
         listOf(
             TimeFrame(twilight.twilightBegin(), 1, 35),
-            TimeFrame(twilight.sunrise(), 1, 35),
-            TimeFrame(twilight.solarNoon(), 30, 85),
+            TimeFrame(twilight.sunrise(), 50, 60),
+            TimeFrame(twilight.solarNoon(), 80, 100),
+            TimeFrame(twilight.twilightEnd(), 50, 60),
             TimeFrame(MAX, 1, 35)
         ))
     )
@@ -74,8 +75,8 @@ class LightZones(twilight: Twilight) {
         25, LightZone(25, setOf(),
         listOf(
             TimeFrame(twilight.twilightBegin(), 5, 35),
-            TimeFrame(twilight.solarNoon(), 35, 85),
-            TimeFrame(twilight.twilightEnd(), 20, 60),
+            TimeFrame(twilight.solarNoon(), 60, 85),
+            TimeFrame(twilight.twilightEnd(), 40, 60),
             TimeFrame(MAX, 5, 35)
         ))
     )
@@ -84,8 +85,9 @@ class LightZones(twilight: Twilight) {
         19, LightZone(19, setOf(),
         listOf(
             TimeFrame(twilight.twilightBegin(), 10, 35),
-            TimeFrame(twilight.solarNoon(), 35, 85),
-            TimeFrame(twilight.twilightEnd(), 25, 60),
+            TimeFrame(twilight.sunrise(), 30, 60),
+            TimeFrame(twilight.solarNoon(), 60, 85),
+            TimeFrame(twilight.twilightEnd(), 30, 60),
             TimeFrame(MAX, 18, 35)
         ))
     )
