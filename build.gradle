@@ -1,6 +1,9 @@
 group 'holmes.ponderosa'
 version '1.0-SNAPSHOT'
 
+import groovy.json.JsonSlurper
+import org.apache.tools.ant.filters.ReplaceTokens
+
 buildscript {
   ext.kotlin_version = '1.1.0-rc-91'
 
@@ -9,7 +12,7 @@ buildscript {
     mavenCentral()
     jcenter()
   }
-  
+
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     classpath 'org.hidetake:gradle-ssh-plugin:2.8.0'
@@ -41,6 +44,22 @@ remotes {
     agent = true
     identity = file('$projectDir/unfortunately/id_rsa')
   }
+}
+
+task process_gaction(type: Copy) {
+    def jsonFile = new URL("http://127.0.0.1:4040/api/tunnels")
+    def parsedJson = new groovy.json.JsonSlurper().parseText(jsonFile.text)
+    def url = parsedJson.tunnels[1].public_url
+
+    from 'src/main/gaction/action.json'
+    into 'build/gaction/'
+    filter(ReplaceTokens, tokens: [control_url: url])
+}
+
+task deploy_gaction(dependsOn: process_gaction, type: Exec) {
+  workingDir "$projectDir"
+  executable 'sh'
+  args  '-c', "./src/main/gaction/gactions preview --action_package $buildDir/gaction/action.json --invocation_name ponderosa --preview_mins 1234"
 }
 
 task npmstart(type: Exec) {

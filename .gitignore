@@ -5,5 +5,7 @@ build
 out
 reports
 
+**/creds.data
+
 # unfortunately we do what we must
 unfortunately/*
