@@ -12,7 +12,7 @@
         "intent": "assistant.intent.action.MAIN"
       },
       "httpExecution": {
-        "url": "@control_url@"
+        "url": "@control_url@/control"
       }
     },
     {

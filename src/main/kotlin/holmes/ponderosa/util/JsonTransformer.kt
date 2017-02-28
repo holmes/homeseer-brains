@@ -11,7 +11,10 @@ class JsonTransformer(val gson: Gson) : ResponseTransformer {
   override fun render(model: Any?): String {
     return when (model) {
       null -> ""
-      else -> gson.toJson(model)
+      else -> {
+        val toJson = gson.toJson(model)
+        toJson
+      }
     }
   }
 }

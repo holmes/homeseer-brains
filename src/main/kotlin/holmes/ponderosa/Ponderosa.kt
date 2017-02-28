@@ -8,6 +8,8 @@ import holmes.ponderosa.audio.TransformerModule
 import holmes.ponderosa.lights.DaggerLights
 import holmes.ponderosa.lights.LightModule
 import holmes.ponderosa.lights.TwilightDataRefresher
+import holmes.ponderosa.voice.DaggerVoice
+import holmes.ponderosa.voice.VoiceModule
 import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
 import spark.servlet.SparkApplication
@@ -37,6 +39,12 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
         .transformerModule(transformerModule)
         .build()
 
+    val voiceGraph = DaggerVoice
+        .builder()
+        .voiceModule(VoiceModule())
+        .transformerModule(transformerModule)
+        .build()
+
     twilightDataRefresher = lightsGraph.twilightDataRefresher()
     twilightDataRefresher.start()
 
@@ -45,6 +53,7 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
 
     lightsGraph.lightsRoutes().initialize()
     audioGraph.audioRoutes().initialize()
+    voiceGraph.voiceRoutes().initialize()
   }
 
   fun destroy() {
