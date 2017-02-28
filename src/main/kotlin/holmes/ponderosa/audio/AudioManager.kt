@@ -41,16 +41,16 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
 
   fun power(zone: Zone, power: PowerChange): ZoneInfo {
     audioCommander.power(zone, power)
-    val oldZone = allZoneInfo.getValue(zone)
-    val newZone = oldZone.copy(power = power.isOn)
-    return updateZone(newZone)
+    return updateZone(true, zone) { oldZone ->
+      return@updateZone oldZone.copy(power = power.isOn)
+    }
   }
 
   fun source(zone: Zone, source: Source): ZoneInfo {
     audioCommander.changeSource(zone, source)
-    val oldZone = allZoneInfo.getValue(zone)
-    val newZone = oldZone.copy(source = source)
-    return updateZone(newZone)
+    return updateZone(true, zone) { oldZone ->
+      return@updateZone oldZone.copy(source = source)
+    }
   }
 
   /** Sets the initial volume when the zone is turned on. */
@@ -61,38 +61,37 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
 
   fun volume(zone: Zone, volume: VolumeChange): ZoneInfo {
     audioCommander.volume(zone, volume)
-    val oldZone = allZoneInfo.getValue(zone)
+    return updateZone(true, zone) { oldZone ->
+      val level = when (volume) {
+        is VolumeChange.Up -> (oldZone.volume.plus(VOLUME_STEP_LEVEL))
+        is VolumeChange.Down -> (oldZone.volume.minus(VOLUME_STEP_LEVEL))
+        is VolumeChange.Set -> volume.level
+      }
 
-    val level = when (volume) {
-      is VolumeChange.Up -> (oldZone.volume.plus(VOLUME_STEP_LEVEL))
-      is VolumeChange.Down -> (oldZone.volume.minus(VOLUME_STEP_LEVEL))
-      is VolumeChange.Set -> volume.level
+      // Changing the volume automatically turns the zone on.
+      return@updateZone oldZone.copy(power = true, volume = level)
     }
-
-    // Changing the volume automatically turns the zone on.
-    val newZone = oldZone.copy(power = true, volume = level)
-    return updateZone(newZone)
   }
 
   fun bass(zone: Zone, bass: BassLevel): ZoneInfo {
     audioCommander.bass(zone, bass)
-    val oldZone = allZoneInfo.getValue(zone)
-    val newZone = oldZone.copy(bass = bass.adjust(oldZone))
-    return updateZone(newZone)
+    return updateZone(true, zone) { oldZone ->
+      return@updateZone oldZone.copy(bass = bass.adjust(oldZone))
+    }
   }
 
   fun treble(zone: Zone, treble: TrebleLevel): ZoneInfo {
     audioCommander.treble(zone, treble)
-    val oldZone = allZoneInfo.getValue(zone)
-    val newZone = oldZone.copy(treble = treble.adjust(oldZone))
-    return updateZone(newZone)
+    return updateZone(true, zone) { oldZone ->
+      return@updateZone oldZone.copy(treble = treble.adjust(oldZone))
+    }
   }
 
   fun balance(zone: Zone, balance: Balance): ZoneInfo {
     audioCommander.balance(zone, balance)
-    val oldZone = allZoneInfo.getValue(zone)
-    val newZone = oldZone.copy(balance = balance.adjust(oldZone))
-    return updateZone(newZone)
+    return updateZone(true, zone) { oldZone ->
+      return@updateZone oldZone.copy(balance = balance.adjust(oldZone))
+    }
   }
 
   fun loudness(zone: Zone, loudness: Loudness): ZoneInfo {
@@ -100,35 +99,39 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
 
     if (oldZone.loudness != loudness.isOn) {
       audioCommander.loudness(zone)
-      val newZone = oldZone.copy(loudness = !oldZone.loudness)
-      return updateZone(newZone)
+      return updateZone(true, zone) { oldZone ->
+        return@updateZone oldZone.copy(loudness = !oldZone.loudness)
+      }
     } else {
       return oldZone
     }
   }
 
   private fun updateZone(zoneInfo: ReceivedZoneInfo) {
-    val zone = zones.zone(zoneInfo.zoneId)
-    val source = sources.source(zoneInfo.sourceId)
+    updateZone(false, zones.zone(zoneInfo.zoneId)) { _ ->
+      val source = sources.source(zoneInfo.sourceId)
 
-    // Convert from Russound code to something human readable.
-    val volume = zoneInfo.volume
-    val bass = zoneInfo.bass - 10
-    val treble = zoneInfo.treble - 10
-    val balance = zoneInfo.balance - 10
+      // Convert from Russound code to something human readable.
+      val volume = zoneInfo.volume
+      val bass = zoneInfo.bass - 10
+      val treble = zoneInfo.treble - 10
+      val balance = zoneInfo.balance - 10
 
-    val updatedInfo = ZoneInfo(zone, source, zoneInfo.power, volume, bass, treble, balance, zoneInfo.loudness)
-
-    LOG.info("Received Zone Info from Receiver: $zoneInfo, storing as $updatedInfo")
-    updateZone(updatedInfo, runUpdate = false)
+      val updatedInfo = ZoneInfo(zones.zone(zoneInfo.zoneId), source, zoneInfo.power, volume, bass, treble, balance, zoneInfo.loudness)
+      LOG.info("Received Zone Info from Receiver: $zoneInfo, storing as $updatedInfo")
+      updatedInfo
+    }
   }
 
   /** Update the zone and request an update via AudioCommander */
-  private fun updateZone(updatedInfo: ZoneInfo, runUpdate: Boolean = true): ZoneInfo {
-    return updatedInfo.apply {
-      allZoneInfo.put(zone, updatedInfo)
-      if (runUpdate) audioCommander.requestStatus(zone)
-    }
+  @Synchronized private fun updateZone(runUpdate: Boolean = true, zone: Zone, updateFunction: (oldZone: ZoneInfo) -> ZoneInfo): ZoneInfo {
+    val oldZone = allZoneInfo.getValue(zone)
+    val newZone = updateFunction(oldZone)
+    allZoneInfo[zone] = newZone
+
+    if (runUpdate) audioCommander.requestStatus(zone)
+
+    return newZone
   }
 }
 
