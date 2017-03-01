@@ -88,12 +88,17 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
   private fun waitForStatusUpdate(zone: Zone): ZoneInfo {
     audioCommander.requestStatus(zone)
     return zoneInfoUpdates
-        .timeout(500, TimeUnit.MILLISECONDS)
-        .onErrorReturn {
-          LOG.error("Timed out waiting for status update on $zone")
-          allZoneInfo.getValue(zone)
-        }
         .filter { it.zone.zoneId == zone.zoneId }
+        .timeout(200, TimeUnit.MILLISECONDS)
+        .retry(2) {
+          LOG.error("Didn't receive value in 500ms, sending request again.")
+          audioCommander.requestStatus(zone)
+          return@retry true
+        }
+        .onErrorReturn {
+          LOG.error("Didn't receive zone update after retrying, giving up and using what we have.")
+          allZoneInfo[zone]
+        }
         .blockingFirst()
   }
 
