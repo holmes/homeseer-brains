@@ -114,7 +114,7 @@ class RussoundCommands {
     val bytes = balanceAdjustBytes
 
     bytes[11] = zone.zoneNumber.minus(1).toByte()
-    bytes[15] = 0x69
+    bytes[15] = 0x6A
     bytes[22] = calculateChecksum(bytes)
 
     return bytes
@@ -124,7 +124,7 @@ class RussoundCommands {
     val bytes = balanceAdjustBytes
 
     bytes[11] = zone.zoneNumber.minus(1).toByte()
-    bytes[15] = 0x6A
+    bytes[15] = 0x69
     bytes[22] = calculateChecksum(bytes)
 
     return bytes

@@ -199,22 +199,22 @@ class RussoundCommandsUnitTest {
   }
 
   @Test fun testBalanceLeftZone1() {
-    val expected = "F000007F0000700505020000000300690000000000016EF7".toHexByteArray()
+    val expected = "F000007F00007005050200000003006A0000000000016FF7".toHexByteArray()
     assertThat(russoundCommands.balanceLeft(zone1)).isEqualTo(expected)
   }
 
   @Test fun testBalanceLeftZone2() {
-    val expected = "F000007F0000700505020001000300690000000000016FF7".toHexByteArray()
+    val expected = "F000007F00007005050200010003006A00000000000170F7".toHexByteArray()
     assertThat(russoundCommands.balanceLeft(zone2)).isEqualTo(expected)
   }
 
   @Test fun testBalanceRightZone1() {
-    val expected = "F000007F00007005050200000003006A0000000000016FF7".toHexByteArray()
+    val expected = "F000007F0000700505020000000300690000000000016EF7".toHexByteArray()
     assertThat(russoundCommands.balanceRight(zone1)).isEqualTo(expected)
   }
 
   @Test fun testBalanceRightZone2() {
-    val expected = "F000007F00007005050200010003006A00000000000170F7".toHexByteArray()
+    val expected = "F000007F0000700505020001000300690000000000016FF7".toHexByteArray()
     assertThat(russoundCommands.balanceRight(zone2)).isEqualTo(expected)
   }
 
