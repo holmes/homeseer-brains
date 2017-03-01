@@ -16,6 +16,7 @@ import {
   Glyphicon
 } from 'react-bootstrap';
 import ToggleButton from 'react-toggle-button';
+import Loadable from 'react-loading-overlay';
 
 import "whatwg-fetch"
 
@@ -158,13 +159,13 @@ function PanelHeader(props) {
   return (
       <Grid>
         <Row className="show-grid">
-          <Col xs={1} className="powerToggle">
+          <Col xs={2} className="powerToggle">
             <ToggleButton value={props.power} onToggle={props.onToggle}/>
           </Col>
-          <Col xs={9}>
+          <Col xs={8}>
             <span className="zoneName">{props.zoneName}</span>
           </Col>
-          <Col xs={1}>
+          <Col xs={2}>
             <Button onClick={props.onAdvancedClicked} active={props.advancedVisible}>
               <Glyphicon glyph="cog"/>
             </Button>
@@ -248,7 +249,8 @@ class ZoneInformation extends React.Component {
       balance: props.zoneInfo.balance,
       bass: props.zoneInfo.bass,
       treble: props.zoneInfo.treble,
-      advancedVisible: false
+      advancedVisible: false,
+      requestInFlight: false
     };
 
     this.volumeChanged = this.volumeChanged.bind(this);
@@ -307,6 +309,10 @@ class ZoneInformation extends React.Component {
   }
 
   postRequest(url) {
+    this.setState({
+      requestInFlight: true
+    });
+
     const thing = this;
     fetch(url, {
       method: "POST", mode: 'cors'
@@ -319,6 +325,7 @@ class ZoneInformation extends React.Component {
 
   updateState(zoneInfo) {
     this.setState({
+      requestInFlight: false,
       zone: zoneInfo.zone,
       sourceId: zoneInfo.source.sourceId,
       power: zoneInfo.power,
@@ -342,31 +349,33 @@ class ZoneInformation extends React.Component {
     );
 
     return (
-        <Panel header={panelHeader}>
-          <SourceSelector
-              zoneId={this.state.zone.zoneId}
-              selectedSourceId={this.state.sourceId}
-              sources={this.props.sources}
-              sourceChanged={this.sourceChanged}
-          />
+        <Loadable animate={false} active={this.state.requestInFlight}>
+          <Panel header={panelHeader}>
+            <SourceSelector
+                zoneId={this.state.zone.zoneId}
+                selectedSourceId={this.state.sourceId}
+                sources={this.props.sources}
+                sourceChanged={this.sourceChanged}
+            />
 
-          <VolumeSection
-              volume={this.state.volume}
-              volumeChanged={this.volumeChanged}
-          />
+            <VolumeSection
+                volume={this.state.volume}
+                volumeChanged={this.volumeChanged}
+            />
 
-          <AdvancedPanel
-              visible={this.state.advancedVisible}
-              loudness={this.state.loudness}
-              balance={this.state.balance}
-              bass={this.state.bass}
-              treble={this.state.treble}
-              loudnessToggled={this.loudnessToggled}
-              balanceChanged={this.balanceChanged}
-              bassChanged={this.bassChanged}
-              trebleChanged={this.trebleChanged}
-          />
-        </Panel>
+            <AdvancedPanel
+                visible={this.state.advancedVisible}
+                loudness={this.state.loudness}
+                balance={this.state.balance}
+                bass={this.state.bass}
+                treble={this.state.treble}
+                loudnessToggled={this.loudnessToggled}
+                balanceChanged={this.balanceChanged}
+                bassChanged={this.bassChanged}
+                trebleChanged={this.trebleChanged}
+            />
+          </Panel>
+        </Loadable>
     )
   };
 }
