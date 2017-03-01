@@ -89,6 +89,10 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
     audioCommander.requestStatus(zone)
     return zoneInfoUpdates
         .timeout(500, TimeUnit.MILLISECONDS)
+        .onErrorReturn {
+          LOG.error("Timed out waiting for status update on $zone")
+          allZoneInfo.getValue(zone)
+        }
         .filter { it.zone.zoneId == zone.zoneId }
         .blockingFirst()
   }

@@ -320,6 +320,10 @@ class ZoneInformation extends React.Component {
       return response.json()
     }).then(function (json) {
       thing.updateState(json);
+    }).catch(function() {
+      thing.setState({
+        requestInFlight: false
+      });
     });
   }
 
