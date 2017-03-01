@@ -39,7 +39,7 @@ class AudioQueue(val outputStream: OutputStream) {
       outputStream.write(command)
       outputStream.flush()
 
-      Thread.sleep(250)
+      Thread.sleep(150)
       onActionCompleted()
     }
   }
