@@ -4,18 +4,9 @@ import holmes.ponderosa.util.toHexString
 import io.reactivex.subjects.PublishSubject
 import okio.Buffer
 import org.slf4j.LoggerFactory
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
 import kotlin.concurrent.thread
 
 private val LOG = LoggerFactory.getLogger(RussoundCommandReceiver::class.java)
-
-interface RussoundReaderDescriptor {
-  val descriptor: File
-  val startMessage: Int
-  val endMessage: Int
-}
 
 /**
  * The receiver does some weird shit. Zone 5 isn't reporting requestStatus correctly - it's missing the zone bit.
@@ -31,17 +22,14 @@ class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDe
 
   private var shouldRun: Boolean = true
   private var state: State
-  private val inputStream: InputStream
+  private val inputStream = readerDescriptor.inputStream
 
   init {
-    inputStream = FileInputStream(readerDescriptor.descriptor)
     state = State.LOOKING_FOR_START
   }
 
   fun start() {
     thread(true, true, null, "audio-status-receiver") {
-      LOG.info("Reading input from Russound Matrix at ${readerDescriptor.descriptor.absolutePath}")
-
       try {
         runReadLoop()
       } catch(e: Exception) {
@@ -87,8 +75,6 @@ class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDe
   }
 
   fun stop() {
-    LOG.info("Closing the input stream at ${readerDescriptor.descriptor.absolutePath}")
     shouldRun = false
-    inputStream.close()
   }
 }

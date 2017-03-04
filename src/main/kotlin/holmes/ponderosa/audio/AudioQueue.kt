@@ -18,9 +18,7 @@ class AudioQueue(val outputStream: OutputStream) {
   private var destroyed = false
 
   fun destroy() {
-    LOG.info("Closing the output stream")
     destroyed = true
-    outputStream.close()
   }
 
   @Synchronized fun sendCommand(command: ByteArray) {
@@ -52,5 +50,4 @@ class AudioQueue(val outputStream: OutputStream) {
       performAction(action)
     }
   }
-
 }

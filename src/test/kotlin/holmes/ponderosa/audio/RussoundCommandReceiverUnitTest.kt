@@ -7,6 +7,8 @@ import io.reactivex.subjects.PublishSubject
 import org.junit.Before
 import org.junit.Test
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 
 class RussoundCommandReceiverUnitTest {
   lateinit var readerDescriptor: RussoundReaderDescriptor
@@ -15,8 +17,10 @@ class RussoundCommandReceiverUnitTest {
 
   @Before fun setUp() {
     readerDescriptor = object : RussoundReaderDescriptor {
-      override val descriptor: File
-        get() = File("/dev/null")
+      override val inputStream: InputStream
+        get() = File("/dev/null").inputStream()
+      override val outputStream: OutputStream
+        get() = File("/dev/null").outputStream()
       override val startMessage: Int
         get() = 0xF0
       override val endMessage: Int

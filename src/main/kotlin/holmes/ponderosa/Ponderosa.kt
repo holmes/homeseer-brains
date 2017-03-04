@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
 import spark.servlet.SparkApplication
 import java.io.File
+import java.io.InputStream
+import java.io.OutputStream
 
 private val LOG = LoggerFactory.getLogger(Ponderosa::class.java)
 
@@ -48,6 +50,7 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
   }
 
   fun destroy() {
+    readerDescriptor.destroy()
     audioStatusHandler.stop()
     twilightDataRefresher.stop()
   }
@@ -55,13 +58,16 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
 
 /** Application for jetty deploy. */
 class PonderosaSparkApplication : SparkApplication {
+  val file = File("/dev")
+      .walkTopDown()
+      .firstOrNull { it.name.contains("ttyUSB") } ?: File("/dev/null")
+
   val ponderosa = Ponderosa(object : RussoundReaderDescriptor {
-    override val descriptor: File
-      get() {
-        return File("/dev")
-            .walkTopDown()
-            .firstOrNull { it.name.contains("ttyUSB") } ?: File("/dev/null")
-      }
+    override val inputStream: InputStream
+      get() = file.inputStream()
+
+    override val outputStream: OutputStream
+      get() = file.outputStream()
 
     override val startMessage: Int
       get() = 0xF0
@@ -71,6 +77,7 @@ class PonderosaSparkApplication : SparkApplication {
   }, File("/opt/sunrise-data/data"))
 
   override fun init() {
+    LOG.info("Using ${file.absolutePath} to communicate w/ the matrix.")
     ponderosa.start()
   }
 
@@ -78,14 +85,20 @@ class PonderosaSparkApplication : SparkApplication {
     LOG.info("Destroying the PonderosaSparkApplication")
     ponderosa.destroy()
   }
-}
+}F07E007000007F05020100020100F13700000002000129F7
 
 /** Embedded application for development. */
 object PonderosaEmbedded {
   @JvmStatic fun main(args: Array<String>) {
+    val file = File("/dev/null")
+    LOG.info("Using ${file.absolutePath} to communicate w/ the matrix.")
+
     Ponderosa(object : RussoundReaderDescriptor {
-      override val descriptor: File
-        get() = File("/dev/null")
+      override val inputStream: InputStream
+        get() = file.inputStream()
+
+      override val outputStream: OutputStream
+        get() = file.outputStream()
 
       override val startMessage: Int
         get() = '0'.toInt()
