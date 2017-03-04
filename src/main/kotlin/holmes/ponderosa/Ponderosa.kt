@@ -85,7 +85,7 @@ class PonderosaSparkApplication : SparkApplication {
     LOG.info("Destroying the PonderosaSparkApplication")
     ponderosa.destroy()
   }
-}F07E007000007F05020100020100F13700000002000129F7
+}
 
 /** Embedded application for development. */
 object PonderosaEmbedded {
