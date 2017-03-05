@@ -35,7 +35,7 @@ class RussoundCommands {
     val bytes = sourceSelectBytes
 
     bytes[5] = zone.zoneNumber.toByte()
-    bytes[17] = source.sourceId.toByte()
+    bytes[17] = source.sourceNumber.toByte()
     bytes[20] = calculateChecksum(bytes)
 
     return bytes

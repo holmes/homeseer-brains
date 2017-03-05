@@ -15,8 +15,8 @@ class RussoundCommandsUnitTest {
   @Before fun setUp() {
     zone1 = Zone(0, 12, 0, "Kitchen")
     zone2 = Zone(0, 15, 1, "Outside")
-    source0 = Source(0, 0, 0, "TV Family Room")
-    source1 = Source(0, 1, 1, "Chromecast")
+    source0 = Source(0, 20, 0, "TV Family Room")
+    source1 = Source(0, 12, 1, "Chromecast")
     russoundCommands = RussoundCommands()
   }
 
