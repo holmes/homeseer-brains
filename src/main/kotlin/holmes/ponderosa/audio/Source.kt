@@ -1,20 +1,30 @@
 package holmes.ponderosa.audio
 
-data class Source(val controllerId: Int, val sourceId: Int, val sourceNumber: Int, val name: String) {
-  init {
-    if (sourceNumber <= 0) throw IllegalArgumentException("Invalid Source ($sourceId). Sources are 1-based")
-  }
-}
+data class Source(val controllerId: Int, val sourceId: Int, val sourceNumber: Int, val name: String)
 
 class Sources {
-  val all: Set<Source>
-    get() = setOf(
-        Source(0, 0, 1, "Family Room TV"),
-        Source(0, 1, 2, "Chromecast")
-    )
+  val all: Map<Int, Source>
+    get() = listOf(
+        Source(0, 20, 0, "Family Room TV"),
+        Source(0, 21, 1, "Chromecast"),
+        Source(0, 22, 2, "Empty"),
+        Source(0, 23, 3, "Empty"),
+        Source(0, 24, 4, "Empty"),
+        Source(0, 25, 5, "Empty")
+    ).associateBy { it.sourceId }
 
-  fun source(sourceId: Int): Source = when (sourceId) {
-    in 0..all.size -> all.first { it.sourceId == sourceId }
-    else -> throw IllegalArgumentException("Unknown Source: $sourceId")
+  fun source(sourceId: Int): Source {
+    return all.getOrElse(sourceId) {
+      throw IllegalArgumentException("Unknown Source: $sourceId")
+    }
+  }
+
+  fun sourceAt(sourceNumber: Int): Source {
+    val source = all.values.firstOrNull { it.sourceNumber == sourceNumber }
+
+    return when (source) {
+      null -> throw IllegalArgumentException("Unknown Source Number: $sourceNumber")
+      else -> source
+    }
   }
 }

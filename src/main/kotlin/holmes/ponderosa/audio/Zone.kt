@@ -4,27 +4,30 @@ package holmes.ponderosa.audio
  * @param zoneId unique id of this zone
  * @param zoneNumber represents the port on the back, 1-based
  */
-data class Zone(val controllerId: Int, val zoneId: Int, val zoneNumber: Int, val name: String) {
-  init {
-    if(zoneNumber <= 0) throw IllegalArgumentException("Invalid Zone ($zoneId). Zones are 1-based")
-  }
-}
+data class Zone(val controllerId: Int, val zoneId: Int, val zoneNumber: Int, val name: String)
 
 class Zones {
   val all: Map<Int, Zone>
-    get() = mapOf(
-        Pair(0, Zone(0, 0, 1, "Family Room")),
-        Pair(1, Zone(0, 1, 2, "Kitchen")),
-        Pair(2, Zone(0, 2, 3, "Outside")),
-        Pair(3, Zone(0, 3, 4, "Master")),
-        Pair(4, Zone(0, 4, 5, "Nursery")),
-        Pair(5, Zone(0, 5, 6, "Unknown")))
+    get() = listOf(
+        Zone(0, 10, 0, "Family Room"),
+        Zone(0, 11, 1, "Kitchen"),
+        Zone(0, 12, 2, "Outside"),
+        Zone(0, 13, 3, "Master"),
+        Zone(0, 14, 4, "Nursery"),
+        Zone(0, 15, 5, "Unknown")
+    ).associateBy(Zone::zoneId)
 
   fun zone(zoneId: Int): Zone {
-    val zone = all[zoneId]
+    return all.getOrElse(zoneId) {
+      throw IllegalArgumentException("Unknown Zone: $zoneId")
+    }
+  }
+
+  fun zoneAt(zoneNumber: Int): Zone {
+    val zone = all.values.firstOrNull { it.zoneNumber == zoneNumber }
 
     return when (zone) {
-      null -> throw IllegalArgumentException("Unknown Zone: $zoneId")
+      null -> throw IllegalArgumentException("Unknown Zone Number: $zoneNumber")
       else -> zone
     }
   }

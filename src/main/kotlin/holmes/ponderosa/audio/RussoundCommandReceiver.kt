@@ -1,6 +1,6 @@
 package holmes.ponderosa.audio
 
-import holmes.ponderosa.util.toHexString
+import holmes.ponderosa.RussoundReaderDescriptor
 import io.reactivex.subjects.PublishSubject
 import okio.Buffer
 import org.slf4j.LoggerFactory
@@ -15,7 +15,12 @@ private val LOG = LoggerFactory.getLogger(RussoundCommandReceiver::class.java)
  * Also, the USB driver doesn't flush all the bytes as they come in, so getting requestStatus will probably require an
  * extra read to ensure the requested messages make it all the way through.
  */
-class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDescriptor, private val receivedMessageSubject: PublishSubject<ReceivedZoneInfo>) {
+class RussoundCommandReceiver(
+    private val name: String,
+    private val receivedMessageSubject: PublishSubject<RussoundAction>,
+    private val actionHandlers: Set<RussoundActionHandler>,
+    readerDescriptor: RussoundReaderDescriptor
+) {
   private enum class State {
     LOOKING_FOR_START, LOOKING_FOR_END
   }
@@ -49,7 +54,7 @@ class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDe
 
       when (state) {
         State.LOOKING_FOR_START -> {
-          if (readerDescriptor.startMessage == read) {
+          if (0xF0 == read) {
             buffer = Buffer()
             buffer.writeByte(read)
             state = State.LOOKING_FOR_END
@@ -57,14 +62,16 @@ class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDe
         }
         State.LOOKING_FOR_END -> {
           buffer = buffer.writeByte(read)
-          if (readerDescriptor.endMessage == read) {
+          if (0xF7 == read) {
             val byteArray = buffer.readByteArray()
-            val zoneInfo = ReceivedZoneInfo.from(byteArray)
 
-            when {
-              zoneInfo != null -> receivedMessageSubject.onNext(zoneInfo)
-              else -> LOG.info("Ignoring message: ${byteArray.toHexString()}")
-            }
+            actionHandlers
+                .filter { it.canHandle(byteArray) }
+                .forEach {
+                  val action = it.createAction(byteArray)
+                  LOG.info("$name received: ${action.description}")
+                  receivedMessageSubject.onNext(action)
+                }
 
             // Begin looking for the start of the next message.
             state = State.LOOKING_FOR_START
@@ -78,3 +85,4 @@ class RussoundCommandReceiver constructor(val readerDescriptor: RussoundReaderDe
     shouldRun = false
   }
 }
+

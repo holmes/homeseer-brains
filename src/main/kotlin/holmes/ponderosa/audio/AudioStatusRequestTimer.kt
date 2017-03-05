@@ -23,7 +23,7 @@ class AudioStatusRequestTimer(val zones: Zones, val audioManager: AudioManager) 
         // The matrix doesn't seem to respond to the very first request.
         // It's like it needs to be primed or something.
         firstRun = false
-        audioManager.requestStatus(zones.zone(0))
+        audioManager.requestStatus(zones.zoneAt(0))
       }
 
       zones.all.values.forEach { zone ->
