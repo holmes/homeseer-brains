@@ -3,7 +3,7 @@ package holmes.ponderosa.audio
 class ReceivedStatusAction(override val input: ByteArray) : RussoundAction {
   override val zoneOffset = 12
 
-  override fun handle(currentZoneInfo: ZoneInfo): ZoneInfo {
+  override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
     val zone = input[12].toInt()
     val source = input[21].toInt()
 

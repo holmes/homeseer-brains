@@ -9,7 +9,7 @@ class ReceivedStatusActionUnitTest {
   @Test fun testZone1GetStatus() {
     val expected = "F000007000007F00000402000007000001000C0001010A070A010A010000000045F7".toHexByteArray()
 
-    val zoneInfo = ReceivedStatusAction(expected).handle(mock<ZoneInfo>())
+    val zoneInfo = ReceivedStatusAction(expected).applyTo(mock<ZoneInfo>())
     assertWithMessage("zoneId").that(zoneInfo.zone).isEqualTo(0)
     assertWithMessage("power").that(zoneInfo.power).isEqualTo(true)
     assertWithMessage("sourceId").that(zoneInfo.source).isEqualTo(1)
@@ -23,7 +23,7 @@ class ReceivedStatusActionUnitTest {
   @Test fun testZone2GetStatus() {
     val expected = "F000007000007F00000402000107000001000C0000010A0C0C000A01000000004BF7".toHexByteArray()
 
-    val zoneInfo = ReceivedStatusAction(expected).handle(mock<ZoneInfo>())
+    val zoneInfo = ReceivedStatusAction(expected).applyTo(mock<ZoneInfo>())
     assertWithMessage("zoneId").that(zoneInfo.zone).isEqualTo(1)
     assertWithMessage("power").that(zoneInfo.power).isEqualTo(false)
     assertWithMessage("sourceId").that(zoneInfo.source).isEqualTo(1)

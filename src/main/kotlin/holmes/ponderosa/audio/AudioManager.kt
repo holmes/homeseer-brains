@@ -112,7 +112,7 @@ class AudioManager(private val zones: Zones,
       val currentZoneInfo = allZoneInfo[zone]
 
       if (currentZoneInfo != null) {
-        val updatedInfo = action.handle(currentZoneInfo)
+        val updatedInfo = action.applyTo(currentZoneInfo)
         allZoneInfo[zone] = updatedInfo
         zoneInfoUpdates.onNext(updatedInfo)
       } else {

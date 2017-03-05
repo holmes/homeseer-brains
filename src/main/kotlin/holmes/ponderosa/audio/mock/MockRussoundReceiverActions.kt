@@ -5,22 +5,18 @@ import holmes.ponderosa.audio.RussoundActionHandler
 import holmes.ponderosa.audio.RussoundCommands
 import holmes.ponderosa.audio.ZoneInfo
 
-class RequestStatusAction(val commander: MatrixAudioCommander) : RussoundActionHandler {
+class RequestStatusAction : RussoundActionHandler {
   override val infoOffsets = setOf(11)
   override val command = RussoundCommands.Bytes.statusBytes
 
   override fun createAction(input: ByteArray): RussoundAction {
-    return RequestStatusAction.Action(commander, input)
+    return RequestStatusAction.Action(input)
   }
 
-  private class Action(val commander: MatrixAudioCommander, override val input: ByteArray) : RussoundAction {
-    override val zoneOffset: Int
-      get() {
-        return 11
-      }
+  internal class Action(override val input: ByteArray) : RussoundAction {
+    override val zoneOffset = 11
 
-    override fun handle(currentZoneInfo: ZoneInfo): ZoneInfo {
-      commander.sendStatus(currentZoneInfo)
+    override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
       return currentZoneInfo
     }
   }
@@ -37,7 +33,7 @@ class VolumeSetAction : RussoundActionHandler {
   private class Action(override val input: ByteArray) : RussoundAction {
     override val zoneOffset = 17
 
-    override fun handle(currentZoneInfo: ZoneInfo): ZoneInfo {
+    override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
       val volume = input[15] * 2
       return currentZoneInfo.copy(power = true, volume = volume)
     }
@@ -55,7 +51,7 @@ class VolumeUpAction : RussoundActionHandler {
   private class Action(override val input: ByteArray) : RussoundAction {
     override val zoneOffset = 5
 
-    override fun handle(currentZoneInfo: ZoneInfo): ZoneInfo {
+    override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
       val volume = currentZoneInfo.volume + 2
       return currentZoneInfo.copy(power = true, volume = volume)
     }
@@ -73,7 +69,7 @@ class VolumeDownAction : RussoundActionHandler {
   class Action(override val input: ByteArray) : RussoundAction {
     override val zoneOffset = 5
 
-    override fun handle(currentZoneInfo: ZoneInfo): ZoneInfo {
+    override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
       val volume = currentZoneInfo.volume - 2
       return currentZoneInfo.copy(power = true, volume = volume)
     }
@@ -91,7 +87,7 @@ class PowerAction : RussoundActionHandler {
   class Action(override val input: ByteArray) : RussoundAction {
     override val zoneOffset = 17
 
-    override fun handle(currentZoneInfo: ZoneInfo): ZoneInfo {
+    override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
       val on = input[15].toInt() == 1
       return currentZoneInfo.copy(power = on)
     }

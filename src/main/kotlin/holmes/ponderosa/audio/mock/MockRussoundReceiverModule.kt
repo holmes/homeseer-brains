@@ -17,6 +17,7 @@ private val LOG = LoggerFactory.getLogger(MockRussoundReceiverModule::class.java
 @Component(modules = arrayOf(MockRussoundReceiverModule::class))
 interface MockRussoundReceiverComponent {
   fun audioQueue(): AudioQueue
+  fun audioCommander(): MatrixAudioCommander
   fun russoundCommandReceiver(): RussoundCommandReceiver
   fun subject(): PublishSubject<RussoundAction>
 }
@@ -38,7 +39,7 @@ interface MockRussoundReceiverComponent {
 
   @Singleton @Provides fun provideRussoundCommandReceiver(commander: MatrixAudioCommander, subject: PublishSubject<RussoundAction>): RussoundCommandReceiver {
     val actions = setOf(
-        RequestStatusAction(commander),
+        RequestStatusAction(),
         VolumeDownAction(),
         VolumeUpAction(),
         VolumeSetAction(),

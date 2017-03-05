@@ -1,21 +1,16 @@
 package holmes.ponderosa.audio.mock
 
-import holmes.ponderosa.audio.RussoundCommands
-import holmes.ponderosa.audio.Zone
-import org.junit.Before
+import com.google.common.truth.Truth.assertThat
+import holmes.ponderosa.audio.ZoneInfo
+import holmes.ponderosa.util.toHexByteArray
 import org.junit.Test
 
 class RussoundMatrixToAppCommandsUnitTest {
   val matrixToAppCommands = RussoundMatrixToAppCommands()
-  val appToMatrixCommands = RussoundCommands()
-
-  @Before fun setUp() {
-
-  }
 
   @Test fun testSomething() {
-    val zone = Zone(0, 0, 1, "1")
-    appToMatrixCommands.requestStatus(zone)
-
+    val zone1Info = ZoneInfo(1, 2, power = false, volume = 33, bass = 2, treble = 4, balance = -2, loudness = true)
+    val bytes = matrixToAppCommands.returnStatus(zone1Info)
+    assertThat(bytes).isEqualTo("F000007000007F00000402000107000001000C00000210F8FA01F4000000000013F7".toHexByteArray())
   }
 }
