@@ -63,11 +63,12 @@ class LightZones(twilight: Twilight) {
         // Nursery
         28, LightZone(28, setOf(),
         listOf(
-            TimeFrame(twilight.twilightBegin(), 1, 35),
-            TimeFrame(twilight.sunrise(), 50, 60),
+            TimeFrame(twilight.twilightBegin(), 1, 60),
+            TimeFrame(twilight.sunrise(), 50, 80),
             TimeFrame(twilight.solarNoon(), 80, 100),
-            TimeFrame(twilight.twilightEnd(), 50, 60),
-            TimeFrame(MAX, 1, 35)
+            TimeFrame(twilight.twilightEnd(), 50, 80),
+            TimeFrame({ LocalTime.of(22, 0) }, 50, 80),
+            TimeFrame(MAX, 1, 60)
         ))
     )
     zones.put(
@@ -77,7 +78,7 @@ class LightZones(twilight: Twilight) {
             TimeFrame(twilight.twilightBegin(), 5, 35),
             TimeFrame(twilight.solarNoon(), 60, 85),
             TimeFrame(twilight.twilightEnd(), 40, 60),
-            TimeFrame(MAX, 5, 35)
+            TimeFrame(MAX, 5, 50)
         ))
     )
     zones.put(
@@ -88,7 +89,7 @@ class LightZones(twilight: Twilight) {
             TimeFrame(twilight.sunrise(), 30, 60),
             TimeFrame(twilight.solarNoon(), 60, 85),
             TimeFrame(twilight.twilightEnd(), 30, 60),
-            TimeFrame(MAX, 18, 35)
+            TimeFrame(MAX, 18, 50)
         ))
     )
     zones.put(
@@ -98,7 +99,7 @@ class LightZones(twilight: Twilight) {
             TimeFrame(twilight.twilightBegin(), 5, 35),
             TimeFrame(twilight.solarNoon(), 30, 85),
             TimeFrame(twilight.twilightEnd(), 15, 60),
-            TimeFrame(MAX, 5, 35)
+            TimeFrame(MAX, 5, 40)
         ))
     )
   }
