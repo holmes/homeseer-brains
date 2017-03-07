@@ -5,7 +5,6 @@ import dagger.Module
 import dagger.Provides
 import holmes.ponderosa.RussoundReaderDescriptor
 import holmes.ponderosa.audio.AudioQueue
-import holmes.ponderosa.audio.ReceivedStatusActionHandler
 import holmes.ponderosa.audio.RussoundAction
 import holmes.ponderosa.audio.RussoundCommandReceiver
 import io.reactivex.Observable
@@ -41,7 +40,7 @@ interface MockRussoundReceiverComponent {
   @Singleton @Provides fun provideRussoundCommandReceiver(subject: PublishSubject<RussoundAction>): RussoundCommandReceiver {
     val actions = setOf(
         PowerAction(),
-        ReceivedStatusActionHandler(),
+        RequestStatusAction(),
         SetSourceAction(),
         VolumeDownAction(),
         VolumeUpAction(),

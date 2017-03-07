@@ -2,29 +2,7 @@ package holmes.ponderosa.audio
 
 import holmes.ponderosa.audio.mock.RussoundMatrixToAppCommands
 
-class ReceivedStatusAction(override val input: ByteArray) : RussoundAction {
-  override val zoneOffset = 12
-
-  override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
-    val zone = input[12].toInt()
-    val source = input[21].toInt()
-
-    // Convert from Russound code to something human readable.
-    val power = input[20] == 1.toByte()
-    val volume = input[22].toInt() * 2
-    val bass = input[23].toInt() - 10
-    val treble = input[24].toInt() - 10
-    val loudness = input[25] == 1.toByte()
-    val balance = input[26].toInt() - 10
-
-    return ZoneInfo(zone, source, power, volume, bass, treble, balance, loudness)
-  }
-
-  override fun generateResponse(updatedZoneInfo: ZoneInfo): ByteArray {
-    return RussoundMatrixToAppCommands.returnStatus(updatedZoneInfo)
-  }
-}
-
+/** Understands the status message coming back from the Russound Matrix. */
 class ReceivedStatusActionHandler : RussoundActionHandler {
   override fun createAction(input: ByteArray): RussoundAction {
     return ReceivedStatusAction(input)
@@ -69,4 +47,26 @@ class ReceivedStatusActionHandler : RussoundActionHandler {
       0x00.toByte(),
       0xf7.toByte()
   )
+}
+
+class ReceivedStatusAction(override val input: ByteArray) : RussoundAction {
+  override val zoneOffset = 12
+
+  override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
+    val zone = input[12].toInt()
+    val source = input[21].toInt()
+
+    // Convert from Russound code to something human readable.
+    val power = input[20] == 1.toByte()
+    val volume = input[22].toInt() * 2
+    val bass = input[23].toInt() - 10
+    val treble = input[24].toInt() - 10
+    val loudness = input[25] == 1.toByte()
+    val balance = input[26].toInt() - 10
+
+    return ZoneInfo(zone, source, power, volume, bass, treble, balance, loudness)
+  }
+  override fun generateResponse(updatedZoneInfo: ZoneInfo): ByteArray {
+    return RussoundMatrixToAppCommands.returnStatus(updatedZoneInfo)
+  }
 }

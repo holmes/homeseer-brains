@@ -26,26 +26,26 @@ class SetSourceAction : RussoundActionHandler {
   }
 }
 
-//class RequestStatusAction : RussoundActionHandler {
-//  override val infoOffsets = setOf(11)
-//  override val command = RussoundCommands.Bytes.statusBytes
-//
-//  override fun createAction(input: ByteArray): RussoundAction {
-//    return RequestStatusAction.Action(input)
-//  }
-//
-//  internal class Action(override val input: ByteArray) : RussoundAction {
-//    override val zoneOffset = 11
-//
-//    override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
-//      return currentZoneInfo
-//    }
-//
-//    override fun generateResponse(updatedZoneInfo: ZoneInfo): ByteArray {
-//      return RussoundMatrixToAppCommands.returnStatus(updatedZoneInfo)
-//    }
-//  }
-//}
+class RequestStatusAction : RussoundActionHandler {
+  override val infoOffsets = setOf(11)
+  override val command = RussoundCommands.Bytes.statusBytes
+
+  override fun createAction(input: ByteArray): RussoundAction {
+    return RequestStatusAction.Action(input)
+  }
+
+  internal class Action(override val input: ByteArray) : RussoundAction {
+    override val zoneOffset = 11
+
+    override fun applyTo(currentZoneInfo: ZoneInfo): ZoneInfo {
+      return currentZoneInfo
+    }
+
+    override fun generateResponse(updatedZoneInfo: ZoneInfo): ByteArray {
+      return RussoundMatrixToAppCommands.returnStatus(updatedZoneInfo)
+    }
+  }
+}
 
 class VolumeSetAction : RussoundActionHandler {
   override val infoOffsets = setOf(15, 17)
