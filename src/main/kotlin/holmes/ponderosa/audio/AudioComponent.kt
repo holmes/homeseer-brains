@@ -79,7 +79,7 @@ interface Audio {
       = AudioStatusHandler(audioQueue, commandReceiver, statusRequestTimer)
 
   @Singleton @Provides fun russoundCommandReceiver(zones: Zones, sources: Sources, subject: PublishSubject<RussoundAction>): RussoundCommandReceiver {
-    val actions = setOf(ReceivedStatusActionHandler(zones, sources))
+    val actions = setOf(ReceivedStatusActionHandler())
     return RussoundCommandReceiver(name, subject, actions, readerDescriptor)
   }
 
@@ -89,7 +89,7 @@ interface Audio {
   @Singleton @Provides fun audioCommander(russoundCommands: RussoundCommands, audioQueue: AudioQueue)
       = AudioCommander(audioQueue, russoundCommands)
 
-  @Singleton @Provides fun audioManager(zones: Zones, sources: Sources, audioCommander: AudioCommander, receivedZoneInfo: Observable<RussoundAction>)
+  @Singleton @Provides fun audioManager(zones: Zones, audioCommander: AudioCommander, receivedZoneInfo: Observable<RussoundAction>)
       = AudioManager(zones, audioCommander, receivedZoneInfo)
 
   @Singleton @Provides fun audioRoutes(zones: Zones, sources: Sources, audioManager: AudioManager, jsonTransformer: JsonTransformer)
