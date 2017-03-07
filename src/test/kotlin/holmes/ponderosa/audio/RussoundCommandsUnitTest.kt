@@ -189,22 +189,22 @@ class RussoundCommandsUnitTest {
   }
 
   @Test fun testLoudnessOnZone1() {
-    val expected = "F000007F0000700505020000000200690000000000016DF7".toHexByteArray()
+    val expected = "F000007F00007000050200000002000000010001000101F7".toHexByteArray()
     assertThat(russoundCommands.loudness(zone1, Loudness.ON)).isEqualTo(expected)
   }
 
   @Test fun testLoudnessOnZone2() {
-    val expected = "F000007F0000700505020001000200690000000000016EF7".toHexByteArray()
+    val expected = "F000007F00007000050200010002000000010001000102F7".toHexByteArray()
     assertThat(russoundCommands.loudness(zone2, Loudness.ON)).isEqualTo(expected)
   }
 
   @Test fun testLoudnessOffZone1() {
-    val expected = "F000007F0000700505020000000200690000000000016DF7".toHexByteArray()
+    val expected = "F000007F00007000050200000002000000010001000000F7".toHexByteArray()
     assertThat(russoundCommands.loudness(zone1, Loudness.OFF)).isEqualTo(expected)
   }
 
   @Test fun testLoudnessOffZone2() {
-    val expected = "F000007F0000700505020000000200690000000000016DF7".toHexByteArray()
+    val expected = "F000007F00007000050200010002000000010001000001F7".toHexByteArray()
     assertThat(russoundCommands.loudness(zone2, Loudness.OFF)).isEqualTo(expected)
   }
 

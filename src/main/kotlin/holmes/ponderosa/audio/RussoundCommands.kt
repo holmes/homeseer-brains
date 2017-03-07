@@ -101,11 +101,11 @@ class RussoundCommands {
     return bytes
   }
 
-  fun loudness(zone: Zone): ByteArray {
+  fun loudness(zone: Zone, loudness: Loudness): ByteArray {
     val bytes = loudnessBytes
 
     bytes[11] = zone.zoneNumber.toByte()
-    bytes[15] = 0x69
+    bytes[21] = if (loudness == Loudness.ON) 1 else 0
     bytes[22] = calculateChecksum(bytes)
 
     return bytes
@@ -383,21 +383,21 @@ class RussoundCommands {
           0x00.toByte(),
           0x00.toByte(),
           0x70.toByte(),
-          0x05.toByte(),
+          0x00.toByte(),
           0x05.toByte(),
           0x02.toByte(),
           0x00.toByte(),
           0x00.toByte(),
           0x00.toByte(),
           0x02.toByte(),
-          0x00.toByte(),
-          0x00.toByte(),
-          0x00.toByte(),
-          0x00.toByte(),
           0x00.toByte(),
           0x00.toByte(),
           0x00.toByte(),
           0x01.toByte(),
+          0x00.toByte(),
+          0x01.toByte(),
+          0x00.toByte(),
+          0x00.toByte(),
           0x00.toByte(),
           0xf7.toByte()
       )

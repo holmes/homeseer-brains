@@ -10,7 +10,6 @@ data class ZoneInfo(val zone: Int, val source: Int, val power: Boolean = false, 
       = ZoneInfo(zone, source, power, volume, bass, treble, balance, loudness)
 }
 
-
 private val LOG = LoggerFactory.getLogger(AudioManager::class.java)
 
 /**
@@ -78,14 +77,8 @@ class AudioManager(private val zones: Zones,
   }
 
   fun loudness(zone: Zone, loudness: Loudness): ZoneInfo {
-    val oldZone = allZoneInfo.getValue(zone)
-
-    if (oldZone.loudness != loudness.isOn) {
-      audioCommander.loudness(zone)
-      return waitForStatusUpdate(zone)
-    } else {
-      return oldZone
-    }
+    audioCommander.loudness(zone, loudness)
+    return waitForStatusUpdate(zone)
   }
 
   /** Update the zone and request an update via AudioCommander */

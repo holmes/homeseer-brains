@@ -48,8 +48,8 @@ class AudioCommander(val audioQueue: AudioQueue, val russoundCommands: RussoundC
     })
   }
 
-  fun loudness(zone: Zone) {
-    audioQueue.sendCommand(russoundCommands.loudness(zone))
+  fun loudness(zone: Zone, loudness: Loudness) {
+    audioQueue.sendCommand(russoundCommands.loudness(zone, loudness))
   }
 
   fun initialVolume(zone: Zone, volume: Int) {
