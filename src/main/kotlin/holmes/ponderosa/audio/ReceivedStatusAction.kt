@@ -1,5 +1,7 @@
 package holmes.ponderosa.audio
 
+import holmes.ponderosa.audio.mock.RussoundMatrixToAppCommands
+
 class ReceivedStatusAction(override val input: ByteArray) : RussoundAction {
   override val zoneOffset = 12
 
@@ -17,9 +19,13 @@ class ReceivedStatusAction(override val input: ByteArray) : RussoundAction {
 
     return ZoneInfo(zone, source, power, volume, bass, treble, balance, loudness)
   }
+
+  override fun generateResponse(updatedZoneInfo: ZoneInfo): ByteArray {
+    return RussoundMatrixToAppCommands.returnStatus(updatedZoneInfo)
+  }
 }
 
-class ReceivedStatusActionHandler(val zones: Zones, val sources: Sources) : RussoundActionHandler {
+class ReceivedStatusActionHandler : RussoundActionHandler {
   override fun createAction(input: ByteArray): RussoundAction {
     return ReceivedStatusAction(input)
   }

@@ -5,8 +5,10 @@ import dagger.Module
 import dagger.Provides
 import holmes.ponderosa.RussoundReaderDescriptor
 import holmes.ponderosa.audio.AudioQueue
+import holmes.ponderosa.audio.ReceivedStatusActionHandler
 import holmes.ponderosa.audio.RussoundAction
 import holmes.ponderosa.audio.RussoundCommandReceiver
+import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
@@ -17,9 +19,8 @@ private val LOG = LoggerFactory.getLogger(MockRussoundReceiverModule::class.java
 @Component(modules = arrayOf(MockRussoundReceiverModule::class))
 interface MockRussoundReceiverComponent {
   fun audioQueue(): AudioQueue
-  fun audioCommander(): MatrixAudioCommander
   fun russoundCommandReceiver(): RussoundCommandReceiver
-  fun subject(): PublishSubject<RussoundAction>
+  fun subject(): Observable<RussoundAction>
 }
 
 @Module class MockRussoundReceiverModule(val readerDescriptor: RussoundReaderDescriptor) {
@@ -31,19 +32,21 @@ interface MockRussoundReceiverComponent {
   @Singleton @Provides fun provideCommands()
       = RussoundMatrixToAppCommands()
 
-  @Singleton @Provides fun provideMatrixAudioCommander(commands: RussoundMatrixToAppCommands, audioQueue: AudioQueue)
-      = MatrixAudioCommander(commands, audioQueue)
-
   @Singleton @Provides fun provideRussoundActionPublishSubject(): PublishSubject<RussoundAction>
       = PublishSubject.create<RussoundAction>()
 
-  @Singleton @Provides fun provideRussoundCommandReceiver(commander: MatrixAudioCommander, subject: PublishSubject<RussoundAction>): RussoundCommandReceiver {
+  @Singleton @Provides fun provideRussoundActionObservable(subject: PublishSubject<RussoundAction>): Observable<RussoundAction>
+      = subject
+
+  @Singleton @Provides fun provideRussoundCommandReceiver(subject: PublishSubject<RussoundAction>): RussoundCommandReceiver {
     val actions = setOf(
-        RequestStatusAction(),
+        PowerAction(),
+        ReceivedStatusActionHandler(),
+        SetSourceAction(),
         VolumeDownAction(),
         VolumeUpAction(),
-        VolumeSetAction(),
-        PowerAction())
+        VolumeSetAction()
+    )
 
     return RussoundCommandReceiver(name, subject, actions, readerDescriptor)
   }

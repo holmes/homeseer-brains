@@ -64,14 +64,14 @@ class MockRussoundReceiver(val readerDescriptor: RussoundReaderDescriptor) {
 
     graph.subject()
         .subscribe {
+          // Update and store the zone.
           val currentZoneInfo = zoneInfo[it.zone]
           val newZoneInfo = it.applyTo(currentZoneInfo)
           zoneInfo[it.zone] = newZoneInfo
 
-          // TODO how do we want to handle sending all types of responses?
-          if (it is RequestStatusAction.Action) {
-            graph.audioCommander().sendStatus(newZoneInfo)
-          }
+          // Generate the response and send it.
+          val response = it.generateResponse(newZoneInfo)
+          graph.audioQueue().sendCommand(response)
         }
   }
 }
