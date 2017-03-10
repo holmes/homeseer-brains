@@ -1,4 +1,4 @@
-package holmes.ponderosa.util
+package holmes.ponderosa.transformer
 
 import com.google.gson.Gson
 import spark.ResponseTransformer

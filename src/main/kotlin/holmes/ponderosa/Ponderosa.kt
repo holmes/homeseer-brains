@@ -3,7 +3,7 @@ package holmes.ponderosa
 import holmes.ponderosa.audio.AudioModule
 import holmes.ponderosa.audio.AudioStatusHandler
 import holmes.ponderosa.audio.DaggerAudio
-import holmes.ponderosa.audio.TransformerModule
+import holmes.ponderosa.transformer.TransformerModule
 import holmes.ponderosa.audio.mock.MATRIX_CONNECTION_PORT
 import holmes.ponderosa.audio.mock.MockRussoundReceiverThread
 import holmes.ponderosa.lights.DaggerLights

@@ -4,7 +4,7 @@ import com.squareup.moshi.Moshi
 import dagger.Component
 import dagger.Module
 import dagger.Provides
-import holmes.ponderosa.audio.TransformerModule
+import holmes.ponderosa.transformer.TransformerModule
 import java.io.File
 import java.time.LocalDate
 import java.time.LocalTime
