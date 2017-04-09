@@ -64,10 +64,10 @@ class LightZones(twilight: Twilight) {
         28, LightZone(28, setOf(),
         listOf(
             TimeFrame(twilight.twilightBegin(), 1, 60),
-            TimeFrame(twilight.sunrise(), 50, 80),
+            TimeFrame(twilight.sunrise(), 30, 80),
             TimeFrame(twilight.solarNoon(), 80, 100),
             TimeFrame(twilight.twilightEnd(), 50, 80),
-            TimeFrame({ LocalTime.of(22, 0) }, 50, 80),
+            TimeFrame({ LocalTime.of(22, 0) }, 30, 80),
             TimeFrame(MAX, 1, 60)
         ))
     )
