@@ -2,14 +2,14 @@ group 'holmes.ponderosa'
 version '1.0-SNAPSHOT'
 
 buildscript {
-  ext.kotlin_version = '1.1.0-rc-91'
+  ext.kotlin_version = '1.1.0'
 
   repositories {
     maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
     mavenCentral()
     jcenter()
   }
-  
+
   dependencies {
     classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     classpath 'org.hidetake:gradle-ssh-plugin:2.8.0'

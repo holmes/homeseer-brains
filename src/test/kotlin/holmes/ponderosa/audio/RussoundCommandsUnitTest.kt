@@ -13,10 +13,10 @@ class RussoundCommandsUnitTest {
   lateinit var source1: Source
 
   @Before fun setUp() {
-    zone1 = Zone(0, 12, 1, "Kitchen")
-    zone2 = Zone(0, 15, 2, "Outside")
-    source0 = Source(0, 0, 1, "TV Family Room")
-    source1 = Source(0, 1, 2, "Chromecast")
+    zone1 = Zone(0, 12, 0, "Kitchen")
+    zone2 = Zone(0, 15, 1, "Outside")
+    source0 = Source(0, 20, 0, "TV Family Room")
+    source1 = Source(0, 12, 1, "Chromecast")
     russoundCommands = RussoundCommands()
   }
 
@@ -188,14 +188,24 @@ class RussoundCommandsUnitTest {
     assertThat(russoundCommands.trebleFlat(zone2)).isEqualTo(expected)
   }
 
-  @Test fun testLoudnessToggleZone1() {
-    val expected = "F000007F0000700505020000000200690000000000016DF7".toHexByteArray()
-    assertThat(russoundCommands.loudness(zone1)).isEqualTo(expected)
+  @Test fun testLoudnessOnZone1() {
+    val expected = "F000007F00007000050200000002000000010001000101F7".toHexByteArray()
+    assertThat(russoundCommands.loudness(zone1, Loudness.ON)).isEqualTo(expected)
   }
 
-  @Test fun testLoudnessToggleZone2() {
-    val expected = "F000007F0000700505020001000200690000000000016EF7".toHexByteArray()
-    assertThat(russoundCommands.loudness(zone2)).isEqualTo(expected)
+  @Test fun testLoudnessOnZone2() {
+    val expected = "F000007F00007000050200010002000000010001000102F7".toHexByteArray()
+    assertThat(russoundCommands.loudness(zone2, Loudness.ON)).isEqualTo(expected)
+  }
+
+  @Test fun testLoudnessOffZone1() {
+    val expected = "F000007F00007000050200000002000000010001000000F7".toHexByteArray()
+    assertThat(russoundCommands.loudness(zone1, Loudness.OFF)).isEqualTo(expected)
+  }
+
+  @Test fun testLoudnessOffZone2() {
+    val expected = "F000007F00007000050200010002000000010001000001F7".toHexByteArray()
+    assertThat(russoundCommands.loudness(zone2, Loudness.OFF)).isEqualTo(expected)
   }
 
   @Test fun testBalanceLeftZone1() {

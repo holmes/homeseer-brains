@@ -5,7 +5,10 @@ import io.reactivex.subjects.PublishSubject
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
-data class ZoneInfo(val zone: Zone, val source: Source?, val power: Boolean = false, val volume: Int = 0, val bass: Int = 0, val treble: Int = 0, val balance: Int = 0, val loudness: Boolean = false)
+data class ZoneInfo(val zone: Int, val source: Int, val power: Boolean = false, val volume: Int = 0, val bass: Int = 0, val treble: Int = 0, val balance: Int = 0, val loudness: Boolean = false) {
+  fun copy(source: Int = this.source, power: Boolean = this.power, volume: Int = this.volume, bass: Int = this.bass, treble: Int = this.treble, balance: Int = this.balance, loudness: Boolean = this.loudness)
+      = ZoneInfo(zone, source, power, volume, bass, treble, balance, loudness)
+}
 
 private val LOG = LoggerFactory.getLogger(AudioManager::class.java)
 
@@ -13,9 +16,9 @@ private val LOG = LoggerFactory.getLogger(AudioManager::class.java)
  * The brains of the operation. Now we have to decide - send this information to Homeseer and
  * let it be the brains, or just let this store all the info.
  */
-class AudioManager(private val zones: Zones, private val sources: Sources,
+class AudioManager(private val zones: Zones,
                    private val audioCommander: AudioCommander,
-                   receivedZoneInfo: Observable<ReceivedZoneInfo>) {
+                   receivedZoneInfo: Observable<RussoundAction>) {
 
   private val zoneInfoUpdates = PublishSubject.create<ZoneInfo>()
   private val allZoneInfo: MutableMap<Zone, ZoneInfo> = HashMap()
@@ -25,7 +28,7 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
 
   init {
     zones.all.values.forEach {
-      allZoneInfo.put(it, ZoneInfo(zone = it, source = null))
+      allZoneInfo.put(it, ZoneInfo(zone = it.zoneNumber, source = 0))
     }
 
     // Subscribe for input from the receiver and re-publish updates to the ones listening here.
@@ -34,7 +37,7 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
 
   fun requestStatus(zone: Zone): ZoneInfo {
     audioCommander.requestStatus(zone)
-    return zoneInformation.getValue(zone)
+    return allZoneInfo.getValue(zone)
   }
 
   fun power(zone: Zone, power: PowerChange): ZoneInfo {
@@ -74,21 +77,15 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
   }
 
   fun loudness(zone: Zone, loudness: Loudness): ZoneInfo {
-    val oldZone = allZoneInfo.getValue(zone)
-
-    if (oldZone.loudness != loudness.isOn) {
-      audioCommander.loudness(zone)
-      return waitForStatusUpdate(zone)
-    } else {
-      return oldZone
-    }
+    audioCommander.loudness(zone, loudness)
+    return waitForStatusUpdate(zone)
   }
 
   /** Update the zone and request an update via AudioCommander */
   private fun waitForStatusUpdate(zone: Zone): ZoneInfo {
     audioCommander.requestStatus(zone)
     return zoneInfoUpdates
-        .filter { it.zone.zoneId == zone.zoneId }
+        .filter { it.zone == zone.zoneNumber }
         .timeout(200, TimeUnit.MILLISECONDS)
         .retry(2) {
           LOG.error("Didn't receive value in 500ms, sending request again.")
@@ -102,21 +99,18 @@ class AudioManager(private val zones: Zones, private val sources: Sources,
         .blockingFirst()
   }
 
-  private fun updateZoneFromStatus(zoneInfo: ReceivedZoneInfo) {
-    val zone = zones.zone(zoneInfo.zoneId)
-    val source = sources.source(zoneInfo.sourceId)
+  private fun updateZoneFromStatus(action: RussoundAction) {
+    if (action is ReceivedStatusAction) {
+      val zone = zones.zoneAt(action.zone)
+      val currentZoneInfo = allZoneInfo[zone]
 
-    // Convert from Russound code to something human readable.
-    val volume = zoneInfo.volume
-    val bass = zoneInfo.bass - 10
-    val treble = zoneInfo.treble - 10
-    val balance = zoneInfo.balance - 10
-
-    val updatedInfo = ZoneInfo(zone, source, zoneInfo.power, volume, bass, treble, balance, zoneInfo.loudness)
-    LOG.info("ReceivedZoneInfo from receiver: $zoneInfo, storing as $updatedInfo")
-
-    allZoneInfo[zone] = updatedInfo
-    zoneInfoUpdates.onNext(updatedInfo)
+      if (currentZoneInfo != null) {
+        val updatedInfo = action.applyTo(currentZoneInfo)
+        allZoneInfo[zone] = updatedInfo
+        zoneInfoUpdates.onNext(updatedInfo)
+      } else {
+        LOG.error("Couldn't find zone for ${action.description}")
+      }
+    }
   }
 }
-

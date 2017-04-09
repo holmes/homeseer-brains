@@ -3,8 +3,9 @@ package holmes.ponderosa
 import holmes.ponderosa.audio.AudioModule
 import holmes.ponderosa.audio.AudioStatusHandler
 import holmes.ponderosa.audio.DaggerAudio
-import holmes.ponderosa.audio.RussoundReaderDescriptor
-import holmes.ponderosa.audio.TransformerModule
+import holmes.ponderosa.transformer.TransformerModule
+import holmes.ponderosa.audio.mock.MATRIX_CONNECTION_PORT
+import holmes.ponderosa.audio.mock.MockRussoundReceiverThread
 import holmes.ponderosa.lights.DaggerLights
 import holmes.ponderosa.lights.LightModule
 import holmes.ponderosa.lights.TwilightDataRefresher
@@ -14,8 +15,20 @@ import spark.servlet.SparkApplication
 import java.io.File
 import java.io.InputStream
 import java.io.OutputStream
+import java.net.Socket
 
 private val LOG = LoggerFactory.getLogger(Ponderosa::class.java)
+
+interface RussoundReaderDescriptor {
+  val inputStream: InputStream
+  val outputStream: OutputStream
+
+  fun destroy() {
+    LOG.info("Closing input and output streams!")
+    inputStream.close()
+    outputStream.close()
+  }
+}
 
 /** The main initializer. */
 class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightDataDirectory: File) {
@@ -68,12 +81,6 @@ class PonderosaSparkApplication : SparkApplication {
 
     override val outputStream: OutputStream
       get() = file.outputStream()
-
-    override val startMessage: Int
-      get() = 0xF0
-
-    override val endMessage: Int
-      get() = 0xF7
   }, File("/opt/sunrise-data/data"))
 
   override fun init() {
@@ -90,21 +97,27 @@ class PonderosaSparkApplication : SparkApplication {
 /** Embedded application for development. */
 object PonderosaEmbedded {
   @JvmStatic fun main(args: Array<String>) {
-    val file = File("/dev/null")
-    LOG.info("Using ${file.absolutePath} to communicate w/ the matrix.")
+    // Start the Mock Server.
+    MockRussoundReceiverThread().start()
 
-    Ponderosa(object : RussoundReaderDescriptor {
+    // Server is started, connect the client.
+    val socket = Socket("127.0.0.1", MATRIX_CONNECTION_PORT)
+    LOG.info("Connected to socket on localhost:$MATRIX_CONNECTION_PORT")
+
+    val readerDescriptor = object : RussoundReaderDescriptor {
       override val inputStream: InputStream
-        get() = file.inputStream()
+        get() = socket.getInputStream()
 
       override val outputStream: OutputStream
-        get() = file.outputStream()
+        get() = socket.getOutputStream()
 
-      override val startMessage: Int
-        get() = '0'.toInt()
+      override fun destroy() {
+        super.destroy()
+        socket.close()
+      }
+    }
 
-      override val endMessage: Int
-        get() = 'F'.toInt()
-    }, File("/work/sunrise-data/data/")).start()
+    // Then start the app.
+    Ponderosa(readerDescriptor, File("/work/sunrise-data/data/")).start()
   }
 }

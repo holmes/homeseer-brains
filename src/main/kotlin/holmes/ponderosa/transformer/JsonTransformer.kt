@@ -1,7 +1,8 @@
-package holmes.ponderosa.util
+package holmes.ponderosa.transformer
 
 import com.google.gson.Gson
 import spark.ResponseTransformer
+
 
 /**
  * I've given up figuring out how to get Moshi to just convert anything I pass to it.
