@@ -30,7 +30,7 @@ class DimCalculator(val lightZones: LightZones, val now: Provider<LocalTime>) {
    * down if that's the case.
    */
   fun autoDim(zone: LightZone, currentValue: Int): AutoDimResult {
-    if (currentValue == 0) {
+    if (currentValue == 0 || zone.isInFirstFrame(now)) {
       return AutoDimResult.NO_CHANGE
     }
 
@@ -48,9 +48,11 @@ class DimCalculator(val lightZones: LightZones, val now: Provider<LocalTime>) {
    * Pick the level opposite of what the current value is closest to.
    */
   fun toggleLights(zone: LightZone, currentValue: Int): ToggleLightResult {
+    val calculatedLevel = calculateLightLevel(zone)
+
     val lightLevel = when {
-      isInLowLevel(zone, currentValue) -> zone.currentFrame(now).highLevel
-      else -> calculateLightLevel(zone)
+      shouldUseCalculatedLevel(zone, currentValue, calculatedLevel) -> calculatedLevel
+      else -> zone.currentFrame(now).highLevel
     }
 
     val results = listOf(ToggleLightValue(zone.deviceId, lightLevel))
@@ -100,17 +102,11 @@ class DimCalculator(val lightZones: LightZones, val now: Provider<LocalTime>) {
     return calculatedLevel
   }
 
-  internal fun isInLowLevel(zone: LightZone, currentValue: Int): Boolean {
-    val startValue: Int
-    val endValue = zone.currentFrame(now).lowLevel
+  internal fun shouldUseCalculatedLevel(zone: LightZone, currentValue: Int, calculatedLevel: Int): Boolean {
+    val currentFrame = zone.currentFrame(now)
+    val currentHigh = currentFrame.highLevel
 
-    if (zone.isInFirstFrame(now)) {
-      startValue = zone.timeFrames.last().lowLevel
-    } else {
-      startValue = zone.previousFrame(now).lowLevel
-    }
-
-    return currentValue in startValue..endValue || currentValue in endValue..startValue
+    return currentValue < calculatedLevel || currentValue >= currentHigh
   }
 }
 
