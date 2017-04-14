@@ -36,7 +36,7 @@ class DimCalculator(val lightZones: LightZones, val now: Provider<LocalTime>) {
 
     val calculatedLevel = calculateLightLevel(zone)
     val delta = Math.abs(calculatedLevel - currentValue)
-    val allowed = delta <= 3
+    val allowed = delta <= 2
 
     return if (allowed) AutoDimResult(calculatedLevel, delta > 1) else AutoDimResult.NO_CHANGE
   }

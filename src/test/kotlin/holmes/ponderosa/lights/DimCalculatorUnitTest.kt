@@ -79,7 +79,7 @@ class DimCalculatorUnitTest {
 
     // Close ones need rescheduling.
     assertThat(dimCalculator.autoDim(zone, 57).needsReschedule).isTrue()
-    assertThat(dimCalculator.autoDim(zone, 56).needsReschedule).isTrue()
+    assertThat(dimCalculator.autoDim(zone, 56).needsReschedule).isFalse()
     assertThat(dimCalculator.autoDim(zone, 55).needsReschedule).isFalse()
   }
 
