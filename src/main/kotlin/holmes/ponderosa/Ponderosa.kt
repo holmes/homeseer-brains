@@ -3,12 +3,14 @@ package holmes.ponderosa
 import holmes.ponderosa.audio.AudioModule
 import holmes.ponderosa.audio.AudioStatusHandler
 import holmes.ponderosa.audio.DaggerAudio
-import holmes.ponderosa.transformer.TransformerModule
 import holmes.ponderosa.audio.mock.MATRIX_CONNECTION_PORT
 import holmes.ponderosa.audio.mock.MockRussoundReceiverThread
 import holmes.ponderosa.lights.DaggerLights
 import holmes.ponderosa.lights.LightModule
 import holmes.ponderosa.lights.TwilightDataRefresher
+import holmes.ponderosa.motion.DaggerMotionComponent
+import holmes.ponderosa.motion.MotionModule
+import holmes.ponderosa.transformer.TransformerModule
 import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
 import spark.servlet.SparkApplication
@@ -52,6 +54,12 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
         .transformerModule(transformerModule)
         .build()
 
+    val motionGraph = DaggerMotionComponent
+        .builder()
+        .motionModule(MotionModule())
+        .transformerModule(transformerModule)
+        .build()
+
     twilightDataRefresher = lightsGraph.twilightDataRefresher()
     twilightDataRefresher.start()
 
@@ -60,6 +68,7 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
 
     lightsGraph.lightsRoutes().initialize()
     audioGraph.audioRoutes().initialize()
+    motionGraph.motionRoutes().initialize()
   }
 
   fun destroy() {

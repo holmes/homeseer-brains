@@ -21,6 +21,14 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'war'
 apply plugin: 'org.hidetake.ssh'
 
+apply plugin: 'idea'
+
+idea {
+  module {
+    sourceDirs += file('build/generated/source/kapt/main')
+  }
+}
+
 repositories {
   maven { url 'http://dl.bintray.com/kotlin/kotlin-eap-1.1' }
   maven { url 'http://dl.bintray.com/kotlin/kotlinx.support' }
@@ -98,6 +106,7 @@ dependencies {
   compile 'com.google.code.gson:gson:1.7.2'
   compile 'io.reactivex.rxjava2:rxjava:2.0.4'
   compile 'com.squareup.okio:okio:1.11.0'
+  compile 'com.github.sps.pushover.net:pushover-client:1.0.0'
 
   testCompile "junit:junit:4.12"
   testCompile "com.google.truth:truth:0.31"
