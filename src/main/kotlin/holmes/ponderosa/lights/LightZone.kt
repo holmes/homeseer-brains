@@ -53,8 +53,8 @@ class LightZones(twilight: Twilight) {
             LightZone.DependentZone(19, listOf(DependentTimeFrame(MIN, twilight.sunrise())))
         ),
         listOf(
-            TimeFrame(twilight.twilightBegin(), 1, 35),
-            TimeFrame(twilight.sunrise(), 30, 60),
+            TimeFrame(twilight.sunrise(), 1, 35),
+            TimeFrame(twilight.sunrise(60), 30, 60),
             TimeFrame(twilight.solarNoon(), 60, 85),
             TimeFrame(twilight.twilightEnd(), 30, 60),
             TimeFrame(MAX, 1, 35)
@@ -63,8 +63,8 @@ class LightZones(twilight: Twilight) {
         // Nursery
         28, LightZone(28, setOf(),
         listOf(
-            TimeFrame(twilight.twilightBegin(), 1, 60),
-            TimeFrame(twilight.sunrise(), 30, 80),
+            TimeFrame(twilight.sunrise(), 1, 60),
+            TimeFrame(twilight.sunrise(120), 30, 80),
             TimeFrame(twilight.solarNoon(), 80, 100),
             TimeFrame(twilight.twilightEnd(), 50, 80),
             TimeFrame({ LocalTime.of(22, 0) }, 30, 80),
@@ -85,8 +85,8 @@ class LightZones(twilight: Twilight) {
         // Kitchen
         19, LightZone(19, setOf(),
         listOf(
-            TimeFrame(twilight.twilightBegin(), 10, 35),
-            TimeFrame(twilight.sunrise(), 30, 60),
+            TimeFrame(twilight.sunrise(), 10, 35),
+            TimeFrame(twilight.sunrise(120), 30, 60),
             TimeFrame(twilight.solarNoon(), 60, 85),
             TimeFrame(twilight.twilightEnd(), 30, 60),
             TimeFrame(MAX, 18, 50)
@@ -96,7 +96,8 @@ class LightZones(twilight: Twilight) {
         // Dining Room
         15, LightZone(15, setOf(),
         listOf(
-            TimeFrame(twilight.twilightBegin(), 5, 35),
+            TimeFrame(twilight.sunrise(), 5, 35),
+            TimeFrame(twilight.sunrise(120), 15, 35),
             TimeFrame(twilight.solarNoon(), 30, 85),
             TimeFrame(twilight.twilightEnd(), 15, 60),
             TimeFrame(MAX, 5, 40)
