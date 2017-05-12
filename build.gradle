@@ -29,7 +29,7 @@ repositories {
 
 remotes {
   web01 {
-    host = '192.168.100.5'
+    host = '192.168.1.5'
     port = 22
     user = 'homeseer'
 

@@ -28,7 +28,7 @@ class App extends Component {
     if (process.env.NODE_ENV === "development") {
       remoteHost = "http://localhost:4567/";
     } else {
-      remoteHost = "http://192.168.100.5:8080/ponderosa/"
+      remoteHost = "http://192.168.1.5:8080/ponderosa/"
     }
     console.log("Using host at " + remoteHost);
 
