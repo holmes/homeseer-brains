@@ -16,7 +16,9 @@ class MotionRoutes(val twilioInfo: TwilioInfo) {
   fun initialize() {
     val accountSid = twilioInfo.accountSid
     val authToken = twilioInfo.authToken
+
     Twilio.init(accountSid, authToken)
+    LOG.info("Twilio Information: $twilioInfo")
 
     post("/api/motion/:deviceId", Route { _, _ ->
       twilioInfo.toPhoneNumbers

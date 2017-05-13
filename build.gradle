@@ -108,7 +108,6 @@ dependencies {
 
   compile 'com.thejholmes.russound:api:1.0.1'
   compile 'com.twilio.sdk:twilio:7.9.1'
-  compile 'com.natpryce:konfig:1.6.1.0'
 
   testCompile "junit:junit:4.12"
   testCompile "com.google.truth:truth:0.31"
