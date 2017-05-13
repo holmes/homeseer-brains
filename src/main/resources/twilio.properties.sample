@@ -1,0 +1,4 @@
+twilio.accountSid = SIDXXXXXXXXXXXX
+twilio.authToken = AUTHXXXXXXXXXXXX
+twilio.fromPhoneNumber = +1XXXXXXXXXX
+twilio.toPhoneNumbers = +1XXXXXXXXXX,+1XXXXXXXXXX

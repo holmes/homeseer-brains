@@ -51,6 +51,10 @@ this line in `.idea/modules/ponderosa_[main|test].iml`
 <option name="additionalArguments" value="-Xplugin /home/tomasz/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-annotation-processing/1.1.0-rc-91/5a3a018b3d9948d50cfe1af741d10f016edcc12c/kotlin-annotation-processing-1.1.0-rc-91.jar,/home/tomasz/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-noarg/1.1.0-rc-91/cce5206f28940c7751ca131caeedc591cbc44af9/kotlin-noarg-1.1.0-rc-91.jar,/home/tomasz/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-allopen/1.1.0-rc-91/ea929388f4abd559e160aea641b11cb7e45c2cc0/kotlin-allopen-1.1.0-rc-91.jar -P plugin:org.jetbrains.kotlin.noarg:annotation=javax.persistence.Entity,plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.stereotype.Component,plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.transaction.annotation.Transactional,plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.scheduling.annotation.Async,plugin:org.jetbrains.kotlin.allopen:annotation=org.springframework.cache.annotation.Cacheable" />
 ```
 
+## Twilio
+We use Twilio to notify us about motion events. The keys are defined in twilio.properties. 
+Refer to `src/main/resources/twilio.properties.sample` for an example of what is needed.
+
 
 ## Lighting
 We calculate light levels on a range is adjusted from sunrise and sunset data.

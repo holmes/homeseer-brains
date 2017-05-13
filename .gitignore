@@ -5,5 +5,8 @@ build
 out
 reports
 
+# ignore the properties file
+src/main/resources/twilio.properties
+
 # unfortunately we do what we must
 unfortunately/*

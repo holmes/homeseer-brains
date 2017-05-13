@@ -101,12 +101,14 @@ dependencies {
   compile "com.sparkjava:spark-core:2.5.5"
   compile "org.slf4j:slf4j-simple:1.7.22"
 
-  compile 'com.thejholmes.russound:api:1.0.1'
   compile 'com.squareup.moshi:moshi:1.4.0'
   compile 'com.google.code.gson:gson:1.7.2'
   compile 'io.reactivex.rxjava2:rxjava:2.0.4'
   compile 'com.squareup.okio:okio:1.11.0'
-  compile 'com.github.sps.pushover.net:pushover-client:1.0.0'
+
+  compile 'com.thejholmes.russound:api:1.0.1'
+  compile 'com.twilio.sdk:twilio:7.9.1'
+  compile 'com.natpryce:konfig:1.6.1.0'
 
   testCompile "junit:junit:4.12"
   testCompile "com.google.truth:truth:0.31"
