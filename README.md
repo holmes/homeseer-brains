@@ -41,6 +41,7 @@ Amazing!
 ## Developing
 
 Trying to figure this out now.
+* First time: run `cd src/main/react && npm install`
 * React runs on :3000, currently hitting 192.168.1.5:8080. Should hit either localhost:4567 or a mock.
 * Ponderosa Service runs fine, but needs the serial device to be mocked out.
 
@@ -52,7 +53,7 @@ this line in `.idea/modules/ponderosa_[main|test].iml`
 ```
 
 ## Twilio
-We use Twilio to notify us about motion events. The keys are defined in twilio.properties. 
+We use Twilio to notify us about motion events. The keys are defined in twilio.properties.
 Refer to `src/main/resources/twilio.properties.sample` for an example of what is needed.
 
 
