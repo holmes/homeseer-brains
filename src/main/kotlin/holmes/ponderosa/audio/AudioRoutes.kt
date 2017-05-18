@@ -1,6 +1,13 @@
 package holmes.ponderosa.audio
 
 import holmes.ponderosa.transformer.JsonTransformer
+import org.holmes.russound.Balance
+import org.holmes.russound.BassLevel
+import org.holmes.russound.Loudness
+import org.holmes.russound.PowerChange
+import org.holmes.russound.TrebleLevel
+import org.holmes.russound.VolumeChange
+import org.holmes.russound.ZoneInfo
 import org.slf4j.LoggerFactory
 import spark.Filter
 import spark.Request
@@ -13,7 +20,7 @@ import spark.Spark.post
 
 private val LOG = LoggerFactory.getLogger(AudioRoutes::class.java)
 
-data class RootFetchInfo(val sources: List<Source>, val zoneInformation: Collection<ZoneInfo>)
+data class RootFetchInfo(val sources: List<SourceConfig>, val zoneInformation: Collection<ZoneInfo>)
 
 class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: AudioManager, val jsonTransformer: JsonTransformer) {
   fun initialize() {
@@ -109,7 +116,7 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
     }
   }
 
-  private fun Request.zone(): Zone? {
+  private fun Request.zone(): ZoneConfig? {
     val zoneId = params("zoneId")?.toInt()
     val zone = zoneId?.let { zones.zone(zoneId) }
 
@@ -119,7 +126,7 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
     }
   }
 
-  private fun Request.source(): Source? {
+  private fun Request.source(): SourceConfig? {
     val sourceId = params("sourceId")?.toInt()
     val source = sourceId?.let { sources.source(it) }
 

@@ -10,8 +10,8 @@ import com.squareup.moshi.Moshi
 import dagger.Module
 import dagger.Provides
 import holmes.ponderosa.audio.Sources
-import holmes.ponderosa.audio.ZoneInfo
 import holmes.ponderosa.audio.Zones
+import org.holmes.russound.ZoneInfo
 import java.lang.reflect.Type
 import javax.inject.Singleton
 

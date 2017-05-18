@@ -3,14 +3,14 @@ package holmes.ponderosa
 import holmes.ponderosa.audio.AudioModule
 import holmes.ponderosa.audio.AudioStatusHandler
 import holmes.ponderosa.audio.DaggerAudio
-import holmes.ponderosa.audio.mock.MATRIX_CONNECTION_PORT
-import holmes.ponderosa.audio.mock.MockRussoundReceiverThread
 import holmes.ponderosa.lights.DaggerLights
 import holmes.ponderosa.lights.LightModule
 import holmes.ponderosa.lights.TwilightDataRefresher
 import holmes.ponderosa.motion.DaggerMotionComponent
 import holmes.ponderosa.motion.MotionModule
 import holmes.ponderosa.transformer.TransformerModule
+import org.holmes.russound.MATRIX_CONNECTION_PORT
+import org.holmes.russound.MockRussoundReceiverThread
 import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
 import spark.servlet.SparkApplication
