@@ -42,6 +42,8 @@ Amazing!
 
 Trying to figure this out now.
 * First time: run `cd src/main/react && npm install`
+* You'll need to fill out `src/main/resources/twilio.properties`. See the sample file for what's needed.
+* To deploy you'll need some ssh love in `./unforntunately`.
 * React runs on :3000, currently hitting 192.168.1.5:8080. Should hit either localhost:4567 or a mock.
 * Ponderosa Service runs fine, but needs the serial device to be mocked out.
 
