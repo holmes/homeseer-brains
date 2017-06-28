@@ -48,11 +48,11 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
         .transformerModule(transformerModule)
         .build()
 
-    val audioGraph = DaggerAudio
-        .builder()
-        .audioModule(AudioModule(readerDescriptor))
-        .transformerModule(transformerModule)
-        .build()
+//    val audioGraph = DaggerAudio
+//        .builder()
+//        .audioModule(AudioModule(readerDescriptor))
+//        .transformerModule(transformerModule)
+//        .build()
 
     val motionGraph = DaggerMotionComponent
         .builder()
@@ -63,17 +63,17 @@ class Ponderosa(val readerDescriptor: RussoundReaderDescriptor, val twilightData
     twilightDataRefresher = lightsGraph.twilightDataRefresher()
     twilightDataRefresher.start()
 
-    audioStatusHandler = audioGraph.audioStatusHandler()
-    audioStatusHandler.start()
+//    audioStatusHandler = audioGraph.audioStatusHandler()
+//    audioStatusHandler.start()
 
     lightsGraph.lightsRoutes().initialize()
-    audioGraph.audioRoutes().initialize()
+//    audioGraph.audioRoutes().initialize()
     motionGraph.motionRoutes().initialize()
   }
 
   fun destroy() {
     readerDescriptor.destroy()
-    audioStatusHandler.stop()
+//    audioStatusHandler.stop()
     twilightDataRefresher.stop()
   }
 }
