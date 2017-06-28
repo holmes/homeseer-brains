@@ -11,7 +11,7 @@ import dagger.Module
 import dagger.Provides
 import holmes.ponderosa.audio.Sources
 import holmes.ponderosa.audio.Zones
-import org.holmes.russound.ZoneInfo
+import com.thejholmes.russound.ZoneInfo
 import java.lang.reflect.Type
 import javax.inject.Singleton
 

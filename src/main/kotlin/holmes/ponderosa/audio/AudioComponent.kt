@@ -8,14 +8,14 @@ import holmes.ponderosa.transformer.JsonTransformer
 import holmes.ponderosa.transformer.TransformerModule
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
-import org.holmes.russound.Russound
-import org.holmes.russound.RussoundAction
-import org.holmes.russound.RussoundCommander
-import org.holmes.russound.RussoundTranslator
-import org.holmes.russound.RussoundZoneInfoListener
-import org.holmes.russound.ZoneInfo
-import org.holmes.russound.serial.SerialCommandReceiver
-import org.holmes.russound.serial.SerialCommandSender
+import com.thejholmes.russound.Russound
+import com.thejholmes.russound.RussoundAction
+import com.thejholmes.russound.RussoundCommander
+import com.thejholmes.russound.RussoundTranslator
+import com.thejholmes.russound.RussoundZoneInfoListener
+import com.thejholmes.russound.ZoneInfo
+import com.thejholmes.russound.serial.SerialCommandReceiver
+import com.thejholmes.russound.serial.SerialCommandSender
 import org.slf4j.LoggerFactory
 import javax.inject.Singleton
 

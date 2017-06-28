@@ -1,6 +1,6 @@
 package holmes.ponderosa.audio
 
-import org.holmes.russound.Source
+import com.thejholmes.russound.Source
 
 data class SourceConfig(val controllerId: Int, val sourceId: Int, val sourceNumber: Int, val name: String) {
   val source: Source

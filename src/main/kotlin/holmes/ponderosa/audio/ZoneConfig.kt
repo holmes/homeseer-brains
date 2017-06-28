@@ -1,6 +1,6 @@
 package holmes.ponderosa.audio
 
-import org.holmes.russound.Zone
+import com.thejholmes.russound.Zone
 
 /**
  * @param zoneId unique id of this zone

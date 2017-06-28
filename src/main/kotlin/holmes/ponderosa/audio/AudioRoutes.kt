@@ -1,13 +1,13 @@
 package holmes.ponderosa.audio
 
 import holmes.ponderosa.transformer.JsonTransformer
-import org.holmes.russound.Balance
-import org.holmes.russound.BassLevel
-import org.holmes.russound.Loudness
-import org.holmes.russound.PowerChange
-import org.holmes.russound.TrebleLevel
-import org.holmes.russound.VolumeChange
-import org.holmes.russound.ZoneInfo
+import com.thejholmes.russound.Balance
+import com.thejholmes.russound.BassLevel
+import com.thejholmes.russound.Loudness
+import com.thejholmes.russound.PowerChange
+import com.thejholmes.russound.TrebleLevel
+import com.thejholmes.russound.VolumeChange
+import com.thejholmes.russound.ZoneInfo
 import org.slf4j.LoggerFactory
 import spark.Filter
 import spark.Request
@@ -147,9 +147,9 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
 
   private fun Request.bass(): BassLevel? {
     return when (params("newValue").toLowerCase()) {
-      "down" -> BassLevel.DOWN
-      "up" -> BassLevel.UP
-      "flat" -> BassLevel.FLAT
+      "down" -> BassLevel.Down()
+      "up" -> BassLevel.Up()
+      "flat" -> BassLevel.Flat()
       else -> {
         halt(400, "Bad bass param. Accepted values: [up|flat|down]")
         null
@@ -159,9 +159,9 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
 
   private fun Request.treble(): TrebleLevel? {
     return when (params("newValue").toLowerCase()) {
-      "down" -> TrebleLevel.DOWN
-      "up" -> TrebleLevel.UP
-      "flat" -> TrebleLevel.FLAT
+      "down" -> TrebleLevel.Down()
+      "up" -> TrebleLevel.Up()
+      "flat" -> TrebleLevel.Flat()
       else -> {
         halt(400, "Bad treble param. Accepted values: [up|flat|down}")
         null
@@ -171,9 +171,9 @@ class AudioRoutes(val zones: Zones, val sources: Sources, val audioManager: Audi
 
   private fun Request.balance(): Balance? {
     return when (params("newValue").toLowerCase()) {
-      "left" -> Balance.LEFT
-      "right" -> Balance.RIGHT
-      "center" -> Balance.CENTER
+      "left" -> Balance.Left()
+      "right" -> Balance.Right()
+      "center" -> Balance.Center()
       else -> {
         halt(400, "Bad balance param:. Accepted values: [left|center|right]")
         null

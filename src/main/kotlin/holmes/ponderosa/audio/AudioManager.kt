@@ -1,14 +1,14 @@
 package holmes.ponderosa.audio
 
 import io.reactivex.Observable
-import org.holmes.russound.Balance
-import org.holmes.russound.BassLevel
-import org.holmes.russound.Loudness
-import org.holmes.russound.PowerChange
-import org.holmes.russound.RussoundCommander
-import org.holmes.russound.TrebleLevel
-import org.holmes.russound.VolumeChange
-import org.holmes.russound.ZoneInfo
+import com.thejholmes.russound.Balance
+import com.thejholmes.russound.BassLevel
+import com.thejholmes.russound.Loudness
+import com.thejholmes.russound.PowerChange
+import com.thejholmes.russound.RussoundCommander
+import com.thejholmes.russound.TrebleLevel
+import com.thejholmes.russound.VolumeChange
+import com.thejholmes.russound.ZoneInfo
 import org.slf4j.LoggerFactory
 import java.util.concurrent.TimeUnit
 
@@ -53,7 +53,7 @@ class AudioManager(private val zones: Zones,
   /** Sets the initial volume when the zoneConfig is turned on. */
   fun initialVolume(zoneConfig: ZoneConfig, volume: Int) {
     // We don't pass this in the ZoneInformation. It's set once and we never care again.
-    audioCommander.initialVolume(zoneConfig.zone, volume)
+    audioCommander.initialVolume(zoneConfig.zone, VolumeChange.Set(volume))
   }
 
   fun volume(zoneConfig: ZoneConfig, volume: VolumeChange): ZoneInfo {

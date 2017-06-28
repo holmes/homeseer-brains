@@ -9,8 +9,8 @@ import holmes.ponderosa.lights.TwilightDataRefresher
 import holmes.ponderosa.motion.DaggerMotionComponent
 import holmes.ponderosa.motion.MotionModule
 import holmes.ponderosa.transformer.TransformerModule
-import org.holmes.russound.MATRIX_CONNECTION_PORT
-import org.holmes.russound.MockRussoundReceiverThread
+import com.thejholmes.russound.MATRIX_CONNECTION_PORT
+import com.thejholmes.russound.MockRussoundReceiverThread
 import org.slf4j.LoggerFactory
 import spark.Spark.staticFileLocation
 import spark.servlet.SparkApplication

@@ -1,6 +1,6 @@
 package holmes.ponderosa.audio
 
-import org.holmes.russound.serial.SerialCommandReceiver
+import com.thejholmes.russound.serial.SerialCommandReceiver
 
 class AudioStatusHandler(val commandReceiver: SerialCommandReceiver,
                          val statusRequestTimer: AudioStatusRequestTimer) {
