@@ -63,8 +63,8 @@ class LightZones(twilight: Twilight) {
         // Nursery
         28, LightZone(28, setOf(),
         listOf(
-            TimeFrame({ LocalTime.of(8, 0) }, 1, 60),
-            TimeFrame(twilight.sunrise(120), 30, 80),
+            TimeFrame({ LocalTime.of(7, 0) }, 1, 60),
+            TimeFrame({ LocalTime.of(9, 0) }, 30, 80),
             TimeFrame(twilight.solarNoon(), 80, 100),
             TimeFrame(twilight.twilightEnd(), 50, 80),
             TimeFrame({ LocalTime.of(22, 0) }, 30, 80),
