@@ -20,7 +20,7 @@ data class TimeFrame(val endTime: () -> LocalTime, val lowLevel: Int, val highLe
   }
 }
 
-data class LightZone(val deviceId: Int, val subZones: Set<DependentZone>, val timeFrames: List<TimeFrame>) {
+data class  LightZone(val deviceId: Int, val subZones: Set<DependentZone>, val timeFrames: List<TimeFrame>) {
   data class DependentZone(val deviceId: Int, val timeFrames: List<DependentTimeFrame>) {
     data class DependentTimeFrame(val startTime: () -> LocalTime, val endTime: () -> LocalTime)
 
@@ -63,7 +63,7 @@ class LightZones(twilight: Twilight) {
         // Nursery
         28, LightZone(28, setOf(),
         listOf(
-            TimeFrame(twilight.sunrise(), 1, 60),
+            TimeFrame({ LocalTime.of(8, 0) }, 1, 60),
             TimeFrame(twilight.sunrise(120), 30, 80),
             TimeFrame(twilight.solarNoon(), 80, 100),
             TimeFrame(twilight.twilightEnd(), 50, 80),
