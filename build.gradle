@@ -54,12 +54,6 @@ remotes {
   }
 }
 
-task npmstart(type: Exec) {
-  workingDir "$projectDir/src/main/react"
-  executable 'sh'
-  args '-c', 'npm start'
-}
-
 task deploy() {
   doLast {
     ssh.run {
@@ -71,19 +65,6 @@ task deploy() {
 }
 deploy.dependsOn build
 
-
-task buildReact(type: Exec) {
-  inputs.file("src/main/react/package.json")
-  inputs.dir("src/main/react/src")
-  inputs.dir("src/main/react/public")
-  outputs.dir("src/main/react/build")
-
-  workingDir './src/main/react'
-  executable 'sh'
-  args '-c', 'npm run build'
-}
-
-war.dependsOn buildReact
 war {
   archiveName = 'ponderosa.war'
   from('src/main/react/build') {
@@ -109,8 +90,6 @@ dependencies {
   compile 'io.reactivex.rxjava2:rxjava:2.0.4'
   compile 'com.squareup.okio:okio:1.11.0'
 
-  compile "com.thejholmes.russound:api:$russound_version"
-  compile "com.thejholmes.russound:mock:$russound_version"
   compile 'com.twilio.sdk:twilio:7.9.1'
 
   testCompile "junit:junit:4.12"
